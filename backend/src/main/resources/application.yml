@@ -1,0 +1,238 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+  error:
+    include-stacktrace: never
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  application:
+    name: smartroute
+
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/smartroute?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC}
+    username: ${DB_USERNAME:smartroute}
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+      leak-detection-threshold: 60000
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          batch_size: 20
+          fetch_size: 50
+        order_inserts: true
+        order_updates: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+    out-of-order: false
+
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+    from: ${MAIL_FROM:noreply@anuraguniversity.edu.in}
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  security:
+    filter:
+      order: 100
+
+  json:
+    serialization:
+      write-dates-as-timestamps: false
+
+  web:
+    resources:
+      chain:
+        cache: true
+      cache:
+        period: 3600
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        enabled: true
+    prometheus:
+      enabled: true
+  health:
+    mail:
+      enabled: false
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    operations-sorter: method
+    tags-sorter: alpha
+    doc-expansion: none
+    display-request-duration: true
+    filter: true
+  packages-to-scan: com.anuraguniversity.smartroute
+
+smartroute:
+  jwt:
+    secret: ${JWT_SECRET:}
+    expiration: 86400000
+    refresh-expiration: 604800000
+
+  otp:
+    length: 6
+    expiration-minutes: 10
+    max-attempts: 3
+    resend-cooldown-seconds: 60
+    rate-limit-per-hour: 5
+
+  rate-limit:
+    login:
+      max-attempts: 5
+      window-minutes: 15
+    password-reset:
+      max-attempts: 3
+      window-minutes: 60
+
+  transport:
+    workbook-path: classpath:data/AU_College_Transport_2026-2027-1.xls
+
+  payment:
+    provider: ${PAYMENT_PROVIDER:razorpay}
+    key: ${PAYMENT_PROVIDER_KEY:}
+    secret: ${PAYMENT_PROVIDER_SECRET:}
+    webhook-secret: ${PAYMENT_WEBHOOK_SECRET:}
+
+  push:
+    vapid-subject: ${PUSH_VAPID_SUBJECT:mailto:admin@anuraguniversity.edu.in}
+    vapid-public-key: ${PUSH_VAPID_PUBLIC_KEY:}
+    vapid-private-key: ${PUSH_VAPID_PRIVATE_KEY:}
+
+  ocr:
+    enabled: ${OCR_ENABLED:false}
+    api-key: ${OCR_API_KEY:}
+    endpoint: ${OCR_ENDPOINT:}
+
+  llm:
+    enabled: ${LLM_ENABLED:false}
+    api-key: ${LLM_API_KEY:}
+    model: ${LLM_MODEL:gpt-4}
+    endpoint: ${LLM_ENDPOINT:}
+
+logging:
+  level:
+    com.anuraguniversity.smartroute: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: WARN
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
+    org.flywaydb: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/smartroute.log
+    max-size: 100MB
+    max-history: 30
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+  mail:
+    host: localhost
+    port: 1025
+    username: ""
+    password: ""
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:tc:mysql:8.0:///smartroute_test
+    username: test
+    password: test
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  mail:
+    host: localhost
+    port: 1025
+  flyway:
+    enabled: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  jpa:
+    show-sql: false
+  datasource:
+    hikari:
+      maximum-pool-size: 50
+  logging:
+    level:
+      com.anuraguniversity.smartroute: INFO
+      org.springframework.security: WARN

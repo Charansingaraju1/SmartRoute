@@ -1,0 +1,2 @@
+@echo off
+mvn flyway:migrate -Dflyway.url="jdbc:mysql://localhost:3306/smartroute?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC" -Dflyway.user=smartroute -Dflyway.password=SmartRoute@2026

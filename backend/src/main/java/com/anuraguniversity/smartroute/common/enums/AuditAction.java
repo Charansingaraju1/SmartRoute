@@ -1,0 +1,31 @@
+package com.anuraguniversity.smartroute.common.enums;
+
+public enum AuditAction {
+    CREATE,
+    READ,
+    UPDATE,
+    DELETE,
+    LOGIN,
+    LOGOUT,
+    LOGIN_FAILED,
+    PASSWORD_CHANGE,
+    PASSWORD_RESET,
+    OTP_REQUEST,
+    OTP_VERIFY,
+    OTP_VERIFY_FAILED,
+    BUS_ASSIGNMENT,
+    BUS_UNASSIGNMENT,
+    ROUTE_CHANGE,
+    STOP_CHANGE,
+    MISSED_BUS_REQUEST,
+    SOS_TRIGGER,
+    PAYMENT_INITIATED,
+    PAYMENT_COMPLETED,
+    PAYMENT_FAILED,
+    BUS_PASS_UPLOAD,
+    BUS_PASS_VERIFIED,
+    LOCATION_UPDATE,
+    NOTIFICATION_SENT,
+    EXPORT_DATA,
+    IMPORT_DATA
+}
