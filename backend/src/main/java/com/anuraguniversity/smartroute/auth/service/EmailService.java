@@ -34,6 +34,10 @@ public class EmailService {
             log.info("OTP email sent to {} for type {}", toEmail, type);
         } catch (MessagingException e) {
             log.error("Failed to send OTP email to {}: {}", toEmail, e.getMessage());
+        } catch (org.springframework.mail.MailException e) {
+            // SMTP transport unavailable (e.g. no local mail catcher running). Registration must
+            // still succeed; the actuator mail health check is disabled for this reason.
+            log.error("OTP email delivery unavailable for {}: {}", toEmail, e.getMessage());
         }
     }
 
@@ -52,6 +56,8 @@ public class EmailService {
             log.info("Welcome email sent to {}", toEmail);
         } catch (MessagingException e) {
             log.error("Failed to send welcome email to {}: {}", toEmail, e.getMessage());
+        } catch (org.springframework.mail.MailException e) {
+            log.error("Welcome email delivery unavailable for {}: {}", toEmail, e.getMessage());
         }
     }
 
@@ -70,6 +76,8 @@ public class EmailService {
             log.info("Password reset confirmation sent to {}", toEmail);
         } catch (MessagingException e) {
             log.error("Failed to send password reset confirmation to {}: {}", toEmail, e.getMessage());
+        } catch (org.springframework.mail.MailException e) {
+            log.error("Password reset confirmation delivery unavailable for {}: {}", toEmail, e.getMessage());
         }
     }
 

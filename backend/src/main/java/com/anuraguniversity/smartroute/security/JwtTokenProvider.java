@@ -30,13 +30,16 @@ public class JwtTokenProvider {
     public void init() {
         String secret = jwtProperties.getSecret();
         if (secret == null || secret.isBlank()) {
-            log.warn("JWT secret not configured, using default for development only!");
-            secret = "dev-secret-key-change-in-production-must-be-256-bits-minimum-length-32-chars";
+            throw new IllegalStateException(
+                "JWT secret is not configured. Set JWT_SECRET (at least 32 characters) in the environment "
+                    + "or in a local .env file - see .env.example.");
         }
-        if (secret.getBytes(StandardCharsets.UTF_8).length < 32) {
-            log.warn("JWT secret is less than 256 bits, this is insecure for production!");
+        byte[] secretBytes = secret.getBytes(StandardCharsets.UTF_8);
+        if (secretBytes.length < 32) {
+            throw new IllegalStateException(
+                "JWT secret must be at least 32 characters (256 bits) for HS256; got " + secretBytes.length + ".");
         }
-        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        this.key = Keys.hmacShaKeyFor(secretBytes);
     }
 
     public String generateToken(UUID userId, String role) {

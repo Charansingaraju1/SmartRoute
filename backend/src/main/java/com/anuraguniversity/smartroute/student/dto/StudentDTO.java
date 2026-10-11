@@ -8,9 +8,16 @@ import com.anuraguniversity.smartroute.transport.entity.BoardingPoint;
 import com.anuraguniversity.smartroute.transport.entity.StudentBusAssignment;
 import com.anuraguniversity.smartroute.notification.entity.Notification;
 import com.anuraguniversity.smartroute.auth.entity.User;
+import com.anuraguniversity.smartroute.sos.entity.SOSRequest;
+import com.anuraguniversity.smartroute.gps.entity.LocationRecord;
 import com.anuraguniversity.smartroute.common.enums.AssignmentStatus;
 import com.anuraguniversity.smartroute.common.enums.Direction;
 import com.anuraguniversity.smartroute.common.enums.NotificationType;
+import com.anuraguniversity.smartroute.common.enums.SOSCategory;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -318,6 +325,45 @@ public class StudentDTO {
         private Instant acknowledgedAt;
         private Instant resolvedAt;
         private String resolutionNotes;
+
+        public static SOSDTO from(SOSRequest sos) {
+            return SOSDTO.builder()
+                    .id(sos.getId())
+                    .studentId(sos.getStudent().getId())
+                    .category(sos.getCategory().name())
+                    .status(sos.getStatus().name())
+                    .description(sos.getDescription())
+                    .latitude(sos.getLatitude())
+                    .longitude(sos.getLongitude())
+                    .triggeredAt(sos.getTriggeredAt())
+                    .acknowledgedAt(sos.getAcknowledgedAt())
+                    .resolvedAt(sos.getResolvedAt())
+                    .resolutionNotes(sos.getResolutionNotes())
+                    .build();
+        }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CreateSOSRequest {
+        @NotNull
+        private SOSCategory category;
+
+        @Size(max = 500)
+        private String description;
+
+        @DecimalMin(value = "-90.0")
+        @DecimalMax(value = "90.0")
+        private BigDecimal latitude;
+
+        @DecimalMin(value = "-180.0")
+        @DecimalMax(value = "180.0")
+        private BigDecimal longitude;
+
+        @DecimalMin(value = "0.0")
+        private Double locationAccuracy;
     }
 
     @Data
@@ -364,9 +410,19 @@ public class StudentDTO {
         private String source;
 
         public static GPSDTO from(Student student) {
-            // This would typically come from the latest location record
             return GPSDTO.builder()
                     .studentId(student.getId())
+                    .build();
+        }
+
+        public static GPSDTO from(LocationRecord location) {
+            return GPSDTO.builder()
+                    .studentId(location.getStudent().getId())
+                    .latitude(location.getLatitude())
+                    .longitude(location.getLongitude())
+                    .accuracy(location.getAccuracy())
+                    .recordedAt(location.getRecordedAt())
+                    .source(location.getSource())
                     .build();
         }
     }

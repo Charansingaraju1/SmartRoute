@@ -5,18 +5,36 @@ import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
-import org.springframework.stereotype.Component;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
+/**
+ * Loads a local .env file (repo root or working directory) into the Spring Environment.
+ * Registered via META-INF/spring.factories - Spring Boot does not invoke initializers
+ * that are only declared as beans.
+ */
 public class DotEnvConfig implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
+        String userDir = System.getProperty("user.dir");
+        Path localEnv = Path.of(userDir, ".env");
+        Path parentEnv = Path.of(userDir).resolveSibling(".env");
+
+        String directory;
+        if (Files.exists(localEnv)) {
+            directory = userDir;
+        } else if (Files.exists(parentEnv) && parentEnv.getParent() != null) {
+            directory = parentEnv.getParent().toString();
+        } else {
+            directory = userDir;
+        }
+
         Dotenv dotenv = Dotenv.configure()
-            .directory(System.getProperty("user.dir") + "/..")
+            .directory(directory)
             .ignoreIfMissing()
             .load();
 

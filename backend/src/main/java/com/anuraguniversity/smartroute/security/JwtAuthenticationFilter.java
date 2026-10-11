@@ -17,7 +17,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.UUID;
 
 @Component
@@ -40,13 +39,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
                 UUID userId = jwtTokenProvider.getUserIdFromToken(jwt);
                 String role = jwtTokenProvider.getRoleFromToken(jwt);
-                
+
                 User user = userRepository.findById(userId).orElse(null);
-                
+
                 if (user != null && user.isActive() && user.isAccountNonLocked()) {
-                    UsernamePasswordAuthenticationToken authentication = 
+                    // ROLE_ prefix is required for hasRole(...) expressions in @PreAuthorize
+                    org.springframework.security.core.GrantedAuthority authority =
+                        new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_" + user.getRole().name());
+                    UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
-                            user, null, Collections.emptyList()
+                            user, null, java.util.List.of(authority)
                         );
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -11,6 +11,10 @@ import com.anuraguniversity.smartroute.common.enums.UserRole;
 import com.anuraguniversity.smartroute.common.exception.ResourceNotFoundException;
 import com.anuraguniversity.smartroute.config.SmartRouteProperties;
 import com.anuraguniversity.smartroute.security.JwtTokenProvider;
+import com.anuraguniversity.smartroute.student.entity.Student;
+import com.anuraguniversity.smartroute.student.repository.StudentRepository;
+import com.anuraguniversity.smartroute.teacher.entity.Teacher;
+import com.anuraguniversity.smartroute.teacher.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,6 +37,8 @@ public class AuthService {
     private final EmailService emailService;
     private final SmartRouteProperties properties;
     private final AuditService auditService;
+    private final StudentRepository studentRepository;
+    private final TeacherRepository teacherRepository;
 
     @Transactional
     public AuthResponse registerStudent(RegisterRequest request) {
@@ -51,9 +57,13 @@ public class AuthService {
 
         user = userRepository.save(user);
 
+        Student profile = new Student();
+        profile.setUser(user);
+        studentRepository.save(profile);
+
         sendOTP(user.getEmail(), OTPType.REGISTRATION);
 
-        auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.CREATE, 
+        auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.CREATE,
             "User", user.getId().toString(), user.getEmail(), null, null);
 
         return AuthResponse.builder()
@@ -80,9 +90,13 @@ public class AuthService {
 
         user = userRepository.save(user);
 
+        Teacher profile = new Teacher();
+        profile.setUser(user);
+        teacherRepository.save(profile);
+
         sendOTP(user.getEmail(), OTPType.REGISTRATION);
 
-        auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.CREATE, 
+        auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.CREATE,
             "User", user.getId().toString(), user.getEmail(), null, null);
 
         return AuthResponse.builder()

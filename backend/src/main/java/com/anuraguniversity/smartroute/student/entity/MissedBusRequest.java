@@ -22,7 +22,8 @@ import lombok.Setter;
     name = "missed_bus_requests",
     indexes = {
         @Index(name = "idx_missed_bus_student", columnList = "student_id"),
-        @Index(name = "idx_missed_bus_bus", columnList = "bus_id"),
+        @Index(name = "idx_missed_bus_original_bus", columnList = "original_bus_id"),
+        @Index(name = "idx_missed_bus_alternative_bus", columnList = "alternative_bus_id"),
         @Index(name = "idx_missed_bus_status", columnList = "status"),
         @Index(name = "idx_missed_bus_created_at", columnList = "created_at"),
         @Index(name = "idx_missed_bus_resolved_at", columnList = "resolved_at")

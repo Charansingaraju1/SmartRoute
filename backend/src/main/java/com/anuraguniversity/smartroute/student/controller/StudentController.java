@@ -6,15 +6,19 @@ import com.anuraguniversity.smartroute.common.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import com.anuraguniversity.smartroute.auth.entity.User;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/student")
+@PreAuthorize("hasRole('STUDENT')")
 @RequiredArgsConstructor
 public class StudentController {
 
@@ -67,6 +71,15 @@ public class StudentController {
         return ResponseEntity.ok(ApiResponse.success(sosRequests));
     }
 
+    @PostMapping("/sos")
+    public ResponseEntity<ApiResponse<StudentDTO.SOSDTO>> createSOSRequest(
+            @AuthenticationPrincipal User user,
+            @Valid @RequestBody StudentDTO.CreateSOSRequest request) {
+        StudentDTO.SOSDTO created = studentService.createSOSRequest(user.getId(), request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(created, "SOS request submitted"));
+    }
+
     @GetMapping("/bus-pass")
     public ResponseEntity<ApiResponse<StudentDTO.BusPassDTO>> getBusPass(@AuthenticationPrincipal User user) {
         StudentDTO.BusPassDTO busPass = studentService.getStudentBusPass(user.getId());
@@ -97,10 +110,10 @@ public class StudentController {
     }
 
     @PostMapping("/location")
-    public ResponseEntity<ApiResponse<Void>> updateLocation(
+    public ResponseEntity<ApiResponse<StudentDTO.GPSDTO>> updateLocation(
             @AuthenticationPrincipal User user,
             @RequestBody StudentDTO.LocationUpdateRequest request) {
-        studentService.updateStudentLocation(user.getId(), request);
-        return ResponseEntity.ok(ApiResponse.success(null, "Location updated"));
+        StudentDTO.GPSDTO location = studentService.updateStudentLocation(user.getId(), request);
+        return ResponseEntity.ok(ApiResponse.success(location, "Location recorded"));
     }
 }

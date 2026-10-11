@@ -14,6 +14,10 @@ import com.anuraguniversity.smartroute.notification.entity.Notification;
 import com.anuraguniversity.smartroute.common.enums.NotificationType;
 import com.anuraguniversity.smartroute.common.enums.NotificationChannel;
 import com.anuraguniversity.smartroute.notification.repository.NotificationRepository;
+import com.anuraguniversity.smartroute.sos.entity.SOSRequest;
+import com.anuraguniversity.smartroute.sos.repository.SOSRequestRepository;
+import com.anuraguniversity.smartroute.gps.entity.LocationRecord;
+import com.anuraguniversity.smartroute.gps.repository.LocationRecordRepository;
 import com.anuraguniversity.smartroute.transport.entity.Bus;
 import com.anuraguniversity.smartroute.transport.entity.BoardingPoint;
 import com.anuraguniversity.smartroute.transport.entity.Route;
@@ -51,6 +55,8 @@ public class StudentService {
     private final RouteRepository routeRepository;
     private final BoardingPointRepository boardingPointRepository;
     private final StudentBusAssignmentRepository studentBusAssignmentRepository;
+    private final SOSRequestRepository sosRequestRepository;
+    private final LocationRecordRepository locationRecordRepository;
 
     public StudentDTO getStudentProfile(UUID userId) {
         Student student = studentRepository.findByUserId(userId)
@@ -148,8 +154,34 @@ public class StudentService {
         Student student = studentRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Student profile not found"));
 
-        // This will be implemented when SOS service is ready
-        return List.of();
+        return sosRequestRepository.findByStudentIdOrderByTriggeredAtDesc(student.getId()).stream()
+                .map(StudentDTO.SOSDTO::from)
+                .toList();
+    }
+
+    @Transactional
+    public StudentDTO.SOSDTO createSOSRequest(UUID userId, StudentDTO.CreateSOSRequest request) {
+        Student student = studentRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Student profile not found"));
+
+        if ((request.getLatitude() == null) != (request.getLongitude() == null)) {
+            throw new IllegalArgumentException("Latitude and longitude must be provided together");
+        }
+        if (request.getLocationAccuracy() != null && !Double.isFinite(request.getLocationAccuracy())) {
+            throw new IllegalArgumentException("Location accuracy must be a finite number");
+        }
+
+        SOSRequest sos = new SOSRequest();
+        sos.setStudent(student);
+        sos.setCategory(request.getCategory());
+        sos.setDescription(request.getDescription());
+        sos.setLatitude(request.getLatitude());
+        sos.setLongitude(request.getLongitude());
+        sos.setLocationAccuracy(request.getLocationAccuracy());
+        sos.setLocationAt(request.getLatitude() != null ? Instant.now() : null);
+        sos.setTriggeredAt(Instant.now());
+
+        return StudentDTO.SOSDTO.from(sosRequestRepository.save(sos));
     }
 
     public StudentDTO.BusPassDTO getStudentBusPass(UUID userId) {
@@ -182,16 +214,48 @@ public class StudentService {
         Student student = studentRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Student profile not found"));
 
-        return StudentDTO.GPSDTO.from(student);
+        return locationRecordRepository.findLatestByStudent(student.getId())
+                .map(StudentDTO.GPSDTO::from)
+                .orElseGet(() -> StudentDTO.GPSDTO.from(student));
     }
 
     @Transactional
-    public void updateStudentLocation(UUID userId, StudentDTO.LocationUpdateRequest request) {
+    public StudentDTO.GPSDTO updateStudentLocation(UUID userId, StudentDTO.LocationUpdateRequest request) {
         Student student = studentRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Student profile not found"));
 
-        // Location updates are stored in location_records table via separate GPS service
-        // This is a placeholder for future GPS integration
+        validateLocation(request);
+
+        LocationRecord location = LocationRecord.fromStudent(
+                student, request.getLatitude(), request.getLongitude(), request.getAccuracy(), "BROWSER");
+        location.setAltitude(request.getAltitude());
+        location.setSpeed(request.getSpeed());
+        location.setHeading(request.getHeading());
+        return StudentDTO.GPSDTO.from(locationRecordRepository.save(location));
+    }
+
+    private void validateLocation(StudentDTO.LocationUpdateRequest request) {
+        if (request.getLatitude() == null || request.getLongitude() == null) {
+            throw new IllegalArgumentException("Latitude and longitude are required");
+        }
+        if (request.getLatitude().compareTo(java.math.BigDecimal.valueOf(-90)) < 0
+                || request.getLatitude().compareTo(java.math.BigDecimal.valueOf(90)) > 0
+                || request.getLongitude().compareTo(java.math.BigDecimal.valueOf(-180)) < 0
+                || request.getLongitude().compareTo(java.math.BigDecimal.valueOf(180)) > 0) {
+            throw new IllegalArgumentException("Location coordinates are out of range");
+        }
+        if (!isFiniteNonNegative(request.getAccuracy()) || !isFinite(request.getAltitude())
+                || !isFiniteNonNegative(request.getSpeed()) || !isFinite(request.getHeading())) {
+            throw new IllegalArgumentException("Location metadata contains an invalid value");
+        }
+    }
+
+    private boolean isFinite(Double value) {
+        return value == null || Double.isFinite(value);
+    }
+
+    private boolean isFiniteNonNegative(Double value) {
+        return value == null || (Double.isFinite(value) && value >= 0);
     }
 
     private void createNotification(UUID recipientId, String title, String message, NotificationType type, UUID relatedEntityId) {

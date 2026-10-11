@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -122,6 +123,21 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleAccessDenied(
             AccessDeniedException ex, HttpServletRequest request) {
         log.warn("Access denied: {} {}", request.getMethod(), request.getRequestURI());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ErrorResponse.builder()
+            .timestamp(Instant.now())
+            .status(HttpStatus.FORBIDDEN.value())
+            .error("Forbidden")
+            .message("You do not have permission to access this resource")
+            .path(request.getRequestURI())
+            .build());
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAuthorizationDenied(
+            AuthorizationDeniedException ex, HttpServletRequest request) {
+        // Method-security (@PreAuthorize) denials land here; they must be 403, not 500.
+        log.warn("Authorization denied: {} {}", request.getMethod(), request.getRequestURI());
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ErrorResponse.builder()
             .timestamp(Instant.now())

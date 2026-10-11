@@ -42,6 +42,9 @@ logs/
 *.sqlite
 *.db
 
+# Flyway migration scripts must be version controlled
+!backend/src/main/resources/db/migration/*.sql
+
 # Test / coverage
 coverage/
 .nyc_output/
