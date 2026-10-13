@@ -53,5 +53,12 @@ class FlywayMigrationScriptsTest {
             assertTrue(v4Content.contains("bus_pass_records MODIFY COLUMN valid_from DATE NOT NULL"), "V4 must align valid_from to DATE");
             assertTrue(v4Content.contains("push_subscription_id_bin BINARY(16)"), "V4 must convert push_subscription_id to BINARY(16)");
         }
+
+        try (InputStream v5Stream = getClass().getResourceAsStream("/db/migration/V5__convert_transport_disruptions_dates.sql")) {
+            assertNotNull(v5Stream, "V5__convert_transport_disruptions_dates.sql must exist on classpath");
+            String v5Content = new String(v5Stream.readAllBytes(), StandardCharsets.UTF_8);
+            assertTrue(v5Content.contains("transport_disruptions MODIFY COLUMN start_date DATE NOT NULL"), "V5 must align start_date to DATE NOT NULL");
+            assertTrue(v5Content.contains("transport_disruptions MODIFY COLUMN end_date DATE NULL"), "V5 must align end_date to DATE NULL");
+        }
     }
 }
