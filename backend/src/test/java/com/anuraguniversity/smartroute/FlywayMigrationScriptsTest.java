@@ -31,5 +31,14 @@ class FlywayMigrationScriptsTest {
             assertTrue(v2Content.contains("duration_ms        BIGINT"), "V2 must match AuditLog.durationMs (BIGINT)");
             assertTrue(v2Content.contains("correlation_id     BINARY(16)"), "V2 must match AuditLog.correlationId (BINARY(16))");
         }
+
+        try (InputStream v3Stream = getClass().getResourceAsStream("/db/migration/V3__convert_audit_logs_correlation_id_to_binary.sql")) {
+            assertNotNull(v3Stream, "V3__convert_audit_logs_correlation_id_to_binary.sql must exist on classpath");
+            String v3Content = new String(v3Stream.readAllBytes(), StandardCharsets.UTF_8);
+            assertTrue(v3Content.contains("correlation_id_bin BINARY(16)"), "V3 must define binary conversion column");
+            assertTrue(v3Content.contains("UNHEX(TRIM(REPLACE(correlation_id, '-', '')))"), "V3 must convert UUID string to binary");
+            assertTrue(v3Content.contains("CHANGE COLUMN correlation_id_bin correlation_id BINARY(16)"), "V3 must rename binary column to correlation_id");
+            assertTrue(v3Content.contains("MODIFY COLUMN duration_ms BIGINT"), "V3 must ensure duration_ms is BIGINT");
+        }
     }
 }
