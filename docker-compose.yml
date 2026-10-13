@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # ----------------------------------------------------------------------------
+  # Local MySQL 8.0 Database Service
+  # ----------------------------------------------------------------------------
+  mysql:
+    image: mysql:8.0
+    container_name: smartroute-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: smartroute
+      MYSQL_USER: smartroute
+      MYSQL_PASSWORD: smartroute_dev_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "smartroute", "-psmartroute_dev_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - smartroute-network
+
+  # ----------------------------------------------------------------------------
+  # SmartRoute Spring Boot Backend Service
+  # ----------------------------------------------------------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: smartroute-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      PORT: 8080
+      DB_URL: jdbc:mysql://mysql:3306/smartroute?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      DB_USERNAME: smartroute
+      DB_PASSWORD: smartroute_dev_password
+      JWT_SECRET: dev-secret-key-must-be-at-least-32-characters-long-for-hmac-sha256
+      CORS_ALLOWED_ORIGINS: http://localhost:5173,http://127.0.0.1:5173,https://smart-route-jet.vercel.app
+      REQUIRE_EMAIL_VERIFICATION: "false"
+    ports:
+      - "8080:8080"
+    networks:
+      - smartroute-network
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  smartroute-network:
+    driver: bridge

@@ -2,6 +2,8 @@ package com.anuraguniversity.smartroute.transport;
 
 import com.anuraguniversity.smartroute.transport.dto.ImportResult;
 import com.anuraguniversity.smartroute.transport.entity.Bus;
+import com.anuraguniversity.smartroute.transport.entity.Route;
+import com.anuraguniversity.smartroute.transport.entity.Zone;
 import com.anuraguniversity.smartroute.transport.repository.BoardingPointRepository;
 import com.anuraguniversity.smartroute.transport.repository.BusRepository;
 import com.anuraguniversity.smartroute.transport.repository.RouteRepository;
@@ -66,5 +68,35 @@ class TransportWorkbookImporterTest {
             }
             return true;
         }));
+    }
+
+    @Test
+    void importWorkbook_ShouldParseAndBatchSaveRoutesAndStops() {
+        when(zoneRepository.save(any(Zone.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(busRepository.save(any(Bus.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(routeRepository.save(any(Route.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        ImportResult result = importer.importWorkbook();
+
+        assertNotNull(result);
+        assertTrue(result.getRowsTransformed() > 0);
+        verify(routeRepository, atLeast(60)).save(any(Route.class));
+        verify(boardingPointRepository, atLeast(60)).saveAll(any());
+    }
+
+    @Test
+    void importWorkbook_ShouldHandleRouteFailureGracefullyWithoutAbortingOtherRoutes() {
+        when(zoneRepository.save(any(Zone.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(busRepository.save(any(Bus.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(routeRepository.save(any(Route.class)))
+                .thenThrow(new RuntimeException("Simulated socket closed error"))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        ImportResult result = importer.importWorkbook();
+
+        assertNotNull(result);
+        assertTrue(result.getRowsRejected() >= 1);
+        assertTrue(result.getRowsTransformed() > 0);
+        assertTrue(result.getErrors().stream().anyMatch(e -> e.contains("Simulated socket closed error")));
     }
 }

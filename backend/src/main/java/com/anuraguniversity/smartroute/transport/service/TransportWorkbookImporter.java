@@ -102,6 +102,8 @@ public class TransportWorkbookImporter {
     private void importFromJson(Resource resource, ImportResult result) {
         try (InputStream is = resource.getInputStream()) {
             JsonNode root = objectMapper.readTree(is);
+            Map<String, Zone> zoneMap = new HashMap<>();
+            Map<String, Bus> busMap = new HashMap<>();
 
             // 1. Zones
             if (root.has("zones")) {
@@ -111,20 +113,32 @@ public class TransportWorkbookImporter {
                     String desc = zNode.path("description").asText("Zone imported from AU Transport document");
                     int order = zNode.path("displayOrder").asInt(1);
 
-                    Zone zone = zoneRepository.findByCode(code).orElseGet(() ->
-                        zoneRepository.findByName(name).orElse(null)
-                    );
+                    try {
+                        Zone zone = zoneRepository.findByCode(code).orElseGet(() ->
+                            zoneRepository.findByName(name).orElse(null)
+                        );
 
-                    if (zone == null) {
-                        zone = Zone.create(name, code, desc, order);
-                        zone = zoneRepository.save(zone);
-                        result.incrementZoneCount();
-                    } else {
-                        zone.setName(name);
-                        zone.setDescription(desc);
-                        zone.setDisplayOrder(order);
-                        zone.setActive(true);
-                        zoneRepository.save(zone);
+                        if (zone == null) {
+                            zone = Zone.create(name, code, desc, order);
+                            zone = zoneRepository.save(zone);
+                            result.incrementZoneCount();
+                        } else {
+                            zone.setName(name);
+                            zone.setDescription(desc);
+                            zone.setDisplayOrder(order);
+                            zone.setActive(true);
+                            zone = zoneRepository.save(zone);
+                        }
+                        if (zone != null) {
+                            zoneMap.put(code, zone);
+                            if (StringUtils.hasText(name)) {
+                                zoneMap.put(name, zone);
+                            }
+                        }
+                    } catch (Exception e) {
+                        log.error("Failed to import zone {} ({}): {}", name, code, e.getMessage());
+                        result.addError("Zone " + code + " import failed: " + e.getMessage());
+                        result.incrementRejected();
                     }
                 }
             }
@@ -153,14 +167,17 @@ public class TransportWorkbookImporter {
                             bus.setDriverPhone(phone);
                             bus.setActive(true);
                             bus.setCurrentStudentsCount(0);
-                            busRepository.save(bus);
+                            bus = busRepository.save(bus);
                             result.incrementUniqueBusCount();
                         } else {
                             bus.setBusNumber(busNum);
                             if (driver != null) bus.setDriverName(driver);
                             if (phone != null) bus.setDriverPhone(phone);
                             bus.setActive(true);
-                            busRepository.save(bus);
+                            bus = busRepository.save(bus);
+                        }
+                        if (bus != null) {
+                            busMap.put(reg, bus);
                         }
                     } catch (Exception e) {
                         log.error("Failed to import bus {} (driver={}, phone={}): {}", reg, driver, phone, e.getMessage());
@@ -173,66 +190,86 @@ public class TransportWorkbookImporter {
             // 3. Routes & Boarding Points
             if (root.has("routes")) {
                 for (JsonNode rNode : root.get("routes")) {
-                    String zoneCode = rNode.path("zoneCode").asText();
-                    String busReg = rNode.path("busRegistration").asText();
                     String routeCode = rNode.path("routeCode").asText();
-                    String routeName = rNode.path("routeName").asText();
-                    String startingPoint = rNode.path("startingPoint").asText();
-                    String startingTimeStr = rNode.path("startingTime").asText();
-                    String endingPoint = rNode.path("endingPoint").asText();
-                    String endingTimeStr = rNode.path("endingTime").asText();
-                    int displayOrder = rNode.path("displayOrder").asInt(1);
-                    BigDecimal fee = rNode.has("feeAmount") && !rNode.get("feeAmount").isNull()
-                        ? BigDecimal.valueOf(rNode.get("feeAmount").asDouble()) : null;
+                    try {
+                        String zoneCode = rNode.path("zoneCode").asText();
+                        String busReg = rNode.path("busRegistration").asText();
+                        String routeName = rNode.path("routeName").asText();
+                        String startingPoint = rNode.path("startingPoint").asText();
+                        String startingTimeStr = rNode.path("startingTime").asText();
+                        String endingPoint = rNode.path("endingPoint").asText();
+                        String endingTimeStr = rNode.path("endingTime").asText();
+                        int displayOrder = rNode.path("displayOrder").asInt(1);
+                        BigDecimal fee = rNode.has("feeAmount") && !rNode.get("feeAmount").isNull()
+                            ? BigDecimal.valueOf(rNode.get("feeAmount").asDouble()) : null;
 
-                    Zone zone = zoneRepository.findByCode(zoneCode).orElse(null);
-                    if (zone == null) continue;
-
-                    Bus bus = busRepository.findByRegistrationNumber(busReg).orElse(null);
-
-                    Route route = routeRepository.findByRouteCodeAndZoneIdAndDirection(
-                        routeCode, zone.getId(), com.anuraguniversity.smartroute.common.enums.Direction.MORNING
-                    ).orElse(null);
-
-                    if (route == null) {
-                        route = Route.create(zone, routeCode, routeName, com.anuraguniversity.smartroute.common.enums.Direction.MORNING, displayOrder);
-                        result.incrementRouteAssignmentCount();
-                    } else {
-                        route.setRouteName(routeName);
-                        route.setDisplayOrder(displayOrder);
-                    }
-
-                    route.setStartingPoint(startingPoint);
-                    route.setStartingTime(parseTime(startingTimeStr));
-                    route.setEndingPoint(endingPoint);
-                    route.setEndingTime(parseTime(endingTimeStr));
-                    route.setFeeAmount(fee);
-                    route.setActive(true);
-                    if (bus != null) {
-                        route.setBus(bus);
-                    }
-                    route = routeRepository.save(route);
-
-                    if (rNode.has("stops")) {
-                        for (JsonNode sNode : rNode.get("stops")) {
-                            int order = sNode.path("order").asInt();
-                            String stopName = sNode.path("name").asText();
-                            String stopTimeStr = sNode.path("time").asText();
-
-                            BoardingPoint bp = boardingPointRepository.findByRouteIdAndStopOrder(route.getId(), order).orElse(null);
-                            if (bp == null) {
-                                bp = BoardingPoint.create(route, stopName, null, order, parseTime(stopTimeStr), null, null, null);
-                                result.incrementBoardingStopCount();
-                            } else {
-                                bp.setStopName(stopName);
-                                bp.setStopTime(parseTime(stopTimeStr));
-                                bp.setActive(true);
-                            }
-                            boardingPointRepository.save(bp);
+                        Zone zone = zoneMap.get(zoneCode);
+                        if (zone == null) {
+                            zone = zoneRepository.findByCode(zoneCode).orElse(null);
                         }
-                    }
+                        if (zone == null) {
+                            log.warn("Skipping route {}: zone {} not found", routeCode, zoneCode);
+                            result.incrementSkipped();
+                            continue;
+                        }
 
-                    result.incrementTransformed();
+                        Bus bus = busMap.get(busReg);
+                        if (bus == null && StringUtils.hasText(busReg)) {
+                            bus = busRepository.findByRegistrationNumber(busReg).orElse(null);
+                        }
+
+                        Route route = routeRepository.findByRouteCodeAndZoneIdAndDirection(
+                            routeCode, zone.getId(), com.anuraguniversity.smartroute.common.enums.Direction.MORNING
+                        ).orElse(null);
+
+                        if (route == null) {
+                            route = Route.create(zone, routeCode, routeName, com.anuraguniversity.smartroute.common.enums.Direction.MORNING, displayOrder);
+                            result.incrementRouteAssignmentCount();
+                        } else {
+                            route.setRouteName(routeName);
+                            route.setDisplayOrder(displayOrder);
+                        }
+
+                        route.setStartingPoint(startingPoint);
+                        route.setStartingTime(parseTime(startingTimeStr));
+                        route.setEndingPoint(endingPoint);
+                        route.setEndingTime(parseTime(endingTimeStr));
+                        route.setFeeAmount(fee);
+                        route.setActive(true);
+                        if (bus != null) {
+                            route.setBus(bus);
+                        }
+                        route = routeRepository.save(route);
+
+                        if (rNode.has("stops")) {
+                            List<BoardingPoint> stopsToSave = new ArrayList<>();
+                            for (JsonNode sNode : rNode.get("stops")) {
+                                int order = sNode.path("order").asInt();
+                                String stopName = sNode.path("name").asText();
+                                String stopTimeStr = sNode.path("time").asText();
+
+                                BoardingPoint bp = boardingPointRepository.findByRouteIdAndStopOrder(route.getId(), order).orElse(null);
+                                if (bp == null) {
+                                    bp = BoardingPoint.create(route, stopName, null, order, parseTime(stopTimeStr), null, null, null);
+                                    result.incrementBoardingStopCount();
+                                } else {
+                                    bp.setStopName(stopName);
+                                    bp.setStopTime(parseTime(stopTimeStr));
+                                    bp.setActive(true);
+                                }
+                                stopsToSave.add(bp);
+                            }
+                            if (!stopsToSave.isEmpty()) {
+                                boardingPointRepository.saveAll(stopsToSave);
+                            }
+                        }
+
+                        result.incrementTransformed();
+                    } catch (Exception e) {
+                        log.error("Failed to import route {}: {}", routeCode, e.getMessage());
+                        result.addError("Route " + routeCode + " import failed: " + e.getMessage());
+                        result.incrementRejected();
+                    }
                 }
             }
         } catch (Exception e) {
