@@ -40,5 +40,18 @@ class FlywayMigrationScriptsTest {
             assertTrue(v3Content.contains("CHANGE COLUMN correlation_id_bin correlation_id BINARY(16)"), "V3 must rename binary column to correlation_id");
             assertTrue(v3Content.contains("MODIFY COLUMN duration_ms BIGINT"), "V3 must ensure duration_ms is BIGINT");
         }
+
+        try (InputStream v4Stream = getClass().getResourceAsStream("/db/migration/V4__align_schema_with_jpa_entities.sql")) {
+            assertNotNull(v4Stream, "V4__align_schema_with_jpa_entities.sql must exist on classpath");
+            String v4Content = new String(v4Stream.readAllBytes(), StandardCharsets.UTF_8);
+            assertTrue(v4Content.contains("boarding_points MODIFY COLUMN stop_time TIME"), "V4 must align stop_time to TIME");
+            assertTrue(v4Content.contains("routes MODIFY COLUMN starting_time TIME"), "V4 must align starting_time to TIME");
+            assertTrue(v4Content.contains("routes MODIFY COLUMN ending_time TIME"), "V4 must align ending_time to TIME");
+            assertTrue(v4Content.contains("students MODIFY COLUMN pickup_time TIME"), "V4 must align pickup_time to TIME");
+            assertTrue(v4Content.contains("delays MODIFY COLUMN expected_arrival_time TIME"), "V4 must align expected_arrival_time to TIME");
+            assertTrue(v4Content.contains("delay_alerts MODIFY COLUMN alert_time TIME NOT NULL"), "V4 must align alert_time to TIME");
+            assertTrue(v4Content.contains("bus_pass_records MODIFY COLUMN valid_from DATE NOT NULL"), "V4 must align valid_from to DATE");
+            assertTrue(v4Content.contains("push_subscription_id_bin BINARY(16)"), "V4 must convert push_subscription_id to BINARY(16)");
+        }
     }
 }
