@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: ${PORT:8080}
   servlet:
     context-path: /api
   error:
@@ -56,10 +56,11 @@ spring:
           auth: true
           starttls:
             enable: true
+            required: true
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
-    from: ${MAIL_FROM:noreply@anuraguniversity.edu.in}
+    from: ${MAIL_FROM:${MAIL_USERNAME:noreply@anuraguniversity.edu.in}}
 
   servlet:
     multipart:
@@ -119,12 +120,23 @@ springdoc:
   packages-to-scan: com.anuraguniversity.smartroute
 
 smartroute:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173}
+
   jwt:
     secret: ${JWT_SECRET:}
     expiration: 86400000
     refresh-expiration: 604800000
 
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    from: ${MAIL_FROM:${MAIL_USERNAME:noreply@anuraguniversity.edu.in}}
+
   otp:
+    require-email-verification: ${REQUIRE_EMAIL_VERIFICATION:false}
     length: 6
     expiration-minutes: 10
     max-attempts: 3
@@ -164,6 +176,10 @@ smartroute:
     model: ${LLM_MODEL:gpt-4}
     endpoint: ${LLM_ENDPOINT:}
 
+  oauth:
+    google:
+      client-id: ${GOOGLE_CLIENT_ID:}
+
 logging:
   level:
     com.anuraguniversity.smartroute: DEBUG
@@ -193,16 +209,24 @@ spring:
     hibernate:
       ddl-auto: update
   mail:
-    host: localhost
-    port: 1025
-    username: ""
-    password: ""
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
     properties:
       mail:
         smtp:
-          auth: false
+          auth: true
           starttls:
-            enable: false
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+smartroute:
+  otp:
+    require-email-verification: ${REQUIRE_EMAIL_VERIFICATION:false}
 
 ---
 spring:

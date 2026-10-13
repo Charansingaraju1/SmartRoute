@@ -21,6 +21,12 @@ public interface SOSRequestRepository extends JpaRepository<SOSRequest, java.uti
 
     List<SOSRequest> findByStatus(SOSStatus status);
 
+    // Used by TeacherService to scope SOS to a teacher's assigned students
+    Page<SOSRequest> findByStudentIdIn(java.util.List<java.util.UUID> studentIds, Pageable pageable);
+
+    // Used by TeacherService for teachers with no bus assignment: show only unresolved OPEN emergencies
+    Page<SOSRequest> findByStatusIn(java.util.List<SOSStatus> statuses, Pageable pageable);
+
     List<SOSRequest> findByCategory(com.anuraguniversity.smartroute.common.enums.SOSCategory category);
 
     @Query("SELECT s FROM SOSRequest s WHERE s.status IN ('OPEN', 'ACKNOWLEDGED', 'RESPONDING')")

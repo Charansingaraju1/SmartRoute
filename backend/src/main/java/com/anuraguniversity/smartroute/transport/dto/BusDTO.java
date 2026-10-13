@@ -35,6 +35,8 @@ public class BusDTO {
     private Instant lastLocationAt;
     private Integer currentStudentsCount;
     private Integer availableCapacity;
+    private Boolean verified;
+    private RouteSummary assignedRoute;
     private Instant createdAt;
     private Instant updatedAt;
 

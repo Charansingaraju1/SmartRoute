@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Bus, MapPin, Clock, Shield, Users, GraduationCap, ArrowRight, CheckCircle, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/services/api';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -47,21 +49,49 @@ const stats = [
 ];
 
 export function HomePage() {
+  const { data: liveStats } = useQuery({
+    queryKey: ['public-transit-stats'],
+    queryFn: async () => {
+      const [zones, buses, routes] = await Promise.all([
+        api.getZones().catch(() => []),
+        api.getBuses().catch(() => []),
+        api.getRoutes().catch(() => []),
+      ]);
+      const zoneCount = Array.isArray(zones) && zones.length > 0 ? zones.length : 4;
+      const busCount = Array.isArray(buses) && buses.length > 0 ? buses.length : 6;
+      const routeCount = Array.isArray(routes) && routes.length > 0 ? routes.length : 6;
+      return [
+        { value: `${zoneCount}`, label: 'Transit Zones', icon: MapPin },
+        { value: `${busCount}`, label: 'Registered Buses', icon: Bus },
+        { value: '15+', label: 'Boarding Points', icon: MapPin },
+        { value: `${routeCount}`, label: 'Active Routes', icon: Clock },
+      ];
+    },
+    staleTime: 1000 * 60 * 10,
+  });
+
+  const displayStats = liveStats || [
+    { value: '4', label: 'Transit Zones', icon: MapPin },
+    { value: '6', label: 'Registered Buses', icon: Bus },
+    { value: '15+', label: 'Boarding Points', icon: MapPin },
+    { value: '6', label: 'Active Routes', icon: Clock },
+  ];
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-stone-50 to-stone-100 py-20 lg:py-32">
+      <section className="relative overflow-hidden bg-gradient-to-b from-stone-50 to-stone-100 dark:from-[#121214] dark:to-[#18181B] py-20 lg:py-32">
         <div className="container-app">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-terracotta-50 text-terracotta-700 text-sm font-medium mb-6 animate-fade-in">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-terracotta-50 dark:bg-terracotta-950/40 text-terracotta-700 dark:text-terracotta-300 text-sm font-medium mb-6 animate-fade-in border border-terracotta-200/50 dark:border-terracotta-800/50">
               <Sparkles className="h-4 w-4" />
               <span>Anurag University Official Transport Portal</span>
             </div>
-            <h1 className="font-heading text-4xl lg:text-6xl font-bold text-charcoal-500 tracking-tight mb-6 animate-slide-up">
+            <h1 className="font-heading text-4xl lg:text-6xl font-bold text-charcoal-500 dark:text-[#F4F4F6] tracking-tight mb-6 animate-slide-up">
               Intelligent University{' '}
               <span className="text-terracotta-500">Transportation</span>
             </h1>
-            <p className="text-lg lg:text-xl text-stone-600 mb-10 max-w-2xl mx-auto animate-slide-up" style={{ animationDelay: '100ms' }}>
+            <p className="text-lg lg:text-xl text-stone-600 dark:text-stone-400 mb-10 max-w-2xl mx-auto animate-slide-up" style={{ animationDelay: '100ms' }}>
               Real-time bus tracking, optimized routes, digital bus passes, and safety features — 
               all in one platform designed for Anurag University students and staff.
             </p>
@@ -76,6 +106,11 @@ export function HomePage() {
                   Teacher Registration
                 </Button>
               </Link>
+              <Link to="/scan">
+                <Button variant="outline" size="lg" className="border-terracotta-500 text-terracotta-600 hover:bg-terracotta-50 dark:text-terracotta-400 dark:border-terracotta-700 dark:hover:bg-terracotta-950/40">
+                  Scan Bus QR
+                </Button>
+              </Link>
               <Link to="/login">
                 <Button variant="ghost" size="lg">
                   Sign In
@@ -86,13 +121,13 @@ export function HomePage() {
 
           {/* Stats Bar */}
           <div className="mt-16 grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 animate-fade-in" style={{ animationDelay: '300ms' }}>
-            {stats.map((stat, index) => (
-              <div key={stat.label} className="text-center p-6 bg-stone-50/50 rounded-xl border border-stone-200/50 backdrop-blur-sm">
+            {displayStats.map((stat) => (
+              <div key={stat.label} className="text-center p-6 bg-stone-50/50 dark:bg-[#182235]/60 rounded-xl border border-stone-200/50 dark:border-slate-800 backdrop-blur-sm shadow-sm">
                 <div className="flex items-center justify-center gap-2 mb-3">
                   <stat.icon className="h-6 w-6 text-terracotta-500" />
                 </div>
-                <div className="font-heading text-3xl lg:text-4xl font-bold text-charcoal-500">{stat.value}</div>
-                <div className="text-sm text-stone-600 mt-1">{stat.label}</div>
+                <div className="font-heading text-3xl lg:text-4xl font-bold text-charcoal-500 dark:text-[#F1F5F9]">{stat.value}</div>
+                <div className="text-sm text-stone-600 dark:text-[#A7B3C7] mt-1">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -100,14 +135,14 @@ export function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 lg:py-28 bg-stone-50">
+      <section className="py-20 lg:py-28 bg-stone-50 dark:bg-[#121214]">
         <div className="container-app">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-charcoal-500 mb-4">
+            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-charcoal-500 dark:text-[#F4F4F6] mb-4">
               Everything You Need for{' '}
               <span className="text-terracotta-500">Seamless Commute</span>
             </h2>
-            <p className="text-lg text-stone-600">
+            <p className="text-lg text-stone-600 dark:text-stone-400">
               Comprehensive features built for the real transportation needs of Anurag University.
             </p>
           </div>
@@ -115,11 +150,11 @@ export function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => (
               <Card key={feature.title} className="h-full animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
-                <div className="w-12 h-12 rounded-xl bg-terracotta-100 flex items-center justify-center mb-4">
-                  <feature.icon className="h-6 w-6 text-terracotta-600" />
+                <div className="w-12 h-12 rounded-xl bg-terracotta-100 dark:bg-terracotta-900/60 flex items-center justify-center mb-4">
+                  <feature.icon className="h-6 w-6 text-terracotta-600 dark:text-terracotta-300" />
                 </div>
-                <h3 className="font-heading text-xl font-semibold text-charcoal-500 mb-2">{feature.title}</h3>
-                <p className="text-stone-600 leading-relaxed">{feature.description}</p>
+                <h3 className="font-heading text-xl font-semibold text-charcoal-500 dark:text-[#F4F4F6] mb-2">{feature.title}</h3>
+                <p className="text-stone-600 dark:text-stone-400 leading-relaxed">{feature.description}</p>
               </Card>
             ))}
           </div>
@@ -172,9 +207,9 @@ export function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 lg:py-28 bg-stone-50">
+      <section className="py-20 lg:py-28 bg-stone-50 dark:bg-[#121214]">
         <div className="container-app">
-          <Card className="max-w-3xl mx-auto bg-gradient-to-r from-charcoal-500 to-charcoal-400 text-stone-50">
+          <Card className="max-w-3xl mx-auto bg-charcoal-500 text-stone-50">
             <div className="text-center">
               <h2 className="font-heading text-3xl lg:text-4xl font-bold mb-4">
                 Ready to Transform Your Commute?
@@ -189,7 +224,7 @@ export function HomePage() {
                   </Button>
                 </Link>
                 <Link to="/register/teacher">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto border-stone-300 text-stone-50 hover:bg-stone-100">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto border-stone-300 text-stone-50 hover:bg-stone-100 hover:text-stone-900">
                     Register as Teacher
                   </Button>
                 </Link>

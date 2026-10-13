@@ -19,9 +19,11 @@ import com.anuraguniversity.smartroute.auth.entity.User;
 import com.anuraguniversity.smartroute.auth.repository.UserRepository;
 import com.anuraguniversity.smartroute.transport.entity.Bus;
 import com.anuraguniversity.smartroute.transport.entity.Route;
+import com.anuraguniversity.smartroute.transport.entity.BoardingPoint;
 import com.anuraguniversity.smartroute.transport.entity.StudentBusAssignment;
 import com.anuraguniversity.smartroute.transport.repository.BusRepository;
 import com.anuraguniversity.smartroute.transport.repository.RouteRepository;
+import com.anuraguniversity.smartroute.transport.repository.BoardingPointRepository;
 import com.anuraguniversity.smartroute.transport.repository.StudentBusAssignmentRepository;
 import com.anuraguniversity.smartroute.common.enums.AssignmentStatus;
 import com.anuraguniversity.smartroute.common.enums.DelayStatus;
@@ -63,6 +65,7 @@ public class TeacherService {
     private final SOSRequestRepository sosRequestRepository;
     private final BusRepository busRepository;
     private final RouteRepository routeRepository;
+    private final BoardingPointRepository boardingPointRepository;
     private final StudentBusAssignmentRepository studentBusAssignmentRepository;
     private final NotificationRepository notificationRepository;
 
@@ -72,23 +75,47 @@ public class TeacherService {
         return TeacherDTO.from(teacher);
     }
 
+    @Transactional(readOnly = true)
     public List<TeacherDTO.BusInfo> getTeacherBuses(UUID userId) {
         Teacher teacher = teacherRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Teacher profile not found"));
 
         List<TeacherBusAssignment> assignments = teacherBusAssignmentRepository.findByTeacherId(teacher.getId());
-        return assignments.stream()
-                .map(a -> TeacherDTO.BusInfo.from(a.getBus(), a.getIsPrimary(), a.getCanPublishLocation(), 
-                        a.getCanPublishDelays(), a.getCanPublishDisruptions()))
+        if (!assignments.isEmpty()) {
+            return assignments.stream()
+                    .map(a -> {
+                        Route r = routeRepository.findFirstByBusIdAndActiveTrue(a.getBus().getId()).orElse(null);
+                        return TeacherDTO.BusInfo.from(a.getBus(), r, a.getIsPrimary(), a.getCanPublishLocation(),
+                                a.getCanPublishDelays(), a.getCanPublishDisruptions());
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        if (teacher.getAssignedBus() != null) {
+            Route r = routeRepository.findFirstByBusIdAndActiveTrue(teacher.getAssignedBus().getId()).orElse(null);
+            return List.of(TeacherDTO.BusInfo.from(teacher.getAssignedBus(), r, true,
+                    teacher.getCanPublishLocation(), teacher.getCanPublishDelays(), teacher.getCanPublishDisruptions()));
+        }
+
+        List<Bus> allBuses = busRepository.findAll();
+        return allBuses.stream()
+                .map(b -> {
+                    Route r = routeRepository.findFirstByBusIdAndActiveTrue(b.getId()).orElse(null);
+                    return TeacherDTO.BusInfo.from(b, r, false, false, false, false);
+                })
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<TeacherDTO.PassengerInfo> getBusStudents(UUID userId, UUID busId) {
         Teacher teacher = teacherRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Teacher profile not found"));
 
         // Verify teacher has access to this bus
         boolean hasAccess = teacherBusAssignmentRepository.existsByTeacherIdAndBusId(teacher.getId(), busId);
+        if (teacher.getAssignedBus() != null && teacher.getAssignedBus().getId().equals(busId)) {
+            hasAccess = true;
+        }
         if (!hasAccess && !teacher.getCanManageAssignments()) {
             throw new ResourceNotFoundException("Access denied to this bus");
         }
@@ -104,11 +131,11 @@ public class TeacherService {
                 .orElseThrow(() -> new ResourceNotFoundException("Teacher profile not found"));
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("requestedAt").descending());
-        
+
         // Get buses assigned to this teacher
         List<UUID> busIds = teacherBusAssignmentRepository.findByTeacherId(teacher.getId())
                 .stream().map(a -> a.getBus().getId()).collect(Collectors.toList());
-        
+
         if (busIds.isEmpty()) {
             return Page.empty(pageable);
         }
@@ -153,6 +180,11 @@ public class TeacherService {
 
     @Transactional
     public TeacherDTO.MissedBusDTO assignAlternativeBus(UUID userId, UUID requestId, UUID alternativeBusId) {
+        return assignAlternativeBus(userId, requestId, alternativeBusId, null);
+    }
+
+    @Transactional
+    public TeacherDTO.MissedBusDTO assignAlternativeBus(UUID userId, UUID requestId, UUID alternativeBusId, String notes) {
         Teacher teacher = teacherRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Teacher profile not found"));
 
@@ -178,6 +210,9 @@ public class TeacherService {
         request.setAlternativeBus(alternativeBus);
         request.setStatus(MissedBusStatus.ALTERNATIVE_BUS_ASSIGNED);
         request.setAlternativeAssignedAt(Instant.now());
+        if (notes != null && !notes.trim().isEmpty()) {
+            request.setTeacherNotes(notes.trim());
+        }
         request = missedBusRequestRepository.save(request);
 
         // Notify student
@@ -227,7 +262,7 @@ public class TeacherService {
         Pageable pageable = PageRequest.of(page, size, Sort.by("publishedAt").descending());
         List<UUID> busIds = teacherBusAssignmentRepository.findByTeacherId(teacher.getId())
                 .stream().map(a -> a.getBus().getId()).collect(Collectors.toList());
-        
+
         if (busIds.isEmpty()) {
             return Page.empty(pageable);
         }
@@ -323,7 +358,7 @@ public class TeacherService {
         Pageable pageable = PageRequest.of(page, size, Sort.by("publishedAt").descending());
         List<UUID> busIds = teacherBusAssignmentRepository.findByTeacherId(teacher.getId())
                 .stream().map(a -> a.getBus().getId()).collect(Collectors.toList());
-        
+
         if (busIds.isEmpty()) {
             return Page.empty(pageable);
         }
@@ -424,10 +459,32 @@ public class TeacherService {
                 .orElseThrow(() -> new ResourceNotFoundException("Teacher profile not found"));
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("triggeredAt").descending());
-        
-        // For now, show all SOS requests to teachers with appropriate permissions
-        // In a real implementation, this would be filtered by bus assignments
-        Page<SOSRequest> sosRequests = sosRequestRepository.findAll(pageable);
+
+        // Get bus IDs assigned to this teacher
+        List<UUID> busIds = teacherBusAssignmentRepository.findByTeacherId(teacher.getId())
+                .stream().map(a -> a.getBus().getId()).collect(Collectors.toList());
+
+        if (busIds.isEmpty()) {
+            // Teacher has no bus assignments yet.
+            // To preserve emergency visibility, show only OPEN (un-acknowledged) SOS requests
+            // so no emergency is silently discarded. Once a bus is assigned this narrows automatically.
+            Page<SOSRequest> openSos = sosRequestRepository.findByStatusIn(
+                    List.of(com.anuraguniversity.smartroute.common.enums.SOSStatus.OPEN), pageable);
+            return openSos.map(TeacherDTO.SOSDTO::from);
+        }
+
+        // Collect student IDs assigned to these buses
+        List<UUID> studentIds = busIds.stream()
+                .flatMap(busId -> studentBusAssignmentRepository.findActiveByBus(busId).stream())
+                .map(a -> a.getStudent().getId())
+                .distinct()
+                .collect(Collectors.toList());
+
+        if (studentIds.isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        Page<SOSRequest> sosRequests = sosRequestRepository.findByStudentIdIn(studentIds, pageable);
         return sosRequests.map(TeacherDTO.SOSDTO::from);
     }
 
@@ -532,12 +589,305 @@ public class TeacherService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public List<TeacherDTO.AssignmentDTO> getTeacherAssignments(UUID userId) {
         Teacher teacher = teacherRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Teacher profile not found"));
 
-        List<TeacherBusAssignment> assignments = teacherBusAssignmentRepository.findByTeacherId(teacher.getId());
+        List<UUID> busIds = teacherBusAssignmentRepository.findByTeacherId(teacher.getId())
+                .stream().map(a -> a.getBus().getId()).collect(Collectors.toList());
+        if (teacher.getAssignedBus() != null && !busIds.contains(teacher.getAssignedBus().getId())) {
+            busIds.add(teacher.getAssignedBus().getId());
+        }
+
+        List<StudentBusAssignment> assignments;
+        if (Boolean.TRUE.equals(teacher.getCanManageAssignments()) || busIds.isEmpty()) {
+            assignments = studentBusAssignmentRepository.findAll();
+        } else {
+            assignments = studentBusAssignmentRepository.findByBusIdIn(busIds);
+        }
+
         return assignments.stream().map(TeacherDTO.AssignmentDTO::from).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<TeacherDTO.StudentSummary> getEligibleStudents(UUID userId) {
+        teacherRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Teacher profile not found"));
+
+        return studentRepository.findAll().stream()
+                .map(s -> TeacherDTO.StudentSummary.builder()
+                        .id(s.getId())
+                        .studentId(s.getStudentId())
+                        .branch(s.getBranch())
+                        .classSection(s.getClassSection())
+                        .user(s.getUser() != null ? TeacherDTO.UserSummary.builder()
+                                .name(s.getUser().getName())
+                                .email(s.getUser().getEmail())
+                                .build() : null)
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public TeacherDTO.AssignmentDTO createAssignment(UUID userId, TeacherDTO.CreateAssignmentRequest request) {
+        Teacher teacher = teacherRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Teacher profile not found"));
+
+        if (request.getStudentId() == null) {
+            throw new IllegalArgumentException("Student ID is required");
+        }
+        if (request.getBusId() == null) {
+            throw new IllegalArgumentException("Bus ID is required");
+        }
+        if (request.getRouteId() == null) {
+            throw new IllegalArgumentException("Route ID is required");
+        }
+
+        // Validate teacher scope
+        validateTeacherBusScope(teacher, request.getBusId());
+
+        Student student = studentRepository.findById(request.getStudentId())
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
+
+        Bus bus = busRepository.findById(request.getBusId())
+                .orElseThrow(() -> new ResourceNotFoundException("Bus not found"));
+
+        Route route = routeRepository.findById(request.getRouteId())
+                .orElseThrow(() -> new ResourceNotFoundException("Route not found"));
+
+        BoardingPoint boardingPoint = null;
+        if (request.getBoardingPointId() != null) {
+            boardingPoint = boardingPointRepository.findById(request.getBoardingPointId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Boarding point not found"));
+            if (!boardingPoint.getRoute().getId().equals(route.getId())) {
+                throw new IllegalArgumentException("Boarding point does not belong to the selected route");
+            }
+        }
+
+        com.anuraguniversity.smartroute.common.enums.Direction direction = request.getDirection() != null
+                ? request.getDirection()
+                : (route.getDirection() != null ? route.getDirection() : com.anuraguniversity.smartroute.common.enums.Direction.MORNING);
+
+        // Check active duplicate assignment
+        var existingActive = studentBusAssignmentRepository.findActiveByStudentAndDirection(student.getId(), direction);
+        if (existingActive.isPresent()) {
+            throw new IllegalStateException("Student already has an active assignment for direction: " + direction);
+        }
+
+        // Validate capacity
+        long currentCount = studentBusAssignmentRepository.countActiveByBus(bus.getId());
+        if (currentCount >= bus.getCapacity()) {
+            throw new IllegalStateException("Bus capacity reached (" + bus.getCapacity() + " seats)");
+        }
+
+        StudentBusAssignment assignment = new StudentBusAssignment();
+        assignment.setStudent(student);
+        assignment.setBus(bus);
+        assignment.setRoute(route);
+        assignment.setBoardingPoint(boardingPoint);
+        assignment.setDirection(direction);
+        assignment.setStatus(AssignmentStatus.ACTIVE);
+        assignment.setStartDate(request.getStartDate() != null ? request.getStartDate() : LocalDate.now());
+        assignment.setEndDate(request.getEndDate());
+        assignment.setAssignedBy(teacher.getId());
+        assignment.setAssignmentNotes(request.getAssignmentNotes());
+
+        assignment = studentBusAssignmentRepository.save(assignment);
+
+        // Update student record
+        student.setBus(bus);
+        student.setRoute(route);
+        student.setBoardingPoint(boardingPoint);
+        student.setDirection(direction);
+        student.setAssignmentStatus(AssignmentStatus.ACTIVE);
+        studentRepository.save(student);
+
+        // Update bus current student count
+        recalibrateBusCapacity(bus);
+
+        // Create notification
+        createNotification(student.getUser().getId(),
+                "Bus Assignment Created",
+                "You have been assigned to Bus " + bus.getRegistrationNumber() + " on Route " + route.getRouteCode(),
+                NotificationType.BUS_ASSIGNMENT, assignment.getId());
+
+        return TeacherDTO.AssignmentDTO.from(assignment);
+    }
+
+    @Transactional
+    public TeacherDTO.AssignmentDTO cancelAssignment(UUID userId, UUID assignmentId, String reason) {
+        Teacher teacher = teacherRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Teacher profile not found"));
+
+        StudentBusAssignment assignment = studentBusAssignmentRepository.findById(assignmentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Assignment not found"));
+
+        if (assignment.getStatus() == AssignmentStatus.CANCELLED) {
+            throw new IllegalStateException("Assignment is already cancelled");
+        }
+
+        validateTeacherBusScope(teacher, assignment.getBus().getId());
+
+        assignment.setStatus(AssignmentStatus.CANCELLED);
+        assignment.setCancelledAt(Instant.now());
+        assignment.setCancelledBy(teacher.getId());
+        assignment.setCancellationReason(reason != null && !reason.isBlank() ? reason : "Removed by teacher");
+        assignment = studentBusAssignmentRepository.save(assignment);
+
+        // Release student transport assignment if active on this assignment
+        Student student = assignment.getStudent();
+        if (student != null) {
+            var otherActive = studentBusAssignmentRepository.findActiveByStudentAndDirection(student.getId(), assignment.getDirection());
+            if (otherActive.isEmpty()) {
+                student.setAssignmentStatus(null);
+                if (student.getBus() != null && student.getBus().getId().equals(assignment.getBus().getId())) {
+                    student.setBus(null);
+                }
+                if (student.getRoute() != null && student.getRoute().getId().equals(assignment.getRoute().getId())) {
+                    student.setRoute(null);
+                }
+                student.setBoardingPoint(null);
+                studentRepository.save(student);
+            }
+        }
+
+        // Recalibrate bus seat count
+        Bus bus = assignment.getBus();
+        if (bus != null) {
+            recalibrateBusCapacity(bus);
+        }
+
+        // Notify student
+        if (student != null && student.getUser() != null) {
+            createNotification(student.getUser().getId(),
+                    "Bus Assignment Cancelled",
+                    "Your transport assignment for Bus " + (bus != null ? bus.getRegistrationNumber() : "") + " has been cancelled.",
+                    NotificationType.BUS_ASSIGNMENT, assignment.getId());
+        }
+
+        return TeacherDTO.AssignmentDTO.from(assignment);
+    }
+
+    @Transactional
+    public TeacherDTO.AssignmentDTO updateAssignment(UUID userId, UUID assignmentId, TeacherDTO.UpdateAssignmentRequest request) {
+        Teacher teacher = teacherRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Teacher profile not found"));
+
+        StudentBusAssignment assignment = studentBusAssignmentRepository.findById(assignmentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Assignment not found"));
+
+        validateTeacherBusScope(teacher, assignment.getBus().getId());
+
+        Bus oldBus = assignment.getBus();
+        Bus targetBus = oldBus;
+
+        if (request.getBusId() != null && !request.getBusId().equals(oldBus.getId())) {
+            validateTeacherBusScope(teacher, request.getBusId());
+            targetBus = busRepository.findById(request.getBusId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Target bus not found"));
+            long currentCount = studentBusAssignmentRepository.countActiveByBus(targetBus.getId());
+            if (currentCount >= targetBus.getCapacity()) {
+                throw new IllegalStateException("Target bus capacity reached (" + targetBus.getCapacity() + " seats)");
+            }
+            assignment.setBus(targetBus);
+        }
+
+        if (request.getRouteId() != null) {
+            Route route = routeRepository.findById(request.getRouteId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Route not found"));
+            assignment.setRoute(route);
+        }
+
+        if (request.getBoardingPointId() != null) {
+            BoardingPoint bp = boardingPointRepository.findById(request.getBoardingPointId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Boarding point not found"));
+            assignment.setBoardingPoint(bp);
+        }
+
+        if (request.getDirection() != null) {
+            assignment.setDirection(request.getDirection());
+        }
+
+        if (request.getStatus() != null) {
+            assignment.setStatus(request.getStatus());
+        }
+
+        if (request.getStartDate() != null) {
+            assignment.setStartDate(request.getStartDate());
+        }
+
+        if (request.getEndDate() != null) {
+            assignment.setEndDate(request.getEndDate());
+        }
+
+        if (request.getAssignmentNotes() != null) {
+            assignment.setAssignmentNotes(request.getAssignmentNotes());
+        }
+
+        assignment = studentBusAssignmentRepository.save(assignment);
+
+        if (oldBus != null && !oldBus.getId().equals(targetBus.getId())) {
+            recalibrateBusCapacity(oldBus);
+        }
+        recalibrateBusCapacity(targetBus);
+
+        // Keep student entity synchronized
+        Student student = assignment.getStudent();
+        if (student != null && assignment.getStatus() == AssignmentStatus.ACTIVE) {
+            student.setBus(assignment.getBus());
+            student.setRoute(assignment.getRoute());
+            student.setBoardingPoint(assignment.getBoardingPoint());
+            student.setDirection(assignment.getDirection());
+            student.setAssignmentStatus(AssignmentStatus.ACTIVE);
+            studentRepository.save(student);
+        }
+
+        return TeacherDTO.AssignmentDTO.from(assignment);
+    }
+
+    @Transactional
+    public TeacherDTO updateTeacherProfile(UUID userId, TeacherDTO.UpdateProfileRequest request) {
+        Teacher teacher = teacherRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Teacher profile not found"));
+
+        User user = teacher.getUser();
+        if (request.getName() != null && !request.getName().isBlank()) {
+            user.setName(request.getName().trim());
+            userRepository.save(user);
+        }
+
+        if (request.getDepartment() != null) {
+            teacher.setDepartment(request.getDepartment().trim());
+        }
+        if (request.getDesignation() != null) {
+            teacher.setDesignation(request.getDesignation().trim());
+        }
+        if (request.getPhone() != null) {
+            teacher.setPhone(request.getPhone().trim());
+        }
+
+        teacher = teacherRepository.save(teacher);
+        return TeacherDTO.from(teacher);
+    }
+
+    private void validateTeacherBusScope(Teacher teacher, UUID busId) {
+        if (Boolean.TRUE.equals(teacher.getCanManageAssignments())) {
+            return;
+        }
+        boolean hasAccess = teacherBusAssignmentRepository.existsByTeacherIdAndBusId(teacher.getId(), busId);
+        if (!hasAccess && teacher.getAssignedBus() != null && teacher.getAssignedBus().getId().equals(busId)) {
+            hasAccess = true;
+        }
+        if (!hasAccess) {
+            throw new ResourceNotFoundException("Access denied: You are not assigned to manage Bus " + busId);
+        }
+    }
+
+    private void recalibrateBusCapacity(Bus bus) {
+        long activeCount = studentBusAssignmentRepository.countActiveByBus(bus.getId());
+        bus.setCurrentStudentsCount((int) activeCount);
+        busRepository.save(bus);
     }
 
     private void createNotification(UUID recipientId, String title, String message, NotificationType type, UUID relatedEntityId) {

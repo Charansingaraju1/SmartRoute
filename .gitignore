@@ -91,3 +91,21 @@ start_mysql.cmd
 # Generated Vite config files
 frontend/vite.config.js
 frontend/vite.config.d.ts
+# Local uploads and private documents
+backend/uploads/
+
+# Generated test reports
+frontend/playwright-report/
+frontend/test-results/
+
+# Python caches and temporary OCR output
+__pycache__/
+*.py[cod]
+scripts/temp_ocr/
+scripts/temp_test/
+# Local AI-agent tooling
+.agent/
+
+# Temporary OCR/test output
+scripts/temp_ocr/
+scripts/temp_test/

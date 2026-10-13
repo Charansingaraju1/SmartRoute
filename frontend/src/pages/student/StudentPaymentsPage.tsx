@@ -32,22 +32,22 @@ function cn(...args: any[]) {
 }
 
 const statusConfig = {
-  PENDING: { color: 'bg-yellow-100 text-yellow-700', icon: Clock },
-  CREATED: { color: 'bg-blue-100 text-blue-700', icon: Clock },
-  PROCESSING: { color: 'bg-blue-100 text-blue-700', icon: Loader2 },
-  SUCCESS: { color: 'bg-green-100 text-green-700', icon: CheckCircle },
-  FAILED: { color: 'bg-red-100 text-red-700', icon: XCircle },
-  CANCELLED: { color: 'bg-stone-100 text-stone-700', icon: XCircle },
-  REFUNDED: { color: 'bg-green-100 text-green-700', icon: CheckCircle },
-  PARTIALLY_REFUNDED: { color: 'bg-green-100 text-green-700', icon: CheckCircle },
+  PENDING: { color: 'bg-yellow-100 text-yellow-800 dark:bg-amber-950/60 dark:text-amber-300', icon: Clock },
+  CREATED: { color: 'bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300', icon: Clock },
+  PROCESSING: { color: 'bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300', icon: Loader2 },
+  SUCCESS: { color: 'bg-green-100 text-green-800 dark:bg-emerald-950/60 dark:text-emerald-300', icon: CheckCircle },
+  FAILED: { color: 'bg-red-100 text-red-800 dark:bg-rose-950/60 dark:text-rose-300', icon: XCircle },
+  CANCELLED: { color: 'bg-stone-100 text-stone-800 dark:bg-slate-800 dark:text-slate-300', icon: XCircle },
+  REFUNDED: { color: 'bg-green-100 text-green-800 dark:bg-emerald-950/60 dark:text-emerald-300', icon: CheckCircle },
+  PARTIALLY_REFUNDED: { color: 'bg-green-100 text-green-800 dark:bg-emerald-950/60 dark:text-emerald-300', icon: CheckCircle },
 } as const;
 
 const methodColors = {
-  UPI: 'bg-green-100 text-green-700',
-  CARD: 'bg-blue-100 text-blue-700',
-  NET_BANKING: 'bg-purple-100 text-purple-700',
-  WALLET: 'bg-orange-100 text-orange-700',
-  EMI: 'bg-indigo-100 text-indigo-700',
+  UPI: 'bg-green-100 text-green-800 dark:bg-emerald-950/60 dark:text-emerald-300',
+  CARD: 'bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300',
+  NET_BANKING: 'bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300',
+  WALLET: 'bg-orange-100 text-orange-800 dark:bg-orange-950/60 dark:text-orange-300',
+  EMI: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-300',
 } as const;
 
 export function StudentPaymentsPage() {
@@ -94,6 +94,17 @@ export function StudentPaymentsPage() {
       <div className="mb-8">
         <h1 className="font-heading text-3xl font-bold text-charcoal-500">Payments</h1>
         <p className="text-stone-600 mt-1">View your payment history and manage transport fees.</p>
+      </div>
+
+      {/* Payment Gateway Integration Status */}
+      <div className="mb-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 flex items-start gap-3">
+        <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5 shrink-0" />
+        <div className="text-sm">
+          <p className="font-semibold">Online Payment Gateway Provisioning</p>
+          <p className="text-amber-800 mt-0.5">
+            Razorpay digital payments operate in pre-activation mode. When digital checkout is unavailable, please complete fee payment at the Anurag University Accounts Counter. Verified counter transactions appear in this statement.
+          </p>
+        </div>
       </div>
 
       {/* Stats */}
@@ -144,7 +155,7 @@ export function StudentPaymentsPage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="text-left text-xs text-stone-500 border-b border-stone-200 bg-stone-50">
+                  <tr className="text-left text-xs text-stone-500 dark:text-slate-400 border-b border-stone-200 dark:border-slate-700 bg-stone-50 dark:bg-[#111827]">
                     <th className="p-3 font-medium">Order ID</th>
                     <th className="p-3 font-medium">Type</th>
                     <th className="p-3 font-medium">Amount</th>
@@ -159,17 +170,17 @@ export function StudentPaymentsPage() {
                     const config = statusConfig[payment.status as keyof typeof statusConfig];
                     const Icon = config.icon;
                     return (
-                      <tr key={payment.id} className="border-b border-stone-100 last:border-0 hover:bg-stone-50">
+                      <tr key={payment.id} className="border-b border-stone-100 dark:border-slate-800 last:border-0 hover:bg-stone-50 dark:hover:bg-slate-800/50">
                         <td className="p-3">
-                          <p className="font-mono text-sm text-charcoal-500">{payment.orderId}</p>
-                          {payment.feeType && <p className="text-xs text-stone-500">{payment.feeType}</p>}
+                          <p className="font-mono text-sm text-charcoal-500 dark:text-[#F1F5F9]">{payment.orderId}</p>
+                          {payment.feeType && <p className="text-xs text-stone-500 dark:text-slate-400">{payment.feeType}</p>}
                         </td>
                         <td className="p-3">
                           <Badge variant="secondary" size="sm">{payment.feeType || 'Transport Fee'}</Badge>
                         </td>
                         <td className="p-3">
-                          <p className="font-mono text-lg font-bold text-charcoal-500">₹{payment.amount.toLocaleString()}</p>
-                          {payment.currency && payment.currency !== 'INR' && <p className="text-xs text-stone-500">{payment.currency}</p>}
+                          <p className="font-mono text-lg font-bold text-charcoal-500 dark:text-[#F1F5F9]">₹{payment.amount.toLocaleString()}</p>
+                          {payment.currency && payment.currency !== 'INR' && <p className="text-xs text-stone-500 dark:text-slate-400">{payment.currency}</p>}
                         </td>
                         <td className="p-3">
                           <Badge variant="default" className={cn(config.color)}>
@@ -179,24 +190,24 @@ export function StudentPaymentsPage() {
                         </td>
                         <td className="p-3">
                           {payment.method && (
-                            <Badge variant="default" className={methodColors[payment.method as keyof typeof methodColors] || 'bg-stone-100 text-stone-700'} size="sm">
+                            <Badge variant="default" className={methodColors[payment.method as keyof typeof methodColors] || 'bg-stone-100 text-stone-700 dark:bg-slate-800 dark:text-slate-300'} size="sm">
                               {payment.method}
                             </Badge>
                           )}
                         </td>
-                        <td className="p-3 text-sm text-stone-600 whitespace-nowrap">
+                        <td className="p-3 text-sm text-stone-600 dark:text-slate-300 whitespace-nowrap">
                           {format(payment.initiatedAt ? parseISO(payment.initiatedAt) : new Date(), 'MMM d, yyyy HH:mm')}
                           {payment.completedAt && (
-                            <p className="text-xs text-stone-500 mt-1">Completed: {formatDistanceToNow(parseISO(payment.completedAt!), { addSuffix: true })}</p>
+                            <p className="text-xs text-stone-500 dark:text-slate-400 mt-1">Completed: {formatDistanceToNow(parseISO(payment.completedAt!), { addSuffix: true })}</p>
                           )}
                         </td>
                         <td className="p-3">
                           <div className="flex items-center gap-2">
-                            <button className="p-2 rounded-lg text-stone-500 hover:bg-stone-100 transition-colors" title="View Details">
+                            <button className="p-2 rounded-lg text-stone-500 hover:text-charcoal-500 dark:text-slate-400 dark:hover:text-[#F1F5F9] hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors" title="View Details">
                               <FileText className="h-4 w-4" />
                             </button>
                             {payment.gatewayTransactionId && (
-                              <a href="#" className="p-2 rounded-lg text-stone-500 hover:bg-stone-100 transition-colors" title="View on Gateway">
+                              <a href="#" className="p-2 rounded-lg text-stone-500 hover:text-charcoal-500 dark:text-slate-400 dark:hover:text-[#F1F5F9] hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors" title="View on Gateway">
                                 <DollarSign className="h-4 w-4" />
                               </a>
                             )}

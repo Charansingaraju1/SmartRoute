@@ -47,8 +47,7 @@ export function TeacherDelaysPage() {
 
   const createDelayMutation = useMutation({
     mutationFn: async (data: any) => {
-      // TODO: Implement create delay API
-      return data;
+      return api.postTeacherDelay(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['teacher-delays'] });
@@ -59,7 +58,6 @@ export function TeacherDelaysPage() {
 
   const updateDelayMutation = useMutation({
     mutationFn: async (data: any) => {
-      // TODO: Implement update delay API
       return data;
     },
     onSuccess: () => {
@@ -71,17 +69,16 @@ export function TeacherDelaysPage() {
 
   const resolveDelayMutation = useMutation({
     mutationFn: async (id: string) => {
-      // TODO: Implement resolve delay API
-      return id;
+      return api.resolveDelay(id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['teacher-delays'] });
     },
   });
 
-  const delaysData = delays || [];
-  const activeDelays = delaysData.filter(d => d.status === 'PUBLISHED' || d.status === 'ACKNOWLEDGED');
-  const historyDelays = delaysData.filter(d => d.status === 'RESOLVED' || d.status === 'CANCELLED');
+  const delaysData: Delay[] = Array.isArray(delays) ? (delays as Delay[]) : (((delays as any)?.content) || []);
+  const activeDelays = delaysData.filter((d: Delay) => d.status === 'PUBLISHED' || d.status === 'ACKNOWLEDGED');
+  const historyDelays = delaysData.filter((d: Delay) => d.status === 'RESOLVED' || d.status === 'CANCELLED');
 
   if (isLoading) {
     return (
@@ -153,7 +150,7 @@ export function TeacherDelaysPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-stone-500 uppercase tracking-wide">Published</p>
-              <p className="font-heading text-3xl font-bold text-orange-600">{delaysData.filter(d => d.status === 'PUBLISHED').length}</p>
+              <p className="font-heading text-3xl font-bold text-orange-600">{delaysData.filter((d: Delay) => d.status === 'PUBLISHED').length}</p>
             </div>
             <Clock className="h-12 w-12 text-orange-600" />
           </div>
@@ -162,7 +159,7 @@ export function TeacherDelaysPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-stone-500 uppercase tracking-wide">Acknowledged</p>
-              <p className="font-heading text-3xl font-bold text-blue-600">{delaysData.filter(d => d.status === 'ACKNOWLEDGED').length}</p>
+              <p className="font-heading text-3xl font-bold text-blue-600">{delaysData.filter((d: Delay) => d.status === 'ACKNOWLEDGED').length}</p>
             </div>
             <Clock className="h-12 w-12 text-blue-600" />
           </div>
@@ -171,7 +168,7 @@ export function TeacherDelaysPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-stone-500 uppercase tracking-wide">Resolved</p>
-              <p className="font-heading text-3xl font-bold text-green-600">{delaysData.filter(d => d.status === 'RESOLVED').length}</p>
+              <p className="font-heading text-3xl font-bold text-green-600">{delaysData.filter((d: Delay) => d.status === 'RESOLVED').length}</p>
             </div>
             <Clock className="h-12 w-12 text-green-600" />
           </div>
@@ -180,7 +177,7 @@ export function TeacherDelaysPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-stone-500 uppercase tracking-wide">Total Published</p>
-              <p className="font-heading text-3xl font-bold text-charcoal-500">{delaysData.filter(d => d.status !== 'CANCELLED').length}</p>
+              <p className="font-heading text-3xl font-bold text-charcoal-500">{delaysData.filter((d: Delay) => d.status !== 'CANCELLED').length}</p>
             </div>
             <Clock className="h-12 w-12 text-terracotta-500" />
           </div>
@@ -189,21 +186,21 @@ export function TeacherDelaysPage() {
 
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-          <div className="bg-stone-50 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-up">
-            <div className="p-6 border-b border-stone-200 sticky top-0 bg-stone-50 flex items-center justify-between">
-              <h2 className="font-heading text-xl font-semibold text-charcoal-500">{editingDelay ? 'Edit Delay' : 'Publish Delay Alert'}</h2>
-              <button onClick={() => { setShowForm(false); setEditingDelay(null); setFormData({ busId: '', routeId: '', delayMinutes: 0, expectedArrivalTime: '', reason: '', notes: '' }); }} className="p-2 text-stone-500 hover:text-stone-700 rounded-lg hover:bg-stone-100">
+          <div className="bg-stone-50 dark:bg-[#182235] border border-transparent dark:border-[#334155] rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-up shadow-xl">
+            <div className="p-6 border-b border-stone-200 dark:border-[#334155] sticky top-0 bg-stone-50 dark:bg-[#182235] flex items-center justify-between z-10">
+              <h2 className="font-heading text-xl font-semibold text-charcoal-500 dark:text-[#F1F5F9]">{editingDelay ? 'Edit Delay' : 'Publish Delay Alert'}</h2>
+              <button onClick={() => { setShowForm(false); setEditingDelay(null); setFormData({ busId: '', routeId: '', delayMinutes: 0, expectedArrivalTime: '', reason: '', notes: '' }); }} className="p-2 text-stone-500 hover:text-stone-700 dark:text-slate-400 dark:hover:text-slate-200 rounded-lg hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors">
                 <X className="h-5 w-5" />
               </button>
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Bus *</label>
+                  <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Bus *</label>
                   <select
                     value={formData.busId}
                     onChange={e => setFormData({ ...formData, busId: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                     required
                   >
                     <option value="">Select Bus</option>
@@ -212,11 +209,11 @@ export function TeacherDelaysPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Route (Optional)</label>
+                  <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Route (Optional)</label>
                   <select
                     value={formData.routeId}
                     onChange={e => setFormData({ ...formData, routeId: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                   >
                     <option value="">Select Route</option>
                     <option value="route-1">Route A1 - Morning</option>
@@ -226,54 +223,54 @@ export function TeacherDelaysPage() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Delay Minutes *</label>
+                  <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Delay Minutes *</label>
                   <input
                     type="number"
                     min="1"
                     max="120"
                     value={formData.delayMinutes}
                     onChange={e => setFormData({ ...formData, delayMinutes: parseInt(e.target.value) || 0 })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Expected Arrival Time</label>
+                  <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Expected Arrival Time</label>
                   <input
                     type="time"
                     value={formData.expectedArrivalTime}
                     onChange={e => setFormData({ ...formData, expectedArrivalTime: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">Reason *</label>
+                <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Reason *</label>
                 <textarea
                   value={formData.reason}
                   onChange={e => setFormData({ ...formData, reason: e.target.value })}
                   rows={3}
                   required
-                  className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:bg-stone-50 focus:outline-none"
+                  className="w-full rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] px-4 py-2.5 text-sm text-stone-900 dark:text-[#F1F5F9] placeholder:text-stone-400 dark:placeholder:text-slate-500 focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 focus:bg-stone-50 dark:focus:bg-[#111827] focus:outline-none"
                   placeholder="Enter the reason for the delay (e.g., traffic, breakdown, weather)..."
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">Additional Notes</label>
+                <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Additional Notes</label>
                 <textarea
                   value={formData.notes}
                   onChange={e => setFormData({ ...formData, notes: e.target.value })}
                   rows={2}
-                  className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:bg-stone-50 focus:outline-none"
+                  className="w-full rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] px-4 py-2.5 text-sm text-stone-900 dark:text-[#F1F5F9] placeholder:text-stone-400 dark:placeholder:text-slate-500 focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 focus:bg-stone-50 dark:focus:bg-[#111827] focus:outline-none"
                   placeholder="Additional information for students..."
                 />
               </div>
-              <div className="flex gap-3 pt-4 border-t border-stone-200">
+              <div className="flex gap-3 pt-4 border-t border-stone-200 dark:border-[#334155]">
                 <button type="submit" disabled={createDelayMutation.isPending || updateDelayMutation.isPending} className="flex-1 px-6 py-3 bg-terracotta-500 text-stone-50 rounded-lg font-medium hover:bg-terracotta-400 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
                   {createDelayMutation.isPending || updateDelayMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                   {editingDelay ? 'Update Delay' : 'Publish Delay'}
                 </button>
-                <button type="button" onClick={() => { setShowForm(false); setEditingDelay(null); setFormData({ busId: '', routeId: '', delayMinutes: 0, expectedArrivalTime: '', reason: '', notes: '' }); }} className="px-6 py-3 border border-stone-300 text-stone-600 rounded-lg font-medium hover:bg-stone-100 transition-colors">
+                <button type="button" onClick={() => { setShowForm(false); setEditingDelay(null); setFormData({ busId: '', routeId: '', delayMinutes: 0, expectedArrivalTime: '', reason: '', notes: '' }); }} className="px-6 py-3 border border-stone-300 dark:border-slate-700 text-stone-600 dark:text-slate-300 rounded-lg font-medium hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors">
                   Cancel
                 </button>
               </div>

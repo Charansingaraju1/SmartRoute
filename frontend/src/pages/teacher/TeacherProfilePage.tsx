@@ -1,9 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/services/api';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { User, Mail, Lock, Shield, Calendar, Settings, Edit2, Loader2, Truck, MapPin, GraduationCap, Bell, X, CheckCircle, AlertCircle, Wrench, Clock, MapPin as MapPinIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useToast } from '@/components/ui/Toaster';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -12,23 +13,43 @@ function cn(...args: any[]) {
 }
 
 export function TeacherProfilePage() {
+  const queryClient = useQueryClient();
+  const { addToast } = useToast();
+
   const { data: profile, isLoading, error } = useQuery({
     queryKey: ['teacher-profile'],
     queryFn: () => api.getTeacherProfile(),
   });
 
   const [editing, setEditing] = useState(false);
-  const [changingPassword, setChangingPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     department: '',
     designation: '',
     phone: '',
   });
-  const [passwordForm, setPasswordForm] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
+
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        name: profile.user?.name || '',
+        department: profile.department || '',
+        designation: profile.designation || '',
+        phone: profile.phone || '',
+      });
+    }
+  }, [profile]);
+
+  const updateProfileMutation = useMutation({
+    mutationFn: (data: typeof formData) => api.updateTeacherProfile(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['teacher-profile'] });
+      setEditing(false);
+      addToast({ type: 'success', title: 'Profile Updated', message: 'Your profile changes have been saved.' });
+    },
+    onError: (err: any) => {
+      addToast({ type: 'error', title: 'Update Failed', message: err?.response?.data?.message || 'Failed to update profile.' });
+    },
   });
 
   if (isLoading) {
@@ -54,15 +75,6 @@ export function TeacherProfilePage() {
     );
   }
 
-  if (!editing) {
-    setFormData({
-      name: profile.user.name,
-      department: profile.department || '',
-      designation: profile.designation || '',
-      phone: profile.phone || '',
-    });
-  }
-
   return (
     <div className="container-app py-8">
       <div className="mb-8">
@@ -78,76 +90,80 @@ export function TeacherProfilePage() {
                 <User className="h-5 w-5 text-terracotta-500" />
                 Personal Information
               </h2>
-              <button
-                onClick={() => setEditing(true)}
-                className="px-3 py-1.5 text-sm font-medium text-terracotta-600 hover:text-terracotta-700 hover:underline"
-              >
-                <Edit2 className="h-4 w-4 mr-1" />
-                Edit
-              </button>
+              {!editing && (
+                <button
+                  onClick={() => setEditing(true)}
+                  className="px-3 py-1.5 text-sm font-medium text-terracotta-600 hover:text-terracotta-700 hover:underline flex items-center gap-1"
+                >
+                  <Edit2 className="h-4 w-4" />
+                  Edit
+                </button>
+              )}
             </div>
 
             {editing ? (
-              <form onSubmit={e => { e.preventDefault(); setEditing(false); }} className="space-y-4">
+              <form onSubmit={e => { e.preventDefault(); updateProfileMutation.mutate(formData); }} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-1">Full Name</label>
+                    <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Full Name</label>
                     <input
                       type="text"
                       value={formData.name}
                       onChange={e => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:bg-stone-50 focus:outline-none"
+                      className="w-full rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] px-4 py-2.5 text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-1">Email</label>
+                    <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Email</label>
                     <input
                       type="email"
-                      value={profile.user.email}
+                      value={profile.user?.email || ''}
                       disabled
-                      className="w-full rounded-lg border border-stone-300 bg-stone-100 px-4 py-2.5 text-sm text-stone-500"
+                      className="w-full rounded-lg border border-stone-300 dark:border-slate-800 bg-stone-100 dark:bg-slate-900 px-4 py-2.5 text-sm text-stone-500 dark:text-slate-400 cursor-not-allowed"
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-1">Department</label>
+                    <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Department</label>
                     <input
                       type="text"
                       value={formData.department}
                       onChange={e => setFormData({ ...formData, department: e.target.value })}
-                      className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:bg-stone-50 focus:outline-none"
+                      className="w-full rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] px-4 py-2.5 text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-1">Designation</label>
+                    <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Designation</label>
                     <input
                       type="text"
                       value={formData.designation}
                       onChange={e => setFormData({ ...formData, designation: e.target.value })}
-                      className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:bg-stone-50 focus:outline-none"
+                      className="w-full rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] px-4 py-2.5 text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Phone</label>
+                  <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Phone</label>
                   <input
                     type="tel"
                     value={formData.phone}
                     onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:bg-stone-50 focus:outline-none"
+                    className="w-full rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] px-4 py-2.5 text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                   />
                 </div>
-                <div className="flex gap-3 pt-4 border-t border-stone-200">
+                <div className="flex gap-3 pt-4 border-t border-stone-200 dark:border-[#334155]">
                   <button
                     type="submit"
+                    disabled={updateProfileMutation.isPending}
                     className="px-6 py-2.5 bg-terracotta-500 text-stone-50 rounded-lg font-medium hover:bg-terracotta-400 transition-colors flex items-center gap-2"
                   >
+                    {updateProfileMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
                     <CheckCircle className="h-4 w-4" />
                     Save Changes
                   </button>
-                  <button type="button" onClick={() => setEditing(false)} className="px-6 py-2.5 border border-stone-300 text-stone-600 rounded-lg hover:bg-stone-100 transition-colors">
+                  <button type="button" onClick={() => setEditing(false)} className="px-6 py-2.5 border border-stone-300 dark:border-slate-700 text-stone-600 dark:text-slate-300 rounded-lg hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors">
                     Cancel
                   </button>
                 </div>
@@ -155,40 +171,40 @@ export function TeacherProfilePage() {
             ) : (
               <div className="space-y-4">
                 <div className="flex items-center gap-4">
-                  <div className="w-20 h-20 rounded-full bg-terracotta-100 flex items-center justify-center">
-                    <GraduationCap className="h-10 w-10 text-terracotta-600" />
+                  <div className="w-20 h-20 rounded-full bg-terracotta-100 dark:bg-terracotta-950/60 flex items-center justify-center">
+                    <GraduationCap className="h-10 w-10 text-terracotta-600 dark:text-terracotta-400" />
                   </div>
                   <div>
-                    <h2 className="font-heading text-2xl font-bold text-charcoal-500">{profile.user.name}</h2>
-                    <p className="text-stone-500">{profile.user.email}</p>
+                    <h2 className="font-heading text-2xl font-bold text-charcoal-500 dark:text-[#F1F5F9]">{profile.user.name}</h2>
+                    <p className="text-stone-500 dark:text-slate-400">{profile.user.email}</p>
                   </div>
                 </div>
-                <div className="pt-4 border-t border-stone-200">
+                <div className="pt-4 border-t border-stone-200 dark:border-[#334155]">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Email</p>
+                      <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-1">Email</p>
                       <div className="flex items-center gap-2">
-                        <p className="font-medium text-charcoal-500">{profile.user.email}</p>
+                        <p className="font-medium text-charcoal-500 dark:text-[#F1F5F9]">{profile.user.email}</p>
                         <Badge variant={profile.user.emailVerified ? 'success' : 'warning'} size="sm">
                           {profile.user.emailVerified ? 'Verified' : 'Pending'}
                         </Badge>
                       </div>
                     </div>
                     <div>
-                      <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Employee ID</p>
-                      <p className="font-mono text-lg font-bold text-charcoal-500">{profile.employeeId || 'Not assigned'}</p>
+                      <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-1">Employee ID</p>
+                      <p className="font-mono text-lg font-bold text-charcoal-500 dark:text-[#F1F5F9]">{profile.employeeId || 'Not assigned'}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Department</p>
-                      <p className="text-charcoal-500">{profile.department || 'Not specified'}</p>
+                      <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-1">Department</p>
+                      <p className="text-charcoal-500 dark:text-[#F1F5F9]">{profile.department || 'Not specified'}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Designation</p>
-                      <p className="text-charcoal-500">{profile.designation || 'Not specified'}</p>
+                      <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-1">Designation</p>
+                      <p className="text-charcoal-500 dark:text-[#F1F5F9]">{profile.designation || 'Not specified'}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Phone</p>
-                      <p className="text-charcoal-500">{profile.phone || 'Not provided'}</p>
+                      <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-1">Phone</p>
+                      <p className="text-charcoal-500 dark:text-[#F1F5F9]">{profile.phone || 'Not provided'}</p>
                     </div>
                   </div>
                 </div>

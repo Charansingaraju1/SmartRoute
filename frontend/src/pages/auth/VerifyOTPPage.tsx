@@ -9,6 +9,7 @@ import { Card } from '@/components/ui/Card';
 import { useAuth } from '@/features/auth/context/AuthContext';
 import { getAuthState } from '@/features/auth/context/AuthContext';
 import { useToast } from '@/components/ui/Toaster';
+import { OTPInput } from '@/components/auth/OTPInput';
 
 const verifyOTPSchema = z.object({
   otp: z.string().length(6, 'OTP must be 6 digits'),
@@ -27,7 +28,7 @@ export function VerifyOTPPage() {
   const email = searchParams.get('email') || '';
   const type = (searchParams.get('type') as 'REGISTRATION' | 'FORGOT_PASSWORD' | 'LOGIN' | 'EMAIL_VERIFICATION') || 'REGISTRATION';
 
-  const { register, handleSubmit, formState: { errors } } = useForm<VerifyOTPForm>({
+  const { handleSubmit, formState: { errors }, setValue, watch } = useForm<VerifyOTPForm>({
     resolver: zodResolver(verifyOTPSchema),
     defaultValues: { otp: '' },
   });
@@ -61,7 +62,8 @@ export function VerifyOTPPage() {
       addToast({ type: 'success', title: 'OTP sent', message: 'A new verification code has been sent.' });
       setResendCooldown(60);
     } catch (err: any) {
-      addToast({ type: 'error', title: 'Failed', message: 'Failed to resend OTP' });
+      const message = err.response?.data?.message || 'Failed to resend OTP';
+      addToast({ type: 'error', title: 'Failed', message });
     }
   };
 
@@ -106,52 +108,32 @@ export function VerifyOTPPage() {
         <div className="text-center">
           <Link to="/" className="inline-flex items-center gap-2 mb-6">
             <Bus className="h-10 w-10 text-terracotta-500" />
-            <span className="font-heading text-2xl font-bold text-charcoal-500">SmartRoute</span>
+            <span className="font-heading text-2xl font-bold text-charcoal-500 dark:text-[#F1F5F9]">SmartRoute</span>
           </Link>
-          <h2 className="font-heading text-3xl font-bold text-charcoal-500">{getTitle()}</h2>
-          <p className="mt-2 text-stone-600">{getMessage()}</p>
+          <h2 className="font-heading text-3xl font-bold text-charcoal-500 dark:text-[#F1F5F9]">{getTitle()}</h2>
+          <p className="mt-2 text-stone-600 dark:text-[#A7B3C7]">{getMessage()}</p>
         </div>
 
         <Card className="p-8">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
-            <div className="flex gap-3 justify-center">
-              {Array.from({ length: 6 }, (_, i) => (
-                <input
-                  key={i}
-                  {...register('otp')}
-                  type="text"
-                  maxLength={1}
-                  className="w-12 h-12 text-center text-2xl font-medium rounded-lg border border-stone-300 bg-stone-50 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
-                  autoComplete="one-time-code"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const value = e.target.value;
-                    if (value && i < 5) {
-                      const nextInput = document.querySelectorAll('input[maxLength="1"]')[i + 1] as HTMLInputElement;
-                      nextInput?.focus();
-                    }
-                  }}
-                  onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                    if (e.key === 'Backspace' && !(e.target as HTMLInputElement).value && i > 0) {
-                      const prevInput = document.querySelectorAll('input[maxLength="1"]')[i - 1] as HTMLInputElement;
-                      prevInput?.focus();
-                    }
-                  }}
-                  disabled={loading}
-                />
-              ))}
-            </div>
+            <OTPInput
+              value={watch('otp') || ''}
+              onChange={(val) => setValue('otp', val, { shouldValidate: true })}
+              disabled={loading}
+              error={!!errors.otp}
+            />
 
             {errors.otp && (
-              <p className="text-center text-sm text-red-600">{errors.otp.message}</p>
+              <p className="text-center text-sm text-red-600 dark:text-rose-400">{errors.otp.message}</p>
             )}
 
-            <Button type="submit" className="w-full" size="lg" loading={loading}>
+            <Button type="submit" className="w-full" size="lg" loading={loading} disabled={loading}>
               {type === 'FORGOT_PASSWORD' ? 'Verify & Continue' : 'Verify'}
             </Button>
           </form>
 
           <div className="mt-6 text-center space-y-3">
-            <p className="text-sm text-stone-600">Didn't receive the code?</p>
+            <p className="text-sm text-stone-600 dark:text-slate-400">Didn't receive the code?</p>
             <Button 
               variant="ghost" 
               size="sm" 
@@ -160,7 +142,7 @@ export function VerifyOTPPage() {
             >
               {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : 'Resend OTP'}
             </Button>
-            <Link to={type === 'FORGOT_PASSWORD' ? '/forgot-password' : '/login'} className="text-sm font-medium text-terracotta-600 hover:text-terracotta-700">
+            <Link to={type === 'FORGOT_PASSWORD' ? '/forgot-password' : '/login'} className="text-sm font-medium text-terracotta-600 dark:text-blue-400 hover:text-terracotta-700 dark:hover:text-blue-300">
               ← Back
             </Link>
           </div>

@@ -105,65 +105,65 @@ export function StudentBoardingPointPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               {boardingPoint.stopTime && (
-                <div className="bg-green-50 rounded-xl p-6 border border-green-100">
+                <div className="bg-green-50 dark:bg-green-950/20 rounded-xl p-6 border border-green-100 dark:border-green-900/40">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                      <Clock className="h-5 w-5 text-green-600" />
+                    <div className="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-950/40 flex items-center justify-center">
+                      <Clock className="h-5 w-5 text-green-600 dark:text-green-400" />
                     </div>
                     <div>
-                      <p className="text-xs text-stone-500 uppercase tracking-wide">Pickup Time</p>
-                      <p className="font-mono text-2xl font-bold text-charcoal-500">{boardingPoint.stopTime}</p>
+                      <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide">Pickup Time</p>
+                      <p className="font-mono text-2xl font-bold text-charcoal-500 dark:text-[#F1F5F9]">{boardingPoint.stopTime}</p>
                     </div>
                   </div>
                 </div>
               )}
               {boardingPoint.landmark && (
-                <div className="bg-stone-50 rounded-xl p-6 border border-stone-200">
+                <div className="bg-stone-50 dark:bg-[#111827] rounded-xl p-6 border border-stone-200 dark:border-slate-800">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="w-10 h-10 rounded-lg bg-stone-100 flex items-center justify-center">
-                      <MapPin className="h-5 w-5 text-stone-500" />
+                    <div className="w-10 h-10 rounded-lg bg-stone-100 dark:bg-slate-800 flex items-center justify-center">
+                      <MapPin className="h-5 w-5 text-stone-500 dark:text-slate-400" />
                     </div>
                     <div>
-                      <p className="text-xs text-stone-500 uppercase tracking-wide">Landmark</p>
-                      <p className="font-medium text-charcoal-500">{boardingPoint.landmark}</p>
+                      <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide">Landmark</p>
+                      <p className="font-medium text-charcoal-500 dark:text-[#F1F5F9]">{boardingPoint.landmark}</p>
                     </div>
                   </div>
                 </div>
               )}
               {boardingPoint.stopDescription && (
-                <div className="col-span-1 md:col-span-2 bg-stone-50 rounded-xl p-6 border border-stone-200">
-                  <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Description</p>
-                  <p className="text-stone-600">{boardingPoint.stopDescription}</p>
+                <div className="col-span-1 md:col-span-2 bg-stone-50 dark:bg-[#111827] rounded-xl p-6 border border-stone-200 dark:border-slate-800">
+                  <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-1">Description</p>
+                  <p className="text-stone-600 dark:text-slate-300">{boardingPoint.stopDescription}</p>
                 </div>
               )}
               {boardingPoint.latitude && boardingPoint.longitude && (
-                <div className="col-span-1 md:col-span-2 bg-stone-50 rounded-xl p-6 border border-stone-200">
-                  <p className="text-xs text-stone-500 uppercase tracking-wide mb-2">GPS Coordinates</p>
+                <div className="col-span-1 md:col-span-2 bg-stone-50 dark:bg-[#111827] rounded-xl p-6 border border-stone-200 dark:border-slate-800">
+                  <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-2">GPS Coordinates</p>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white rounded-lg p-3 border border-stone-200">
-                      <p className="text-xs text-stone-500">Latitude</p>
-                      <p className="font-mono text-lg font-medium text-charcoal-500">{boardingPoint.latitude}</p>
+                    <div className="bg-white dark:bg-[#182235] rounded-lg p-3 border border-stone-200 dark:border-slate-700">
+                      <p className="text-xs text-stone-500 dark:text-slate-400">Latitude</p>
+                      <p className="font-mono text-lg font-medium text-charcoal-500 dark:text-[#F1F5F9]">{boardingPoint.latitude}</p>
                     </div>
-                    <div className="bg-white rounded-lg p-3 border border-stone-200">
-                      <p className="text-xs text-stone-500">Longitude</p>
-                      <p className="font-mono text-lg font-medium text-charcoal-500">{boardingPoint.longitude}</p>
+                    <div className="bg-white dark:bg-[#182235] rounded-lg p-3 border border-stone-200 dark:border-slate-700">
+                      <p className="text-xs text-stone-500 dark:text-slate-400">Longitude</p>
+                      <p className="font-mono text-lg font-medium text-charcoal-500 dark:text-[#F1F5F9]">{boardingPoint.longitude}</p>
                     </div>
                   </div>
                 </div>
               )}
             </div>
 
-            <div className="mt-6 pt-6 border-t border-stone-200">
-              <h3 className="font-heading text-lg font-semibold text-charcoal-500 mb-4 flex items-center gap-2">
+            <div className="mt-6 pt-6 border-t border-stone-200 dark:border-slate-800">
+              <h3 className="font-heading text-lg font-semibold text-charcoal-500 dark:text-[#F1F5F9] mb-4 flex items-center gap-2">
                 <svg className="h-5 w-5 text-terracotta-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19l-7-7 7-7m8 14l-7-7 7-7" />
                 </svg>
                 Route Context
               </h3>
-              <div className="bg-stone-50 rounded-lg p-4 border border-stone-200">
-                <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Assigned Route</p>
-                <p className="font-mono text-lg font-bold text-charcoal-500">{route?.routeCode || 'Not assigned'}</p>
-                <p className="text-sm text-stone-500 mt-1">{route?.routeName || 'Unnamed Route'}</p>
+              <div className="bg-stone-50 dark:bg-[#111827] rounded-lg p-4 border border-stone-200 dark:border-slate-800">
+                <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-1">Assigned Route</p>
+                <p className="font-mono text-lg font-bold text-charcoal-500 dark:text-[#F1F5F9]">{route?.routeCode || 'Not assigned'}</p>
+                <p className="text-sm text-stone-500 dark:text-slate-400 mt-1">{route?.routeName || 'Unnamed Route'}</p>
               </div>
             </div>
           </Card>
@@ -171,7 +171,7 @@ export function StudentBoardingPointPage() {
           {boardingPoint.route?.boardingPoints && boardingPoint.route.boardingPoints.length > 0 && (
             <Card padding="lg">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="font-heading text-lg font-semibold text-charcoal-500 flex items-center gap-2">
+                <h3 className="font-heading text-lg font-semibold text-charcoal-500 dark:text-[#F1F5F9] flex items-center gap-2">
                   <svg className="h-5 w-5 text-terracotta-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19l-7-7 7-7m8 14l-7-7 7-7" />
                   </svg>
@@ -181,7 +181,7 @@ export function StudentBoardingPointPage() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="text-left text-xs text-stone-500 border-b border-stone-200">
+                    <tr className="text-left text-xs text-stone-500 dark:text-slate-400 border-b border-stone-200 dark:border-slate-800">
                       <th className="pb-2 font-medium w-12">#</th>
                       <th className="pb-2 font-medium">Stop Name</th>
                       <th className="pb-2 font-medium">Time</th>
@@ -192,18 +192,18 @@ export function StudentBoardingPointPage() {
                     {boardingPoint.route?.boardingPoints
                       ?.sort((a: { stopOrder: number }, b: { stopOrder: number }) => a.stopOrder - b.stopOrder)
                       .map((stop: { id: string; stopOrder: number; stopName: string; stopTime?: string; landmark?: string }) => (
-                        <tr key={stop.id} className={cn('border-b border-stone-100 last:border-0', stop.id === boardingPoint.id && 'bg-terracotta-50')}>
-                          <td className="py-3 text-stone-500 font-mono">{stop.stopOrder}</td>
-                          <td className="py-3 font-medium text-charcoal-500">
+                        <tr key={stop.id} className={cn('border-b border-stone-100 dark:border-slate-800/60 last:border-0', stop.id === boardingPoint.id && 'bg-terracotta-50 dark:bg-terracotta-950/20')}>
+                          <td className="py-3 text-stone-500 dark:text-slate-400 font-mono">{stop.stopOrder}</td>
+                          <td className="py-3 font-medium text-charcoal-500 dark:text-[#F1F5F9]">
                             {stop.stopName}
                             {stop.id === boardingPoint.id && (
-                              <span className="ml-2 text-xs px-1.5 py-0.5 bg-terracotta-100 text-terracotta-700 rounded">YOU</span>
+                              <span className="ml-2 text-xs px-1.5 py-0.5 bg-terracotta-100 dark:bg-terracotta-950/40 text-terracotta-700 dark:text-terracotta-300 rounded">YOU</span>
                             )}
                           </td>
-                          <td className="py-3 text-stone-600">
-                            {stop.stopTime ? <span className="font-mono">{stop.stopTime}</span> : <span className="text-stone-400">—</span>}
+                          <td className="py-3 text-stone-600 dark:text-slate-300">
+                            {stop.stopTime ? <span className="font-mono">{stop.stopTime}</span> : <span className="text-stone-400 dark:text-slate-600">—</span>}
                           </td>
-                          <td className="py-3 text-stone-500">{stop.landmark || '—'}</td>
+                          <td className="py-3 text-stone-500 dark:text-slate-400">{stop.landmark || '—'}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -214,58 +214,58 @@ export function StudentBoardingPointPage() {
 
           <div className="space-y-4">
             <Card padding="lg" className="text-center">
-              <h3 className="font-heading text-lg font-semibold text-charcoal-500 mb-4">Related Pages</h3>
+              <h3 className="font-heading text-lg font-semibold text-charcoal-500 dark:text-[#F1F5F9] mb-4">Related Pages</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <Link to="/student/my-route" className="w-full text-left p-4 rounded-lg border border-stone-200 hover:border-terracotta-300 hover:bg-terracotta-50 transition-colors block">
+                <Link to="/student/my-route" className="w-full text-left p-4 rounded-lg border border-stone-200 dark:border-slate-800 hover:border-terracotta-300 dark:hover:border-terracotta-500/50 hover:bg-terracotta-50 dark:hover:bg-slate-800/60 transition-colors block">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                      <svg className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-950/40 flex items-center justify-center">
+                      <svg className="h-5 w-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19l-7-7 7-7m8 14l-7-7 7-7" />
                       </svg>
                     </div>
                     <div>
-                      <p className="font-medium text-charcoal-500">View Full Route</p>
-                      <p className="text-sm text-stone-500">All stops & timings</p>
+                      <p className="font-medium text-charcoal-500 dark:text-[#F1F5F9]">View Full Route</p>
+                      <p className="text-sm text-stone-500 dark:text-slate-400">All stops & timings</p>
                     </div>
                   </div>
                 </Link>
-                <Link to="/student/my-bus" className="w-full text-left p-4 rounded-lg border border-stone-200 hover:border-terracotta-300 hover:bg-terracotta-50 transition-colors block">
+                <Link to="/student/my-bus" className="w-full text-left p-4 rounded-lg border border-stone-200 dark:border-slate-800 hover:border-terracotta-300 dark:hover:border-terracotta-500/50 hover:bg-terracotta-50 dark:hover:bg-slate-800/60 transition-colors block">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-terracotta-100 flex items-center justify-center">
-                      <svg className="h-5 w-5 text-terracotta-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-10 h-10 rounded-lg bg-terracotta-100 dark:bg-terracotta-950/40 flex items-center justify-center">
+                      <svg className="h-5 w-5 text-terracotta-600 dark:text-terracotta-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                       </svg>
                     </div>
                     <div>
-                      <p className="font-medium text-charcoal-500">My Bus Details</p>
-                      <p className="text-sm text-stone-500">Bus info & driver</p>
+                      <p className="font-medium text-charcoal-500 dark:text-[#F1F5F9]">My Bus Details</p>
+                      <p className="text-sm text-stone-500 dark:text-slate-400">Bus info & driver</p>
                     </div>
                   </div>
                 </Link>
-                <Link to="/student/bus-pass" className="w-full text-left p-4 rounded-lg border border-stone-200 hover:border-terracotta-300 hover:bg-terracotta-50 transition-colors block">
+                <Link to="/student/bus-pass" className="w-full text-left p-4 rounded-lg border border-stone-200 dark:border-slate-800 hover:border-terracotta-300 dark:hover:border-terracotta-500/50 hover:bg-terracotta-50 dark:hover:bg-slate-800/60 transition-colors block">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
-                      <svg className="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-950/40 flex items-center justify-center">
+                      <svg className="h-5 w-5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                       </svg>
                     </div>
                     <div>
-                      <p className="font-medium text-charcoal-500">My Bus Pass</p>
-                      <p className="text-sm text-stone-500">View & manage pass</p>
+                      <p className="font-medium text-charcoal-500 dark:text-[#F1F5F9]">My Bus Pass</p>
+                      <p className="text-sm text-stone-500 dark:text-slate-400">View & manage pass</p>
                     </div>
                   </div>
                 </Link>
-                <Link to="/student/gps" className="w-full text-left p-4 rounded-lg border border-stone-200 hover:border-terracotta-300 hover:bg-terracotta-50 transition-colors block">
+                <Link to="/student/gps" className="w-full text-left p-4 rounded-lg border border-stone-200 dark:border-slate-800 hover:border-terracotta-300 dark:hover:border-terracotta-500/50 hover:bg-terracotta-50 dark:hover:bg-slate-800/60 transition-colors block">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center">
-                      <svg className="h-5 w-5 text-cyan-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-10 h-10 rounded-lg bg-cyan-100 dark:bg-cyan-950/40 flex items-center justify-center">
+                      <svg className="h-5 w-5 text-cyan-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 10a5 5 0 1110 0 5 5 0 01-10 0z" />
                       </svg>
                     </div>
                     <div>
-                      <p className="font-medium text-charcoal-500">Live Location</p>
-                      <p className="text-sm text-stone-500">Track bus in real-time</p>
+                      <p className="font-medium text-charcoal-500 dark:text-[#F1F5F9]">Live Location</p>
+                      <p className="text-sm text-stone-500 dark:text-slate-400">Track bus in real-time</p>
                     </div>
                   </div>
                 </Link>

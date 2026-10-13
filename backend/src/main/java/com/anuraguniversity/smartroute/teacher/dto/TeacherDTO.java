@@ -77,44 +77,60 @@ public class TeacherDTO {
         private String registrationNumber;
         private String busNumber;
         private Integer capacity;
+        private String model;
+        private String fuelType;
+        private Integer manufactureYear;
+        private String driverName;
+        private String driverPhone;
+        private String conductorName;
+        private String conductorPhone;
+        private Boolean active;
         private Integer currentStudentsCount;
         private Integer availableCapacity;
-        private String driverName;
-        private String conductorName;
         private Boolean isPrimary;
         private Boolean canPublishLocation;
         private Boolean canPublishDelays;
         private Boolean canPublishDisruptions;
+        private RouteSummary route;
 
-        public static BusInfo from(Bus bus, Boolean isPrimary, Boolean canPublishLocation, 
+        public static BusInfo from(Bus bus, Route route, Boolean isPrimary, Boolean canPublishLocation,
                 Boolean canPublishDelays, Boolean canPublishDisruptions) {
+            if (bus == null) return null;
             return BusInfo.builder()
                     .id(bus.getId())
                     .registrationNumber(bus.getRegistrationNumber())
                     .busNumber(bus.getBusNumber())
                     .capacity(bus.getCapacity())
+                    .model(bus.getModel())
+                    .fuelType(bus.getFuelType())
+                    .manufactureYear(bus.getManufactureYear())
+                    .driverName(bus.getDriverName())
+                    .driverPhone(bus.getDriverPhone())
+                    .conductorName(bus.getConductorName())
+                    .conductorPhone(bus.getConductorPhone())
+                    .active(bus.getActive())
                     .currentStudentsCount(bus.getCurrentStudentsCount())
                     .availableCapacity(bus.getAvailableCapacity())
-                    .driverName(bus.getDriverName())
-                    .conductorName(bus.getConductorName())
                     .isPrimary(isPrimary)
                     .canPublishLocation(canPublishLocation)
                     .canPublishDelays(canPublishDelays)
                     .canPublishDisruptions(canPublishDisruptions)
+                    .route(route != null ? RouteSummary.builder()
+                            .id(route.getId())
+                            .routeCode(route.getRouteCode())
+                            .routeName(route.getRouteName())
+                            .direction(route.getDirection())
+                            .build() : null)
                     .build();
         }
 
+        public static BusInfo from(Bus bus, Boolean isPrimary, Boolean canPublishLocation,
+                Boolean canPublishDelays, Boolean canPublishDisruptions) {
+            return from(bus, null, isPrimary, canPublishLocation, canPublishDelays, canPublishDisruptions);
+        }
+
         public static BusInfo from(Bus bus) {
-            return BusInfo.builder()
-                    .id(bus.getId())
-                    .registrationNumber(bus.getRegistrationNumber())
-                    .busNumber(bus.getBusNumber())
-                    .capacity(bus.getCapacity())
-                    .currentStudentsCount(bus.getCurrentStudentsCount())
-                    .availableCapacity(bus.getAvailableCapacity())
-                    .driverName(bus.getDriverName())
-                    .conductorName(bus.getConductorName())
-                    .build();
+            return from(bus, null, false, false, false, false);
         }
     }
 
@@ -122,7 +138,38 @@ public class TeacherDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class RouteSummary {
+        private UUID id;
+        private String routeCode;
+        private String routeName;
+        private Direction direction;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserSummary {
+        private String name;
+        private String email;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class BoardingPointSummary {
+        private UUID id;
+        private String stopName;
+        private LocalTime stopTime;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class PassengerInfo {
+        private UUID id;
         private UUID studentId;
         private UUID userId;
         private String name;
@@ -133,25 +180,38 @@ public class TeacherDTO {
         private UUID assignmentId;
         private Direction direction;
         private AssignmentStatus status;
+        private AssignmentStatus assignmentStatus;
         private UUID boardingPointId;
         private String boardingPointName;
         private LocalTime stopTime;
+        private UserSummary user;
+        private BoardingPointSummary boardingPoint;
 
         public static PassengerInfo from(Student student, StudentBusAssignment assignment) {
+            UUID bpId = assignment.getBoardingPoint() != null ? assignment.getBoardingPoint().getId() : null;
+            String bpName = assignment.getBoardingPoint() != null ? assignment.getBoardingPoint().getStopName() : null;
+            LocalTime bpTime = assignment.getBoardingPoint() != null ? assignment.getBoardingPoint().getStopTime() : null;
+            String userName = student.getUser() != null ? student.getUser().getName() : null;
+            String userEmail = student.getUser() != null ? student.getUser().getEmail() : null;
+
             return PassengerInfo.builder()
+                    .id(student.getId())
                     .studentId(student.getId())
-                    .userId(student.getUser().getId())
-                    .name(student.getUser().getName())
-                    .email(student.getUser().getEmail())
+                    .userId(student.getUser() != null ? student.getUser().getId() : null)
+                    .name(userName)
+                    .email(userEmail)
                     .studentIdStr(student.getStudentId())
                     .branch(student.getBranch())
                     .classSection(student.getClassSection())
                     .assignmentId(assignment.getId())
                     .direction(assignment.getDirection())
                     .status(assignment.getStatus())
-                    .boardingPointId(assignment.getBoardingPoint() != null ? assignment.getBoardingPoint().getId() : null)
-                    .boardingPointName(assignment.getBoardingPoint() != null ? assignment.getBoardingPoint().getStopName() : null)
-                    .stopTime(assignment.getBoardingPoint() != null ? assignment.getBoardingPoint().getStopTime() : null)
+                    .assignmentStatus(assignment.getStatus())
+                    .boardingPointId(bpId)
+                    .boardingPointName(bpName)
+                    .stopTime(bpTime)
+                    .user(UserSummary.builder().name(userName).email(userEmail).build())
+                    .boardingPoint(BoardingPointSummary.builder().id(bpId).stopName(bpName).stopTime(bpTime).build())
                     .build();
         }
     }
@@ -414,6 +474,18 @@ public class TeacherDTO {
         private Boolean canPublishDelays;
         private Boolean canPublishDisruptions;
 
+        // Student transport assignment fields for TeacherAssignmentsPage
+        private StudentSummary student;
+        private BusAssignmentSummary bus;
+        private RouteAssignmentSummary route;
+        private BoardingPointSummary boardingPoint;
+        private Direction direction;
+        private AssignmentStatus status;
+        private LocalDate startDate;
+        private LocalDate endDate;
+        private UUID assignedBy;
+        private String assignmentNotes;
+
         public static AssignmentDTO from(TeacherBusAssignment assignment) {
             return AssignmentDTO.builder()
                     .id(assignment.getId())
@@ -426,6 +498,92 @@ public class TeacherDTO {
                     .canPublishDisruptions(assignment.getCanPublishDisruptions())
                     .build();
         }
+
+        public static AssignmentDTO from(StudentBusAssignment assignment) {
+            if (assignment == null) return null;
+            Student s = assignment.getStudent();
+            Bus b = assignment.getBus();
+            Route r = assignment.getRoute();
+            var bp = assignment.getBoardingPoint();
+
+            return AssignmentDTO.builder()
+                    .id(assignment.getId())
+                    .student(s != null ? StudentSummary.builder()
+                            .id(s.getId())
+                            .studentId(s.getStudentId())
+                            .branch(s.getBranch())
+                            .classSection(s.getClassSection())
+                            .user(s.getUser() != null ? UserSummary.builder()
+                                    .name(s.getUser().getName())
+                                    .email(s.getUser().getEmail())
+                                    .build() : null)
+                            .build() : null)
+                    .bus(b != null ? BusAssignmentSummary.builder()
+                            .id(b.getId())
+                            .registrationNumber(b.getRegistrationNumber())
+                            .capacity(b.getCapacity())
+                            .currentStudentsCount(b.getCurrentStudentsCount())
+                            .route(r != null ? RouteAssignmentSummary.builder()
+                                    .id(r.getId())
+                                    .routeCode(r.getRouteCode())
+                                    .routeName(r.getRouteName())
+                                    .direction(r.getDirection())
+                                    .build() : null)
+                            .build() : null)
+                    .route(r != null ? RouteAssignmentSummary.builder()
+                            .id(r.getId())
+                            .routeCode(r.getRouteCode())
+                            .routeName(r.getRouteName())
+                            .direction(r.getDirection())
+                            .build() : null)
+                    .boardingPoint(bp != null ? BoardingPointSummary.builder()
+                            .id(bp.getId())
+                            .stopName(bp.getStopName())
+                            .stopTime(bp.getStopTime())
+                            .build() : null)
+                    .direction(assignment.getDirection())
+                    .status(assignment.getStatus())
+                    .startDate(assignment.getStartDate())
+                    .endDate(assignment.getEndDate())
+                    .assignedBy(assignment.getAssignedBy())
+                    .assignmentNotes(assignment.getAssignmentNotes())
+                    .build();
+        }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class StudentSummary {
+        private UUID id;
+        private String studentId;
+        private String branch;
+        private String classSection;
+        private UserSummary user;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class BusAssignmentSummary {
+        private UUID id;
+        private String registrationNumber;
+        private Integer capacity;
+        private Integer currentStudentsCount;
+        private RouteAssignmentSummary route;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RouteAssignmentSummary {
+        private UUID id;
+        private String routeCode;
+        private String routeName;
+        private Direction direction;
     }
 
     @Data
@@ -434,5 +592,46 @@ public class TeacherDTO {
     @AllArgsConstructor
     public static class ResolveSOSRequest {
         private String notes;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CreateAssignmentRequest {
+        private UUID studentId;
+        private UUID busId;
+        private UUID routeId;
+        private UUID boardingPointId;
+        private Direction direction;
+        private LocalDate startDate;
+        private LocalDate endDate;
+        private String assignmentNotes;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateAssignmentRequest {
+        private UUID busId;
+        private UUID routeId;
+        private UUID boardingPointId;
+        private Direction direction;
+        private AssignmentStatus status;
+        private LocalDate startDate;
+        private LocalDate endDate;
+        private String assignmentNotes;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateProfileRequest {
+        private String name;
+        private String department;
+        private String designation;
+        private String phone;
     }
 }

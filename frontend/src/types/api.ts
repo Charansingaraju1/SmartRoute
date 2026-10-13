@@ -30,6 +30,7 @@ export interface RegisterRequest {
 export interface LoginRequest {
   email: string;
   password: string;
+  role?: 'STUDENT' | 'TEACHER';
 }
 
 export interface VerifyOTPRequest {

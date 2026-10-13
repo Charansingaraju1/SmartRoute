@@ -3,12 +3,16 @@ package com.anuraguniversity.smartroute.teacher.controller;
 import com.anuraguniversity.smartroute.teacher.dto.TeacherDTO;
 import com.anuraguniversity.smartroute.teacher.service.TeacherService;
 import com.anuraguniversity.smartroute.common.dto.ApiResponse;
+import com.anuraguniversity.smartroute.notification.entity.Notification;
+import com.anuraguniversity.smartroute.notification.repository.NotificationRepository;
 import lombok.Data;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,11 +29,20 @@ import java.util.UUID;
 public class TeacherController {
 
     private final TeacherService teacherService;
+    private final NotificationRepository notificationRepository;
 
     @GetMapping("/profile")
     public ResponseEntity<ApiResponse<TeacherDTO>> getProfile(@AuthenticationPrincipal User user) {
         TeacherDTO profile = teacherService.getTeacherProfile(user.getId());
         return ResponseEntity.ok(ApiResponse.success(profile));
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<ApiResponse<TeacherDTO>> updateProfile(
+            @AuthenticationPrincipal User user,
+            @RequestBody TeacherDTO.UpdateProfileRequest request) {
+        TeacherDTO updated = teacherService.updateTeacherProfile(user.getId(), request);
+        return ResponseEntity.ok(ApiResponse.success(updated, "Profile updated successfully"));
     }
 
     @GetMapping("/buses")
@@ -68,7 +81,7 @@ public class TeacherController {
             @AuthenticationPrincipal User user,
             @PathVariable UUID id,
             @RequestBody TeacherDTO.CreateMissedBusRequest request) {
-        TeacherDTO.MissedBusDTO updated = teacherService.assignAlternativeBus(user.getId(), id, request.getAlternativeBusId());
+        TeacherDTO.MissedBusDTO updated = teacherService.assignAlternativeBus(user.getId(), id, request.getAlternativeBusId(), request.getNotes());
         return ResponseEntity.ok(ApiResponse.success(updated, "Alternative bus assigned"));
     }
 
@@ -192,5 +205,63 @@ public class TeacherController {
             @AuthenticationPrincipal User user) {
         List<TeacherDTO.AssignmentDTO> assignments = teacherService.getTeacherAssignments(user.getId());
         return ResponseEntity.ok(ApiResponse.success(assignments));
+    }
+
+    @GetMapping("/students")
+    public ResponseEntity<ApiResponse<List<TeacherDTO.StudentSummary>>> getStudents(
+            @AuthenticationPrincipal User user) {
+        List<TeacherDTO.StudentSummary> students = teacherService.getEligibleStudents(user.getId());
+        return ResponseEntity.ok(ApiResponse.success(students));
+    }
+
+    @PostMapping("/assignments")
+    public ResponseEntity<ApiResponse<TeacherDTO.AssignmentDTO>> createAssignment(
+            @AuthenticationPrincipal User user,
+            @RequestBody TeacherDTO.CreateAssignmentRequest request) {
+        TeacherDTO.AssignmentDTO assignment = teacherService.createAssignment(user.getId(), request);
+        return ResponseEntity.ok(ApiResponse.success(assignment, "Bus assignment created successfully"));
+    }
+
+    @PutMapping("/assignments/{id}")
+    public ResponseEntity<ApiResponse<TeacherDTO.AssignmentDTO>> updateAssignment(
+            @AuthenticationPrincipal User user,
+            @PathVariable UUID id,
+            @RequestBody TeacherDTO.UpdateAssignmentRequest request) {
+        TeacherDTO.AssignmentDTO assignment = teacherService.updateAssignment(user.getId(), id, request);
+        return ResponseEntity.ok(ApiResponse.success(assignment, "Bus assignment updated successfully"));
+    }
+
+    @DeleteMapping("/assignments/{id}")
+    public ResponseEntity<ApiResponse<TeacherDTO.AssignmentDTO>> cancelAssignment(
+            @AuthenticationPrincipal User user,
+            @PathVariable UUID id,
+            @RequestParam(required = false, defaultValue = "Removed by teacher") String reason) {
+        TeacherDTO.AssignmentDTO assignment = teacherService.cancelAssignment(user.getId(), id, reason);
+        return ResponseEntity.ok(ApiResponse.success(assignment, "Student assignment removed successfully"));
+    }
+
+    @PostMapping("/assignments/{id}/cancel")
+    public ResponseEntity<ApiResponse<TeacherDTO.AssignmentDTO>> cancelAssignmentPost(
+            @AuthenticationPrincipal User user,
+            @PathVariable UUID id,
+            @RequestParam(required = false, defaultValue = "Removed by teacher") String reason) {
+        TeacherDTO.AssignmentDTO assignment = teacherService.cancelAssignment(user.getId(), id, reason);
+        return ResponseEntity.ok(ApiResponse.success(assignment, "Student assignment removed successfully"));
+    }
+
+    /**
+     * Returns notifications for the authenticated teacher, scoped to their own
+     * recipient ID. Uses the same Notification entity and repository as student
+     * notifications â€” only the JWT-derived user ID differs.
+     */
+    @GetMapping("/notifications")
+    public ResponseEntity<ApiResponse<Page<Notification>>> getNotifications(
+            @AuthenticationPrincipal User user,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        var pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<Notification> notifications = notificationRepository
+                .findByRecipientIdOrderByCreatedAtDesc(user.getId(), pageable);
+        return ResponseEntity.ok(ApiResponse.success(notifications));
     }
 }

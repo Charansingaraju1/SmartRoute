@@ -1,0 +1,4622 @@
+{
+  "zones": [
+    {
+      "code": "DSNR",
+      "name": "Dilsukhnagar & LB Nagar Zone",
+      "description": "Dilsukhnagar, LB Nagar, Kothapet, Saroornagar corridors",
+      "displayOrder": 1,
+      "pdfName": "DSNR ZONE",
+      "id": "39c05724-8755-456a-88bb-a26684b379bd"
+    },
+    {
+      "code": "RAM",
+      "name": "Ramanthapur Zone",
+      "description": "Ramanthapur, Amberpet, Kachiguda, Liberty corridors",
+      "displayOrder": 2,
+      "pdfName": "RAMANTHAPUR ZONE",
+      "id": "e2a1b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c"
+    },
+    {
+      "code": "UPL",
+      "name": "Uppal Zone",
+      "description": "Uppal, Boduppal, Medipally, Peerzadiguda corridors",
+      "displayOrder": 3,
+      "pdfName": "UPPAL ZONE",
+      "id": "c86179cc-a334-4e97-a87a-12a937089fd6"
+    },
+    {
+      "code": "SEC",
+      "name": "Secunderabad Zone",
+      "description": "Secunderabad, Malkajgiri, Miyapur, Kukatpally corridors",
+      "displayOrder": 4,
+      "pdfName": "SEC-BAD ZONE",
+      "id": "f75fe02e-1c5e-493b-b691-42ed0de4f1f7"
+    },
+    {
+      "code": "ECIL",
+      "name": "ECIL Zone",
+      "description": "ECIL, Kushaiguda, Sainikpuri, Moula-Ali, Neredmet corridors",
+      "displayOrder": 5,
+      "pdfName": "ECIL ZONE",
+      "id": "f3b2c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d"
+    },
+    {
+      "code": "BHON",
+      "name": "Bhongir Zone",
+      "description": "Bhongir, Alair, Bibinagar, Ghatkesar corridors",
+      "displayOrder": 6,
+      "pdfName": "BHONGIR ZONE",
+      "id": "a4c3d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e"
+    }
+  ],
+  "buses": [
+    {
+      "id": "5299bc0d-5292-4018-91b2-d5f5c7ded0d0",
+      "registrationNumber": "TS08U7726",
+      "busNumber": "Bus 11",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. WAGMODE",
+      "driverPhone": "9764575179"
+    },
+    {
+      "id": "e43bf77c-0462-423c-b308-979c988e26f2",
+      "registrationNumber": "TG08U3239",
+      "busNumber": "Bus 12",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. S ABHIRAM",
+      "driverPhone": "9912293788"
+    },
+    {
+      "id": "9012be0f-1419-4f52-875a-ecc061c6304c",
+      "registrationNumber": "TS08UK0242",
+      "busNumber": "Bus 13",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. R BABU CHARY",
+      "driverPhone": "8247584952"
+    },
+    {
+      "id": "ffef97b2-bda7-4d9f-8310-ff83b8ea22a4",
+      "registrationNumber": "TG08U3068",
+      "busNumber": "Bus 14",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. C SATYABALU",
+      "driverPhone": "9493335302"
+    },
+    {
+      "id": "b2f7fa62-8735-474a-bdd4-4751d13e07c4",
+      "registrationNumber": "TS08UG5275",
+      "busNumber": "Bus 18",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. M SRISAILAM",
+      "driverPhone": "9398187515 / 9603040944"
+    },
+    {
+      "id": "1764f56f-3879-4dd9-9ee2-f0c4da03e224",
+      "registrationNumber": "TS11UA5947",
+      "busNumber": "Bus 20",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. S ANJANEYULU",
+      "driverPhone": "9550001852"
+    },
+    {
+      "id": "03b55a14-9c9a-49d9-92e1-d1a6a7409b1c",
+      "registrationNumber": "TS12UE1153",
+      "busNumber": "Bus 21",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. A PRADEEP REDDY",
+      "driverPhone": "9700533453"
+    },
+    {
+      "id": "e46e2cb2-07cb-4063-be73-6ed3fc82de44",
+      "registrationNumber": "TS07UA5278",
+      "busNumber": "Bus 26",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. M JAGAN",
+      "driverPhone": "9908005017"
+    },
+    {
+      "id": "fd3385b5-df1f-45b8-b0f9-f2768a4cf866",
+      "registrationNumber": "TS11UA5961",
+      "busNumber": "Bus 27",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. P SOMAIAH",
+      "driverPhone": "9666444035"
+    },
+    {
+      "id": "49db88b5-0f71-4bb1-b517-27470610bee4",
+      "registrationNumber": "TS05UA8640",
+      "busNumber": "Bus 30",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. G NARESH",
+      "driverPhone": "9704748134"
+    },
+    {
+      "id": "62e66933-3696-4a30-8679-9bc0c8d30bb0",
+      "registrationNumber": "TG12U3012",
+      "busNumber": "Bus 38",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. N JANGAIAH",
+      "driverPhone": "9032684058"
+    },
+    {
+      "id": "4cbfda13-d704-4bb5-b2e0-c924b93616c1",
+      "registrationNumber": "TS08UK3574",
+      "busNumber": "Bus 40",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. K SWAMY",
+      "driverPhone": "8317505188"
+    },
+    {
+      "id": "cd5780cb-5809-4b79-8d6a-a6a4e2db9f2d",
+      "registrationNumber": "TS08UG6563",
+      "busNumber": "Bus 42",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. V RAMASWAMY",
+      "driverPhone": "7893416343"
+    },
+    {
+      "id": "7d952ccc-e6f0-4d7d-a07f-23aef386d75b",
+      "registrationNumber": "TS08UK4075",
+      "busNumber": "Bus 44",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. U SRIDHAR",
+      "driverPhone": "9705083397"
+    },
+    {
+      "id": "9ae2dc08-92ce-4a3f-b964-78f0a30d2260",
+      "registrationNumber": "TS08UK3876",
+      "busNumber": "Bus 49",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. P ALVAL REDDY",
+      "driverPhone": "9676689791"
+    },
+    {
+      "id": "bff96710-2e43-448b-b405-a7fba19e127c",
+      "registrationNumber": "TS08UK3224",
+      "busNumber": "Bus 50",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. K MAHESH",
+      "driverPhone": "8790044231"
+    },
+    {
+      "id": "e5a952b4-455a-4eaf-82d8-bbeff981ecb6",
+      "registrationNumber": "TS08UK3220",
+      "busNumber": "Bus 51",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. V SRINIVAS",
+      "driverPhone": "9676175843"
+    },
+    {
+      "id": "25f71a11-c3e2-4f3c-8eeb-54316a28ce4b",
+      "registrationNumber": "TS08UK3573",
+      "busNumber": "Bus 54",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. V LINGASWAMY",
+      "driverPhone": "9347249826"
+    },
+    {
+      "id": "888ff49b-ddeb-4d2c-8746-6d7d8c1568aa",
+      "registrationNumber": "TS08UK3219",
+      "busNumber": "Bus 56",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. V NAGARAJU",
+      "driverPhone": "9573045882"
+    },
+    {
+      "id": "717ed1df-ce13-48d9-91db-ba828be4f1e1",
+      "registrationNumber": "TS08UK4078",
+      "busNumber": "Bus 59",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR.K JANGAIAH",
+      "driverPhone": "9177735280"
+    },
+    {
+      "id": "68f40106-a6b4-41da-96ae-4d8ca23b2d8b",
+      "registrationNumber": "TG08U8846",
+      "busNumber": "Bus 63",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. B MALLAREDDY",
+      "driverPhone": "9666198448"
+    },
+    {
+      "id": "be6a17f7-0c53-4619-9450-c32d9db7fcd2",
+      "registrationNumber": "TG08U2910",
+      "busNumber": "Bus 66",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. N EADAIAH",
+      "driverPhone": "8008999581"
+    },
+    {
+      "id": "2c980f4e-4a43-484c-9efb-7e8071f95cfa",
+      "registrationNumber": "TG08U2909",
+      "busNumber": "Bus 67",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. N SUDHAKAR",
+      "driverPhone": "9398237478"
+    },
+    {
+      "id": "93038813-9a3f-44ae-8bd0-8b4334f2d45a",
+      "registrationNumber": "TS08UE6417",
+      "busNumber": "Bus 70",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. S SRISAILAM",
+      "driverPhone": "8555803868"
+    },
+    {
+      "id": "c9ac2625-8739-4c37-86d8-e8326ae74d90",
+      "registrationNumber": "TS08UG6568",
+      "busNumber": "Bus 04",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. E MALLESH",
+      "driverPhone": "9989344083 / 7095086561"
+    },
+    {
+      "id": "691b5a29-f571-4638-b704-5560182555c9",
+      "registrationNumber": "TS08UK4700",
+      "busNumber": "Bus 19",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. SHAMBULINGAM",
+      "driverPhone": "9652724316"
+    },
+    {
+      "id": "9530b963-deac-4401-8da4-2f47d83fd2a8",
+      "registrationNumber": "AP28UE8792",
+      "busNumber": "Bus 23",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. SHEKAR REDDY",
+      "driverPhone": "9550497621"
+    },
+    {
+      "id": "5a570bf5-2ae4-449a-8577-9a94be1b95d2",
+      "registrationNumber": "AP28UE8797",
+      "busNumber": "Bus 31",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. MALLESH",
+      "driverPhone": "9704065033"
+    },
+    {
+      "id": "74c2c8a9-88d3-457f-a26e-800c4db30bbc",
+      "registrationNumber": "TS12UC5290",
+      "busNumber": "Bus 36",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. PULLAIAH",
+      "driverPhone": "9951490662"
+    },
+    {
+      "id": "81bb6e83-59f8-42f6-afed-9d588fe1ccf9",
+      "registrationNumber": "AP04TU7557",
+      "busNumber": "Bus 37",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. MOHD YAKUB",
+      "driverPhone": "7658905827"
+    },
+    {
+      "id": "ef40d7af-cefb-4c6d-ba9a-fd0b3b1a12ea",
+      "registrationNumber": "TS08UK4701",
+      "busNumber": "Bus 52",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. D SRINIVASULU",
+      "driverPhone": "9398919874"
+    },
+    {
+      "id": "2c942927-8dcc-44af-9bea-0e6d90ac44e4",
+      "registrationNumber": "TS08UE6416",
+      "busNumber": "Bus 55",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. KIRAN",
+      "driverPhone": "9959114894"
+    },
+    {
+      "id": "80849a90-da76-41ec-bc28-6833c341b9a2",
+      "registrationNumber": "TS08UE6567",
+      "busNumber": "Bus 58",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. L SRINU",
+      "driverPhone": "8897743976"
+    },
+    {
+      "id": "ab101287-47cf-4ebc-af44-1016949d86c0",
+      "registrationNumber": "TS08UA8176",
+      "busNumber": "Bus 01",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. B RAVI",
+      "driverPhone": "9390292878"
+    },
+    {
+      "id": "99489421-fb6d-4d36-b8e5-f7308a74b027",
+      "registrationNumber": "AP29V4786",
+      "busNumber": "Bus 02",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. TIRUPATHAIAH",
+      "driverPhone": "7569522864"
+    },
+    {
+      "id": "ca78bbf2-6a4f-4f42-8cd1-f6e43c441b98",
+      "registrationNumber": "TS08UG5276",
+      "busNumber": "Bus 09",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. K SRINIVAS",
+      "driverPhone": "9866010329"
+    },
+    {
+      "id": "9e394c87-653f-4594-9509-d7311b9a29db",
+      "registrationNumber": "TS08UG3572",
+      "busNumber": "Bus 16",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. R SAI KUMAR",
+      "driverPhone": "8019805962"
+    },
+    {
+      "id": "e978c73e-bfce-4568-b75f-c54ee307f299",
+      "registrationNumber": "TG08U8234",
+      "busNumber": "Bus 46",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. PRAVEEN",
+      "driverPhone": "7730073009"
+    },
+    {
+      "id": "51010b1c-2f05-4482-9820-a6c221c007bb",
+      "registrationNumber": "TS08UE2334",
+      "busNumber": "Bus 47",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. NAGARAJU",
+      "driverPhone": "9505157813"
+    },
+    {
+      "id": "bc09f294-15c5-41f0-8c16-71dfd925fe3a",
+      "registrationNumber": "TS08UE2332",
+      "busNumber": "Bus 53",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. J KUMAR",
+      "driverPhone": "6305005949"
+    },
+    {
+      "id": "668cfad5-196c-40cd-8f84-7deef4f2bf08",
+      "registrationNumber": "TS08UK3392",
+      "busNumber": "Bus 64",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. CHANDRASHEKAR",
+      "driverPhone": "9959243976"
+    },
+    {
+      "id": "28dd208b-768c-41d0-af25-19114937edfc",
+      "registrationNumber": "TS01UA4509",
+      "busNumber": "Bus 22",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "SK JANIPASHA",
+      "driverPhone": "9573700372"
+    },
+    {
+      "id": "b3380666-efa6-475c-b80c-b0827624e980",
+      "registrationNumber": "TG08U5364",
+      "busNumber": "Bus 29",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. NARENDHAR GOUD",
+      "driverPhone": "7416236558 / 94909925"
+    },
+    {
+      "id": "d5171db0-0dcf-4c40-9736-6632a38ea651",
+      "registrationNumber": "TS05UA4766",
+      "busNumber": "Bus 34",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. MOHD SHARFUDDIN",
+      "driverPhone": "9177515233"
+    },
+    {
+      "id": "b82f9101-ceca-43fb-b26f-ad559b80b315",
+      "registrationNumber": "TS08UK3904",
+      "busNumber": "Bus 39",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "E RAMULU",
+      "driverPhone": "7013658884"
+    },
+    {
+      "id": "6291cc5c-5d05-47ab-a3b2-1414b0f75c9e",
+      "registrationNumber": "TG08U5363",
+      "busNumber": "Bus 60",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. S MAHESH",
+      "driverPhone": "9000117388"
+    },
+    {
+      "id": "f541aa1a-f0de-47b2-93e8-3e0628170c3b",
+      "registrationNumber": "TG08U2891",
+      "busNumber": "Bus 68",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. SK SALEEM",
+      "driverPhone": "7095830407"
+    },
+    {
+      "id": "22752012-1a47-4854-8c16-000f080d2ceb",
+      "registrationNumber": "TS08UK4076",
+      "busNumber": "Bus 03",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. M DEVENDHAR",
+      "driverPhone": "9172038378"
+    },
+    {
+      "id": "fbcdb3ce-f175-4881-98ea-4604e192c002",
+      "registrationNumber": "TS12UE0712",
+      "busNumber": "Bus 05",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. SAMBA",
+      "driverPhone": "9177847465"
+    },
+    {
+      "id": "09333af8-3ee6-4e59-acec-ccdf35858326",
+      "registrationNumber": "TG08U8233",
+      "busNumber": "Bus 06",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. B MADHU",
+      "driverPhone": "9618261671"
+    },
+    {
+      "id": "df39234d-6706-4c34-ba83-516e85ea8e33",
+      "registrationNumber": "TG08U7886",
+      "busNumber": "Bus 07",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. SK AKBAR",
+      "driverPhone": "6301900954"
+    },
+    {
+      "id": "2ffdc5a2-14ec-4095-9573-0edc3cd78734",
+      "registrationNumber": "TS08UK3221",
+      "busNumber": "Bus 08",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. T RAVI",
+      "driverPhone": "9948669824 / 8919188185"
+    },
+    {
+      "id": "53fb1128-a42a-4a96-90a8-0caf4e67028f",
+      "registrationNumber": "TS08UK0245",
+      "busNumber": "Bus 10",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. G MAHESH",
+      "driverPhone": "8106661820"
+    },
+    {
+      "id": "3c9f1c6a-6eb7-428b-90f2-d162f2781383",
+      "registrationNumber": "TS08UK0243",
+      "busNumber": "Bus 15",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. A RAGHU",
+      "driverPhone": "9951518343"
+    },
+    {
+      "id": "196ebbf2-d172-4fcc-9586-478d4f22f286",
+      "registrationNumber": "TS04UA2101",
+      "busNumber": "Bus 24",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. K ESTHAARI",
+      "driverPhone": "9912247928"
+    },
+    {
+      "id": "3f50eb02-34e0-40d9-8c42-9dbd0e61d399",
+      "registrationNumber": "TS08UK3391",
+      "busNumber": "Bus 25",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. B NARASIMHA",
+      "driverPhone": "9912549203"
+    },
+    {
+      "id": "9c684497-270b-4f8a-983b-0c686657d387",
+      "registrationNumber": "AP24TA3222",
+      "busNumber": "Bus 28",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. CH SRINIVAS",
+      "driverPhone": "9000325572"
+    },
+    {
+      "id": "063b0194-04c0-4cf2-8594-8840dc33e80f",
+      "registrationNumber": "TS05UA2166",
+      "busNumber": "Bus 32",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. SRINIVASREDDY",
+      "driverPhone": "9848311077"
+    },
+    {
+      "id": "cb9868d5-32ef-49c5-a3e6-fcfde84dbefb",
+      "registrationNumber": "AP25Y0045",
+      "busNumber": "Bus 33",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. K RAVI KUMAR",
+      "driverPhone": "9640442981"
+    },
+    {
+      "id": "3fba6bed-2d63-49d7-a9c0-c70e731e6ab6",
+      "registrationNumber": "TS08UK0244",
+      "busNumber": "Bus 35",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. PRABHAKAR REDDY",
+      "driverPhone": "9494870069"
+    },
+    {
+      "id": "d2ac9f41-5493-4673-906b-43f1409f6c4a",
+      "registrationNumber": "TS08UK4702",
+      "busNumber": "Bus 41",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. J PRASHANTH",
+      "driverPhone": "9948346590"
+    },
+    {
+      "id": "40ac57ea-0a38-4a57-b256-bbc911e16fba",
+      "registrationNumber": "TS08UG6564",
+      "busNumber": "Bus 45",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. G SREENU",
+      "driverPhone": "8179566675"
+    },
+    {
+      "id": "a6405ccc-8276-4aea-84ff-890795421616",
+      "registrationNumber": "TS08UK3903",
+      "busNumber": "Bus 48",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. K MALLESH",
+      "driverPhone": "7095096561"
+    },
+    {
+      "id": "be9faff4-12f6-495a-8782-979afbadc6e4",
+      "registrationNumber": "TS08UK3875",
+      "busNumber": "Bus 57",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. K VENKATESH",
+      "driverPhone": "9666217512"
+    },
+    {
+      "id": "6b60471b-156d-419f-87fc-9a1d93daa3df",
+      "registrationNumber": "TG08U3240",
+      "busNumber": "Bus 65",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. MADHUSUDHAN",
+      "driverPhone": "9676845001"
+    },
+    {
+      "id": "2fcb4425-cf47-4963-aed0-623eab3eca24",
+      "registrationNumber": "TG08U3440",
+      "busNumber": "Bus 17",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. KAMALAKAR REDDY",
+      "driverPhone": "9963185981"
+    },
+    {
+      "id": "52915dd0-4c78-4230-9266-2d107ae623da",
+      "registrationNumber": "TG08U3088",
+      "busNumber": "Bus 43",
+      "capacity": 50,
+      "model": "Anurag University Transport",
+      "fuelType": "Diesel",
+      "driverName": "MR. MOHD VALI PASHA",
+      "driverPhone": "9989543655"
+    }
+  ],
+  "routes": [
+    {
+      "id": "ab3370df-e15e-4f56-a92d-afcb6dd71cfc",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TS08U7726",
+      "routeCode": "R-11",
+      "routeName": "SAROORNAGAR POST OFFICE TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "SAROORNAGAR POST OFFICE",
+      "startingTime": "07:35:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 11,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "SAROORNAGAR POST OFFICE",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 2,
+          "name": "MANDAL OFFICE",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 3,
+          "name": "HUDA COMPLEX",
+          "amount": 35000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 4,
+          "name": "NEW NAGOLE",
+          "amount": 35000.0,
+          "time": "07:52:00",
+          "raw_time": "07:52AM"
+        },
+        {
+          "order": 5,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "ad973f46-0192-4757-96c3-bc54a87c7a74",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TG08U3239",
+      "routeCode": "R-12",
+      "routeName": "BANDLAGUDA NAGOLE TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "BANDLAGUDA NAGOLE",
+      "startingTime": "07:53:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 12,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "BANDLAGUDA NAGOLE",
+          "amount": 35000.0,
+          "time": "07:53:00",
+          "raw_time": "07:53AM"
+        },
+        {
+          "order": 2,
+          "name": "ANAND NAGAR",
+          "amount": 35000.0,
+          "time": "08:00:00",
+          "raw_time": "08:00AM"
+        },
+        {
+          "order": 3,
+          "name": "MUTHUGUDA",
+          "amount": 35000.0,
+          "time": "08:05:00",
+          "raw_time": "08:05AM"
+        },
+        {
+          "order": 4,
+          "name": "PALLAVI",
+          "amount": 35000.0,
+          "time": "08:07:00",
+          "raw_time": "08:07AM"
+        },
+        {
+          "order": 5,
+          "name": "HINDU ARANYA",
+          "amount": 35000.0,
+          "time": "08:10:00",
+          "raw_time": "08:10AM"
+        },
+        {
+          "order": 6,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "2b2383b6-be89-479e-9e01-7078a7a21cd0",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TS08UK0242",
+      "routeCode": "R-13",
+      "routeName": "HASTHINAPURAM PETROL BUNK TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "HASTHINAPURAM PETROL BUNK",
+      "startingTime": "07:40:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 13,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "HASTHINAPURAM PETROL BUNK",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 2,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "c114cd19-c202-4602-b1a5-f39752f9d5c5",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TG08U3068",
+      "routeCode": "R-14",
+      "routeName": "AUTO NAGAR GATE (VIA SUSMA) TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "AUTO NAGAR GATE",
+      "startingTime": "07:20:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 14,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "AUTO NAGAR GATE",
+          "amount": 35000.0,
+          "time": "07:20:00",
+          "raw_time": "07:20AM"
+        },
+        {
+          "order": 2,
+          "name": "SUSHMA THEATER",
+          "amount": 35000.0,
+          "time": "07:25:00",
+          "raw_time": "07:25AM"
+        },
+        {
+          "order": 3,
+          "name": "PANAMA",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 4,
+          "name": "CHINTHALKUNTA",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 5,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "7d7a9b82-2b85-48e9-96b3-9bef601da711",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TS08UG5275",
+      "routeCode": "R-18",
+      "routeName": "LB NAGAR METRO STATION TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "LB NAGAR METRO STATION",
+      "startingTime": "07:30:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 18,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "LB NAGAR METRO STATION",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 2,
+          "name": "RR COURT",
+          "amount": 35000.0,
+          "time": "07:32:00",
+          "raw_time": "07:32AM"
+        },
+        {
+          "order": 3,
+          "name": "WHITE HOUSE",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 4,
+          "name": "ASTHALAKSHMI TEMPLE ARCH",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 5,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "f26cd2f9-4ea2-4b41-9d9a-efcfe5f0cc0e",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TS11UA5947",
+      "routeCode": "R-20",
+      "routeName": "PARK COLONY KARMANGHAT (VIA YASHODA HOSPITAL) TO CO",
+      "direction": "MORNING",
+      "startingPoint": "GREEN PARK COLONY KARMANGHAT",
+      "startingTime": "07:25:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 20,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "GREEN PARK COLONY KARMANGHAT",
+          "amount": 35000.0,
+          "time": "07:25:00",
+          "raw_time": "07:25AM"
+        },
+        {
+          "order": 2,
+          "name": "RTC COLONY",
+          "amount": 35000.0,
+          "time": "07:27:00",
+          "raw_time": "07:27AM"
+        },
+        {
+          "order": 3,
+          "name": "CHAMPAPET",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 4,
+          "name": "IS SADAN",
+          "amount": 35000.0,
+          "time": "07:33:00",
+          "raw_time": "07:33AM"
+        },
+        {
+          "order": 5,
+          "name": "SAIDABAD PS",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 6,
+          "name": "MALAKPET PRESS",
+          "amount": 35000.0,
+          "time": "07:37:00",
+          "raw_time": "07:37AM"
+        },
+        {
+          "order": 7,
+          "name": "YASHODA HOSPITAL MALAKPET",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 8,
+          "name": "MALAKPET SUPER BAZAR",
+          "amount": 35000.0,
+          "time": "07:43:00",
+          "raw_time": "07:43AM"
+        },
+        {
+          "order": 9,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "9ef2f5a4-23b8-4f52-92d8-bbac071e44f7",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TS12UE1153",
+      "routeCode": "R-21",
+      "routeName": "KARMANAGHAT TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "KARMANAGHAT",
+      "startingTime": "07:32:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 21,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "KARMANAGHAT",
+          "amount": 35000.0,
+          "time": "07:32:00",
+          "raw_time": "07:32AM"
+        },
+        {
+          "order": 2,
+          "name": "SAROOR NAGAR GANDHI STATUE",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 3,
+          "name": "SAROOR NAGAR LAKE",
+          "amount": 35000.0,
+          "time": "07:38:00",
+          "raw_time": "07:38AM"
+        },
+        {
+          "order": 4,
+          "name": "SHIVA GANGA",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 5,
+          "name": "RAGHAVENDRA TIFFIN CENTRE",
+          "amount": 35000.0,
+          "time": "07:43:00",
+          "raw_time": "07:43AM"
+        },
+        {
+          "order": 6,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "57d9176d-158c-402f-855c-ca64a1843471",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TS07UA5278",
+      "routeCode": "R-26",
+      "routeName": "GANESH TEMPLE TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "GANESH TEMPLE",
+      "startingTime": "07:35:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 26,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "GANESH TEMPLE",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07.35AM"
+        },
+        {
+          "order": 2,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "1861ae63-c184-43b3-bd5f-d2b85cc21432",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TS11UA5961",
+      "routeCode": "R-27",
+      "routeName": "BALAPUR X ROAD TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "BALAPUR X ROAD",
+      "startingTime": "07:30:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 27,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "BALAPUR X ROAD",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 2,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "b54f8463-bca5-45b8-81cd-ba0959538be7",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TS05UA8640",
+      "routeCode": "R-30",
+      "routeName": "YAMJAL TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "YAMJAL",
+      "startingTime": "07:20:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 30,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "YAMJAL",
+          "amount": 35000.0,
+          "time": "07:20:00",
+          "raw_time": "07:20AM"
+        },
+        {
+          "order": 2,
+          "name": "INJAPUR",
+          "amount": 35000.0,
+          "time": "07:25:00",
+          "raw_time": "07:25AM"
+        },
+        {
+          "order": 3,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "3e5a9d0b-211e-40bb-b5dd-ed29323a32da",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TG12U3012",
+      "routeCode": "R-38",
+      "routeName": "SHIVARAMPALLY (VIA LB NAGAR) TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "SHIVARAMPALLY",
+      "startingTime": "07:20:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 38,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "SHIVARAMPALLY",
+          "amount": 35000.0,
+          "time": "07:20:00",
+          "raw_time": "07:20AM"
+        },
+        {
+          "order": 2,
+          "name": "DURGA NAGAR",
+          "amount": 35000.0,
+          "time": "07:22:00",
+          "raw_time": "07:22AM"
+        },
+        {
+          "order": 3,
+          "name": "BANDLAGUDA",
+          "amount": 35000.0,
+          "time": "07:25:00",
+          "raw_time": "07:25AM"
+        },
+        {
+          "order": 4,
+          "name": "CHANDRAYANGUTTA",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 5,
+          "name": "DRDL",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 6,
+          "name": "OWAISI HOSPITAL",
+          "amount": 35000.0,
+          "time": "07:37:00",
+          "raw_time": "07:37AM"
+        },
+        {
+          "order": 7,
+          "name": "MANDAMALLAMMA X ROADS",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 8,
+          "name": "ALEKHYA TOWERS",
+          "amount": 35000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 9,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "737d0944-c457-4031-aa7c-fed964c3ed8f",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TS08UK3574",
+      "routeCode": "R-40",
+      "routeName": "KAMALANAGAR HAYTHNAGAR TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "KAMALANAGAR HAYATHNAGAR",
+      "startingTime": "07:20:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 40,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "KAMALANAGAR HAYATHNAGAR",
+          "amount": 35000.0,
+          "time": "07:20:00",
+          "raw_time": "07:20AM"
+        },
+        {
+          "order": 2,
+          "name": "SHANTHI NAGAR",
+          "amount": 35000.0,
+          "time": "07:22:00",
+          "raw_time": "07:22AM"
+        },
+        {
+          "order": 3,
+          "name": "BHAGYALATHA COLONY",
+          "amount": 35000.0,
+          "time": "07:25:00",
+          "raw_time": "07:25AM"
+        },
+        {
+          "order": 4,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "9fdaad30-29ec-428f-badb-28784b3cd0c1",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TS08UG6563",
+      "routeCode": "R-42",
+      "routeName": "TV TOWER MALAKPET (VIA AMBERPET) TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "TV TOWER MALAKPET",
+      "startingTime": "07:30:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 42,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "TV TOWER MALAKPET",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 2,
+          "name": "RTA OFFICE MALAKPET",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 3,
+          "name": "ALI CAFE",
+          "amount": 35000.0,
+          "time": "07:38:00",
+          "raw_time": "07:38AM"
+        },
+        {
+          "order": 4,
+          "name": "SRI RAMANA THEATER",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 5,
+          "name": "AMBERPET DARGAH",
+          "amount": 35000.0,
+          "time": "07:42:00",
+          "raw_time": "07:42AM"
+        },
+        {
+          "order": 6,
+          "name": "MUTYALAMMA GUDI",
+          "amount": 35000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 7,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "03b49725-0aa5-49db-bbb1-eb9fb914876d",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TS08UK4075",
+      "routeCode": "R-44",
+      "routeName": "WORD & DEED SCHOOL HAYATHANAGAR TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "WORD & DEED SCHOOL",
+      "startingTime": "07:30:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 44,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "WORD & DEED SCHOOL",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 2,
+          "name": "LEYLAND SHOW ROOM",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 3,
+          "name": "A1 BAKERY",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 4,
+          "name": "PEDDAMBARPET MAIN ROAD",
+          "amount": 35000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 5,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "1c12d1fa-cd1d-47ac-8212-c62c4ca0e47e",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TS08UK3876",
+      "routeCode": "R-49",
+      "routeName": "GURRAM GUDA TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "GURRAM GUDA",
+      "startingTime": "07:30:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 49,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "GURRAM GUDA",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 2,
+          "name": "SAGAR COMPLEX",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 3,
+          "name": "BN REDDY NAGAR X ROADS",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 4,
+          "name": "BDR GARDEN",
+          "amount": 35000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 5,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "38abf58f-09b2-41cb-89b6-b3c25af77017",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TS08UK3224",
+      "routeCode": "R-50",
+      "routeName": "HDFC BANK HAYATHNAGAR TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "HDFC BANK HAYATHNAGAR",
+      "startingTime": "07:25:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 50,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "HDFC BANK HAYATHNAGAR",
+          "amount": 35000.0,
+          "time": "07:25:00",
+          "raw_time": "07:25AM"
+        },
+        {
+          "order": 2,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "b23919fa-8c10-419a-952e-76978ad3f060",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TS08UK3220",
+      "routeCode": "R-51",
+      "routeName": "BAIRAMALGUDA TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "BAIRAMALGUDA",
+      "startingTime": "07:30:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 51,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "BAIRAMALGUDA",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 2,
+          "name": "KAMALA HOSPITAL",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 3,
+          "name": "SAI BABA TEMPLE",
+          "amount": 35000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 4,
+          "name": "CHAITANYAPURI PETROL BUNK",
+          "amount": 35000.0,
+          "time": "07:50:00",
+          "raw_time": "07:50AM"
+        },
+        {
+          "order": 5,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "a5cec363-5c50-4a17-bb3a-c9d8ccaa9275",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TS08UK3573",
+      "routeCode": "R-54",
+      "routeName": "KAMINENI HOSPITAL (VIA BANDLAGUDA) TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "KAMINENI HOSPITAL",
+      "startingTime": "07:35:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 54,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "KAMINENI HOSPITAL",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 2,
+          "name": "SUJATHA HOTEL BANDLAGUDA",
+          "amount": 35000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 3,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "72d20c8e-eaec-4d5e-acaf-c4495023f7b8",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TS08UK3219",
+      "routeCode": "R-56",
+      "routeName": "OMNI HOSPITALS (VIA BHAGAYATH) TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "OMNI HOSPITALS",
+      "startingTime": "07:50:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 56,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "OMNI HOSPITALS",
+          "amount": 35000.0,
+          "time": "07:50:00",
+          "raw_time": "07:50AM"
+        },
+        {
+          "order": 2,
+          "name": "HP PETROL BUNK MOHAN NAGAR",
+          "amount": 35000.0,
+          "time": "07:53:00",
+          "raw_time": "07:53AM"
+        },
+        {
+          "order": 3,
+          "name": "MOHAN NAGAR UBI BANK",
+          "amount": 35000.0,
+          "time": "07:55:00",
+          "raw_time": "07:55AM"
+        },
+        {
+          "order": 4,
+          "name": "BHARAT PETROL BUNK NAGOLE",
+          "amount": 35000.0,
+          "time": "07:57:00",
+          "raw_time": "07:57AM"
+        },
+        {
+          "order": 5,
+          "name": "UPPAL BHAGAYATH BAJAJ SHOW ROOM",
+          "amount": 35000.0,
+          "time": "08:05:00",
+          "raw_time": "08:05AM"
+        },
+        {
+          "order": 6,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "20ac7251-e188-4b84-b187-4438ccdfa993",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TS08UK4078",
+      "routeCode": "R-59",
+      "routeName": "BVK MALL LB NAGAR TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "BVK MALL LB NAGAR",
+      "startingTime": "07:40:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 59,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "BVK MALL LB NAGAR",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 2,
+          "name": "ROCK TOWN RELIANCE PETROL BUNK",
+          "amount": 35000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 3,
+          "name": "ALKAPURI X ROADS",
+          "amount": 35000.0,
+          "time": "07:50:00",
+          "raw_time": "07:50AM"
+        },
+        {
+          "order": 4,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "f2dcef84-181c-47d9-9ed8-aa0e0d06705d",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TG08U8846",
+      "routeCode": "R-63",
+      "routeName": "RTC COLONY HAYATHNAGAR TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "RTC COLONY HAYATHNAGAR",
+      "startingTime": "07:50:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 63,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "RTC COLONY HAYATHNAGAR",
+          "amount": 35000.0,
+          "time": "07:50:00",
+          "raw_time": "07:50AM"
+        },
+        {
+          "order": 2,
+          "name": "HAYATHNAGAR BUS STOP",
+          "amount": 35000.0,
+          "time": "07:55:00",
+          "raw_time": "07:55AM"
+        },
+        {
+          "order": 3,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "7b99a7cb-231a-4122-b90f-08f0576af067",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TG08U2910",
+      "routeCode": "R-66",
+      "routeName": "MANDAMALLAMMA X ROADS TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "MANDAMALLAMMA X ROADS",
+      "startingTime": "07:40:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 66,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "MANDAMALLAMMA X ROADS",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 2,
+          "name": "GAYATRI NAGAR X ROADS",
+          "amount": 35000.0,
+          "time": "07:43:00",
+          "raw_time": "07:43AM"
+        },
+        {
+          "order": 3,
+          "name": "TKR KAMAN",
+          "amount": 35000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 4,
+          "name": "HEALTH CARE HOSPITAL",
+          "amount": 35000.0,
+          "time": "07:47:00",
+          "raw_time": "07:47AM"
+        },
+        {
+          "order": 5,
+          "name": "SNEHAPURI RTA OFFICE",
+          "amount": 35000.0,
+          "time": "07:52:00",
+          "raw_time": "07:52AM"
+        },
+        {
+          "order": 6,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "4b284af8-c7c4-4166-978e-7fe0a3977127",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TG08U2909",
+      "routeCode": "R-67",
+      "routeName": "SAGAR COMPLEX TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "SAGAR COMPLEX",
+      "startingTime": "07:30:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 67,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "SAGAR COMPLEX",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 2,
+          "name": "HASTHINAPURAM NAVEENA SCHOOL",
+          "amount": 35000.0,
+          "time": "07:38:00",
+          "raw_time": "07:38AM"
+        },
+        {
+          "order": 3,
+          "name": "OMKAR NAGAR",
+          "amount": 35000.0,
+          "time": "07:42:00",
+          "raw_time": "07:42AM"
+        },
+        {
+          "order": 4,
+          "name": "SAGAR X ROADS",
+          "amount": 35000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 5,
+          "name": "LB NAGAR BATA",
+          "amount": 35000.0,
+          "time": "07:50:00",
+          "raw_time": "07:50AM"
+        },
+        {
+          "order": 6,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "3ca82f6f-e6a9-4037-a4fd-3536142f09ca",
+      "zoneId": "39c05724-8755-456a-88bb-a26684b379bd",
+      "zoneCode": "DSNR",
+      "busRegistration": "TS08UE6417",
+      "routeCode": "R-70",
+      "routeName": "RYTHU BAZAAR V PURAM (VIA LB NAGAR) TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "RYTHU BAZAR V PURAM",
+      "startingTime": "07:30:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 70,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "RYTHU BAZAR V PURAM",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07.30AM"
+        },
+        {
+          "order": 2,
+          "name": "PAI ELACTRANICS",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "7.35AM"
+        },
+        {
+          "order": 3,
+          "name": "NAGOLE X ROAD",
+          "amount": 35000.0,
+          "time": "07:50:00",
+          "raw_time": "07-50AM"
+        },
+        {
+          "order": 4,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "62a8c033-316a-4d37-b21e-330d9c2e2e1c",
+      "zoneId": "e2a1b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+      "zoneCode": "RAM",
+      "busRegistration": "TS08UG6568",
+      "routeCode": "R-04",
+      "routeName": "RAMANTHAPUR TV STUDIO TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "RAMANTHAPUR TV STUDIO",
+      "startingTime": "07:50:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 4,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "RAMANTHAPUR TV STUDIO",
+          "amount": 35000.0,
+          "time": "07:50:00",
+          "raw_time": "07:50AM"
+        },
+        {
+          "order": 2,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "ebd556f4-1547-499d-bfa0-ba73a96159e4",
+      "zoneId": "e2a1b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+      "zoneCode": "RAM",
+      "busRegistration": "TS08UK4700",
+      "routeCode": "R-19",
+      "routeName": "TOURIST HOTEL (VIA TARNAKA) TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "TOURIST HOTEL",
+      "startingTime": "07:20:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 19,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "TOURIST HOTEL",
+          "amount": 35000.0,
+          "time": "07:20:00",
+          "raw_time": "07:20AM"
+        },
+        {
+          "order": 2,
+          "name": "CHAPPAL BAZAAR",
+          "amount": 35000.0,
+          "time": "07:22:00",
+          "raw_time": "07:22AM"
+        },
+        {
+          "order": 3,
+          "name": "KACHIGUDA X ROADS",
+          "amount": 35000.0,
+          "time": "07:25:00",
+          "raw_time": "07:25AM"
+        },
+        {
+          "order": 4,
+          "name": "NARAYANAGUDA PS",
+          "amount": 35000.0,
+          "time": "07:28:00",
+          "raw_time": "07:28AM"
+        },
+        {
+          "order": 5,
+          "name": "CHIKKADPALLY",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 6,
+          "name": "GOLCONDA X ROADS",
+          "amount": 35000.0,
+          "time": "07:33:00",
+          "raw_time": "07:33AM"
+        },
+        {
+          "order": 7,
+          "name": "GARONDA",
+          "amount": 35000.0,
+          "time": "07:36:00",
+          "raw_time": "07:36AM"
+        },
+        {
+          "order": 8,
+          "name": "PADMARAO NAGAR NTR",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 9,
+          "name": "NAIVEDYAM SIGNALS",
+          "amount": 35000.0,
+          "time": "07:41:00",
+          "raw_time": "07:41AM"
+        },
+        {
+          "order": 10,
+          "name": "CHILKALGUDA JUNCTION",
+          "amount": 35000.0,
+          "time": "07:43:00",
+          "raw_time": "07:43AM"
+        },
+        {
+          "order": 11,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "bd946b8b-6b9a-49c5-acd3-472b31772b5c",
+      "zoneId": "e2a1b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+      "zoneCode": "RAM",
+      "busRegistration": "AP28UE8792",
+      "routeCode": "R-23",
+      "routeName": "PILLAR NO.96 TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "PILLAR NO 96",
+      "startingTime": "07:10:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 23,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "PILLAR NO 96",
+          "amount": 35000.0,
+          "time": "07:10:00",
+          "raw_time": "07:10AM"
+        },
+        {
+          "order": 2,
+          "name": "GUDIMALKAPUR X ROAD",
+          "amount": 35000.0,
+          "time": "07:13:00",
+          "raw_time": "07:13AM"
+        },
+        {
+          "order": 3,
+          "name": "RETHIBOWLI X ROADS",
+          "amount": 35000.0,
+          "time": "07:15:00",
+          "raw_time": "07:15AM"
+        },
+        {
+          "order": 4,
+          "name": "MEHDIPATNAM",
+          "amount": 35000.0,
+          "time": "07:17:00",
+          "raw_time": "07:17AM"
+        },
+        {
+          "order": 5,
+          "name": "SAROJINI EYE HOSPITAL",
+          "amount": 35000.0,
+          "time": "07:20:00",
+          "raw_time": "07:20AM"
+        },
+        {
+          "order": 6,
+          "name": "NMDC",
+          "amount": 35000.0,
+          "time": "07:22:00",
+          "raw_time": "07:22AM"
+        },
+        {
+          "order": 7,
+          "name": "MAHAVEER HOSPITAL",
+          "amount": 35000.0,
+          "time": "07:27:00",
+          "raw_time": "07:27AM"
+        },
+        {
+          "order": 8,
+          "name": "LAKDIKAPOOL",
+          "amount": 35000.0,
+          "time": "07:32:00",
+          "raw_time": "07:32AM"
+        },
+        {
+          "order": 9,
+          "name": "POLICE CONTROL ROOM",
+          "amount": 35000.0,
+          "time": "07:37:00",
+          "raw_time": "07:37AM"
+        },
+        {
+          "order": 10,
+          "name": "NIZAM COLLEGE",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 11,
+          "name": "ABIDS BATA",
+          "amount": 35000.0,
+          "time": "07:41:00",
+          "raw_time": "07:41AM"
+        },
+        {
+          "order": 12,
+          "name": "KOTI BANK STREET DOWN",
+          "amount": 35000.0,
+          "time": "07:44:00",
+          "raw_time": "07:44AM"
+        },
+        {
+          "order": 13,
+          "name": "CHADHARGHAT",
+          "amount": 35000.0,
+          "time": "07:46:00",
+          "raw_time": "07:46AM"
+        },
+        {
+          "order": 14,
+          "name": "GOLNAKHA",
+          "amount": 35000.0,
+          "time": "07:48:00",
+          "raw_time": "07:48AM"
+        },
+        {
+          "order": 15,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "1fdc9778-92a7-493c-9ffb-174226bf3499",
+      "zoneId": "e2a1b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+      "zoneCode": "RAM",
+      "busRegistration": "AP28UE8797",
+      "routeCode": "R-31",
+      "routeName": "MUSHEERABAD X ROADS (VIA TARNAKA) TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "MUSHEERABAD X ROADS",
+      "startingTime": "07:30:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 31,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "MUSHEERABAD X ROADS",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 2,
+          "name": "RAJA DELUX",
+          "amount": 35000.0,
+          "time": "07:32:00",
+          "raw_time": "07:32AM"
+        },
+        {
+          "order": 3,
+          "name": "RTC X ROAD",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 4,
+          "name": "VST X ROAD",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 5,
+          "name": "RAMNAGAR",
+          "amount": 35000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 6,
+          "name": "RAMNAGAR GUNDU",
+          "amount": 35000.0,
+          "time": "07:50:00",
+          "raw_time": "07:50AM"
+        },
+        {
+          "order": 7,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "3807665f-f359-4a30-979b-d8c5f1a3e2c0",
+      "zoneId": "e2a1b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+      "zoneCode": "RAM",
+      "busRegistration": "TS12UC5290",
+      "routeCode": "R-36",
+      "routeName": "YUSUF GUDA CHECK POST TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "YUSUF GUDA CHECK POST",
+      "startingTime": "07:20:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 36,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "YUSUF GUDA CHECK POST",
+          "amount": 35000.0,
+          "time": "07:20:00",
+          "raw_time": "07:20AM"
+        },
+        {
+          "order": 2,
+          "name": "TV 9 OFFICE",
+          "amount": 35000.0,
+          "time": "07:23:00",
+          "raw_time": "07:23AM"
+        },
+        {
+          "order": 3,
+          "name": "SATHYA SAI NIGAM",
+          "amount": 35000.0,
+          "time": "07:25:00",
+          "raw_time": "07:25AM"
+        },
+        {
+          "order": 4,
+          "name": "SRI NAGAR COLONY",
+          "amount": 35000.0,
+          "time": "07:27:00",
+          "raw_time": "07:27AM"
+        },
+        {
+          "order": 5,
+          "name": "VIA PUNJAGUTTA",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 6,
+          "name": "NIMS",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 7,
+          "name": "KHAIRATHABAD FLYOVER",
+          "amount": 35000.0,
+          "time": "07:37:00",
+          "raw_time": "07:37AM"
+        },
+        {
+          "order": 8,
+          "name": "NTR GARDENS",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 12,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "ae2d1fa4-0653-4fa0-bf97-72dffec20c71",
+      "zoneId": "e2a1b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+      "zoneCode": "RAM",
+      "busRegistration": "AP04TU7557",
+      "routeCode": "R-37",
+      "routeName": "HILKALGUDA GANDHI STATUE (VIA RAMANTHAPUR) TO COLLEG",
+      "direction": "MORNING",
+      "startingPoint": "CHILKALGUDA GANDHI STATUE",
+      "startingTime": "07:25:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:35:00",
+      "displayOrder": 37,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "CHILKALGUDA GANDHI STATUE",
+          "amount": 35000.0,
+          "time": "07:25:00",
+          "raw_time": "07:25AM"
+        },
+        {
+          "order": 2,
+          "name": "SEETHAPHAL MANDI",
+          "amount": 35000.0,
+          "time": "07:27:00",
+          "raw_time": "07:27AM"
+        },
+        {
+          "order": 3,
+          "name": "NAMALA GUNDU",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 4,
+          "name": "SRIDEVI NURSING HOME",
+          "amount": 35000.0,
+          "time": "07:32:00",
+          "raw_time": "07:32AM"
+        },
+        {
+          "order": 5,
+          "name": "WARASI GUDA",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 6,
+          "name": "JAMIA OSMANIA STATION",
+          "amount": 35000.0,
+          "time": "07:37:00",
+          "raw_time": "07:37AM"
+        },
+        {
+          "order": 7,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:35:00",
+          "raw_time": "08:35AM"
+        }
+      ]
+    },
+    {
+      "id": "cba24025-9299-42ab-8512-e920df32bb9f",
+      "zoneId": "e2a1b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+      "zoneCode": "RAM",
+      "busRegistration": "TS08UK4701",
+      "routeCode": "R-52",
+      "routeName": "6 NUMBER TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "6 NUMBER",
+      "startingTime": "07:35:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 52,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "6 NUMBER",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 2,
+          "name": "BAKERSQ",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 3,
+          "name": "SAI BABA TEMPLE",
+          "amount": 35000.0,
+          "time": "07:42:00",
+          "raw_time": "07:42AM"
+        },
+        {
+          "order": 4,
+          "name": "SHIVAM",
+          "amount": 35000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 5,
+          "name": "VIDYANAGAR X ROADS",
+          "amount": 35000.0,
+          "time": "07:48:00",
+          "raw_time": "07:48AM"
+        },
+        {
+          "order": 6,
+          "name": "NALLAKUNTA PS",
+          "amount": 35000.0,
+          "time": "07:50:00",
+          "raw_time": "07:50AM"
+        },
+        {
+          "order": 7,
+          "name": "NGRI METRO",
+          "amount": 35000.0,
+          "time": "08:00:00",
+          "raw_time": "08:00AM"
+        },
+        {
+          "order": 8,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "edd7cf0e-9493-4102-82a9-6226c6dfdb49",
+      "zoneId": "e2a1b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+      "zoneCode": "RAM",
+      "busRegistration": "TS08UE6416",
+      "routeCode": "R-55",
+      "routeName": "RAMANTHAPUR PUBLIC SCHOOL TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "RAMANTHAPUR PUBLIC SCHOOL",
+      "startingTime": "08:00:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 55,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "RAMANTHAPUR PUBLIC SCHOOL",
+          "amount": 35000.0,
+          "time": "08:00:00",
+          "raw_time": "08:00AM"
+        },
+        {
+          "order": 2,
+          "name": "PRAGATHI NAGAR",
+          "amount": 35000.0,
+          "time": "08:05:00",
+          "raw_time": "08:05AM"
+        },
+        {
+          "order": 3,
+          "name": "CHURCH GATE",
+          "amount": 35000.0,
+          "time": "08:08:00",
+          "raw_time": "08:08AM"
+        },
+        {
+          "order": 4,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "e9a6c60c-6964-491f-90f1-a687b36bdd3b",
+      "zoneId": "e2a1b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+      "zoneCode": "RAM",
+      "busRegistration": "TS08UE6567",
+      "routeCode": "R-58",
+      "routeName": "LIBERTY TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "LIBERTY",
+      "startingTime": "07:30:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 58,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "LIBERTY",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 2,
+          "name": "HIMAYATH NAGAR",
+          "amount": 35000.0,
+          "time": "07:32:00",
+          "raw_time": "07:32AM"
+        },
+        {
+          "order": 3,
+          "name": "BHAGLINGAMPALLY SIGNALS",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 4,
+          "name": "BARKATHPURA X ROADS",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 5,
+          "name": "TILAK NAGAR",
+          "amount": 35000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 6,
+          "name": "FEVER HOSPITAL",
+          "amount": 35000.0,
+          "time": "07:48:00",
+          "raw_time": "07:48AM"
+        },
+        {
+          "order": 7,
+          "name": "SHANKER MUTT",
+          "amount": 35000.0,
+          "time": "07:50:00",
+          "raw_time": "07:50AM"
+        },
+        {
+          "order": 8,
+          "name": "HINDI VIDYALAYA SIGNALS",
+          "amount": 35000.0,
+          "time": "07:53:00",
+          "raw_time": "07:53AM"
+        },
+        {
+          "order": 9,
+          "name": "ADIKMET",
+          "amount": 35000.0,
+          "time": "07:55:00",
+          "raw_time": "07:55AM"
+        },
+        {
+          "order": 7,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "8503ef64-0bea-4806-9c82-70eb09c7f5d6",
+      "zoneId": "c86179cc-a334-4e97-a87a-12a937089fd6",
+      "zoneCode": "UPL",
+      "busRegistration": "TS08UA8176",
+      "routeCode": "R-01",
+      "routeName": "SRINIVASA HEIGHTS BODUPPAL TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "SRINIVASA HEIGHTS BODUPPAL",
+      "startingTime": "07:55:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 1,
+      "feeAmount": 25000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "SRINIVASA HEIGHTS BODUPPAL",
+          "amount": 25000.0,
+          "time": "07:55:00",
+          "raw_time": "07:55AM"
+        },
+        {
+          "order": 2,
+          "name": "CHILUKANAGAR X ROADS",
+          "amount": 25000.0,
+          "time": "07:57:00",
+          "raw_time": "07:57AM"
+        },
+        {
+          "order": 3,
+          "name": "SR JUNIOR COLLEGE",
+          "amount": 25000.0,
+          "time": "08:00:00",
+          "raw_time": "08:00AM"
+        },
+        {
+          "order": 4,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "3d3ece22-b422-4359-bb9f-ecd1d51319e7",
+      "zoneId": "c86179cc-a334-4e97-a87a-12a937089fd6",
+      "zoneCode": "UPL",
+      "busRegistration": "AP29V4786",
+      "routeCode": "R-02",
+      "routeName": "GANESH NAGAR CHURCH BODUPPAL TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "GANESH NAGAR CHURCH BODUPPAL",
+      "startingTime": "08:00:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 2,
+      "feeAmount": 25000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "GANESH NAGAR CHURCH BODUPPAL",
+          "amount": 25000.0,
+          "time": "08:00:00",
+          "raw_time": "08:00AM"
+        },
+        {
+          "order": 2,
+          "name": "VENKATESHWARA TEMPLE",
+          "amount": 25000.0,
+          "time": "08:03:00",
+          "raw_time": "08:03AM"
+        },
+        {
+          "order": 3,
+          "name": "AYYAPPASWAMY TEMPLE",
+          "amount": 25000.0,
+          "time": "08:07:00",
+          "raw_time": "08:07AM"
+        },
+        {
+          "order": 4,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "ed9c74d5-830d-458d-9963-67033e98d297",
+      "zoneId": "c86179cc-a334-4e97-a87a-12a937089fd6",
+      "zoneCode": "UPL",
+      "busRegistration": "TS08UG5276",
+      "routeCode": "R-09",
+      "routeName": "TELEPHONE COLONY BODUPPAL TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "TELEPHONE COLONY BODUPPAL",
+      "startingTime": "07:45:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 9,
+      "feeAmount": 25000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "TELEPHONE COLONY BODUPPAL",
+          "amount": 25000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 2,
+          "name": "AMBEDHKAR STATUE BODUPPAL",
+          "amount": 25000.0,
+          "time": "07:55:00",
+          "raw_time": "07:55AM"
+        },
+        {
+          "order": 3,
+          "name": "NTR STATUE BODUPPAL",
+          "amount": 25000.0,
+          "time": "08:00:00",
+          "raw_time": "08:00AM"
+        },
+        {
+          "order": 4,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "41cd1e07-e3da-42f6-9f62-12f8e85ea0b9",
+      "zoneId": "c86179cc-a334-4e97-a87a-12a937089fd6",
+      "zoneCode": "UPL",
+      "busRegistration": "TS08UG3572",
+      "routeCode": "R-16",
+      "routeName": "PADMAVATHI COLONY BUS STOP BODUPPAL TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "PADMAVATHI COLONY BUS STOP BODU",
+      "startingTime": "07:40:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 16,
+      "feeAmount": 25000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "PADMAVATHI COLONY BUS STOP BODU",
+          "amount": 25000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 2,
+          "name": "MALLANNA SWAMY TEMPLE",
+          "amount": 25000.0,
+          "time": "07:42:00",
+          "raw_time": "07:42AM"
+        },
+        {
+          "order": 3,
+          "name": "SUNNY BAKERY",
+          "amount": 25000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 4,
+          "name": "SR DIGI SCHOOL",
+          "amount": 25000.0,
+          "time": "07:50:00",
+          "raw_time": "07:50AM"
+        },
+        {
+          "order": 5,
+          "name": "MALLIKARJUNA NAGAR BODUPPAL",
+          "amount": 25000.0,
+          "time": "07:55:00",
+          "raw_time": "07:55AM"
+        },
+        {
+          "order": 6,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "121dfee5-7571-4a9d-a1c9-72761cb2c315",
+      "zoneId": "c86179cc-a334-4e97-a87a-12a937089fd6",
+      "zoneCode": "UPL",
+      "busRegistration": "TG08U8234",
+      "routeCode": "R-46",
+      "routeName": "MAHANKALI TEMPLE TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "MAHANKALI TEMPLE",
+      "startingTime": "08:00:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:35:00",
+      "displayOrder": 46,
+      "feeAmount": 25000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "MAHANKALI TEMPLE",
+          "amount": 25000.0,
+          "time": "08:00:00",
+          "raw_time": "08:00AM"
+        },
+        {
+          "order": 2,
+          "name": "GANDHI STATUE UPPAL",
+          "amount": 25000.0,
+          "time": "08:05:00",
+          "raw_time": "08:05AM"
+        },
+        {
+          "order": 3,
+          "name": "DECATHLON UPPAL",
+          "amount": 25000.0,
+          "time": "08:10:00",
+          "raw_time": "08:10AM"
+        },
+        {
+          "order": 4,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:35:00",
+          "raw_time": "08:35AM"
+        }
+      ]
+    },
+    {
+      "id": "4ddc08e4-2680-406a-b96f-a80fbc06cebc",
+      "zoneId": "c86179cc-a334-4e97-a87a-12a937089fd6",
+      "zoneCode": "UPL",
+      "busRegistration": "TS08UE2334",
+      "routeCode": "R-47",
+      "routeName": "ASIAN THEATRE UPPAL (VIA PARVATHAPURAM) TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "ASIAN THEATRE UPPAL",
+      "startingTime": "08:05:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 47,
+      "feeAmount": 25000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "ASIAN THEATRE UPPAL",
+          "amount": 25000.0,
+          "time": "08:05:00",
+          "raw_time": "08:05AM"
+        },
+        {
+          "order": 2,
+          "name": "FEERZADIGUDA KAMAAN",
+          "amount": 25000.0,
+          "time": "08:07:00",
+          "raw_time": "08:07AM"
+        },
+        {
+          "order": 3,
+          "name": "PARVATHAPUR",
+          "amount": 25000.0,
+          "time": "08:15:00",
+          "raw_time": "08:15AM"
+        },
+        {
+          "order": 4,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "5d29c135-42f8-421c-b3da-d75d3effa4b2",
+      "zoneId": "c86179cc-a334-4e97-a87a-12a937089fd6",
+      "zoneCode": "UPL",
+      "busRegistration": "TS08UE2332",
+      "routeCode": "R-53",
+      "routeName": "BOMMAK SHANTHAMMA GARDENS BODUPPAL TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "BOMMAK SHANTHAMMA GARDENS BOD",
+      "startingTime": "07:50:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 53,
+      "feeAmount": 25000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "BOMMAK SHANTHAMMA GARDENS BOD",
+          "amount": 25000.0,
+          "time": "07:50:00",
+          "raw_time": "07:50AM"
+        },
+        {
+          "order": 2,
+          "name": "HP PETROL BUNK",
+          "amount": 25000.0,
+          "time": "07:58:00",
+          "raw_time": "07:58AM"
+        },
+        {
+          "order": 3,
+          "name": "UPPAL DEPOT",
+          "amount": 25000.0,
+          "time": "08:00:00",
+          "raw_time": "08:00AM"
+        },
+        {
+          "order": 4,
+          "name": "ANUTEX UPPAL",
+          "amount": 25000.0,
+          "time": "08:07:00",
+          "raw_time": "08:07AM"
+        },
+        {
+          "order": 5,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "85e09e78-4cd6-49e3-867c-d99e4a7f1db7",
+      "zoneId": "c86179cc-a334-4e97-a87a-12a937089fd6",
+      "zoneCode": "UPL",
+      "busRegistration": "TS08UK3392",
+      "routeCode": "R-64",
+      "routeName": "S MART TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "S MART",
+      "startingTime": "08:00:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 64,
+      "feeAmount": 25000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "S MART",
+          "amount": 25000.0,
+          "time": "08:00:00",
+          "raw_time": "08:00AM"
+        },
+        {
+          "order": 2,
+          "name": "MEDIPALLY",
+          "amount": 25000.0,
+          "time": "08:03:00",
+          "raw_time": "08:03AM"
+        },
+        {
+          "order": 3,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "c1ba624e-b3d1-41e8-8b95-3a57e85afb86",
+      "zoneId": "f75fe02e-1c5e-493b-b691-42ed0de4f1f7",
+      "zoneCode": "SEC",
+      "busRegistration": "TS01UA4509",
+      "routeCode": "R-22",
+      "routeName": "MIYAPUR X ROAD TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "MIYAPUR X ROADS",
+      "startingTime": "06:55:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 22,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "MIYAPUR X ROADS",
+          "amount": 35000.0,
+          "time": "06:55:00",
+          "raw_time": "06:55AM"
+        },
+        {
+          "order": 2,
+          "name": "HYDER NAGAR",
+          "amount": 35000.0,
+          "time": "07:00:00",
+          "raw_time": "07:00AM"
+        },
+        {
+          "order": 3,
+          "name": "NIZAMPET X ROADS",
+          "amount": 35000.0,
+          "time": "07:02:00",
+          "raw_time": "07:02AM"
+        },
+        {
+          "order": 4,
+          "name": "JNTUH",
+          "amount": 35000.0,
+          "time": "07:05:00",
+          "raw_time": "07:05AM"
+        },
+        {
+          "order": 5,
+          "name": "KPHB BUS STOP",
+          "amount": 35000.0,
+          "time": "07:08:00",
+          "raw_time": "07:08AM"
+        },
+        {
+          "order": 6,
+          "name": "VIVEKANANDA NAGAR",
+          "amount": 35000.0,
+          "time": "07:10:00",
+          "raw_time": "07:10AM"
+        },
+        {
+          "order": 7,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "3b34e454-e255-4959-a015-95af7edbc967",
+      "zoneId": "f75fe02e-1c5e-493b-b691-42ed0de4f1f7",
+      "zoneCode": "SEC",
+      "busRegistration": "TG08U5364",
+      "routeCode": "R-29",
+      "routeName": "IDPL TOWNSHIP TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "IDPL TOWNSHIP",
+      "startingTime": "07:10:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 29,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "IDPL TOWNSHIP",
+          "amount": 35000.0,
+          "time": "07:10:00",
+          "raw_time": "07:10AM"
+        },
+        {
+          "order": 2,
+          "name": "GANESH NAGAR CHINTHAL",
+          "amount": 35000.0,
+          "time": "07:12:00",
+          "raw_time": "07:12AM"
+        },
+        {
+          "order": 3,
+          "name": "QUTHBULLAPUR",
+          "amount": 35000.0,
+          "time": "07:20:00",
+          "raw_time": "07:20AM"
+        },
+        {
+          "order": 4,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "86ea7fdb-590c-4d93-9db1-0b690f141034",
+      "zoneId": "f75fe02e-1c5e-493b-b691-42ed0de4f1f7",
+      "zoneCode": "SEC",
+      "busRegistration": "TS05UA4766",
+      "routeCode": "R-34",
+      "routeName": "EERRAGADDA X ROADS TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "EERRAGADDA X ROADS",
+      "startingTime": "07:15:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 34,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "EERRAGADDA X ROADS",
+          "amount": 35000.0,
+          "time": "07:15:00",
+          "raw_time": "07:15AM"
+        },
+        {
+          "order": 2,
+          "name": "ESI",
+          "amount": 35000.0,
+          "time": "07:17:00",
+          "raw_time": "07:17AM"
+        },
+        {
+          "order": 3,
+          "name": "SR NAGAR",
+          "amount": 35000.0,
+          "time": "07:20:00",
+          "raw_time": "07:20AM"
+        },
+        {
+          "order": 4,
+          "name": "MYTHRIVANAM",
+          "amount": 35000.0,
+          "time": "07:23:00",
+          "raw_time": "07:23AM"
+        },
+        {
+          "order": 5,
+          "name": "AMEERPET TEMPLE",
+          "amount": 35000.0,
+          "time": "07:25:00",
+          "raw_time": "07:25AM"
+        },
+        {
+          "order": 6,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "19635a00-cc78-45aa-b954-188aa6f8a003",
+      "zoneId": "f75fe02e-1c5e-493b-b691-42ed0de4f1f7",
+      "zoneCode": "SEC",
+      "busRegistration": "TS08UK3904",
+      "routeCode": "R-39",
+      "routeName": "SUCHITHRA TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "SUCHITHRA",
+      "startingTime": "07:30:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 39,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "SUCHITHRA",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 2,
+          "name": "MMR GARDEN",
+          "amount": 35000.0,
+          "time": "07:20:00",
+          "raw_time": "07:20AM"
+        },
+        {
+          "order": 3,
+          "name": "PETROL BUNK DUBAIGATE",
+          "amount": 35000.0,
+          "time": "07:25:00",
+          "raw_time": "07:25AM"
+        },
+        {
+          "order": 4,
+          "name": "CENTER POINT",
+          "amount": 35000.0,
+          "time": "07:27:00",
+          "raw_time": "07:27AM"
+        },
+        {
+          "order": 5,
+          "name": "DIAMOND POINT",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 6,
+          "name": "JBS",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 7,
+          "name": "RAILWAY DEGREE COLLEGE",
+          "amount": 35000.0,
+          "time": "07:55:00",
+          "raw_time": "07:55AM"
+        },
+        {
+          "order": 8,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "09f5b0cd-1e3a-4def-969a-d956b92d65ae",
+      "zoneId": "f75fe02e-1c5e-493b-b691-42ed0de4f1f7",
+      "zoneCode": "SEC",
+      "busRegistration": "TG08U5363",
+      "routeCode": "R-60",
+      "routeName": "KUKATPALLY BJP OFFICE TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "KUKATPALLY BJP OFFICE",
+      "startingTime": "07:10:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 60,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "KUKATPALLY BJP OFFICE",
+          "amount": 35000.0,
+          "time": "07:10:00",
+          "raw_time": "07:10AM"
+        },
+        {
+          "order": 2,
+          "name": "KPY JUNCTION",
+          "amount": 35000.0,
+          "time": "07:15:00",
+          "raw_time": "07:15AM"
+        },
+        {
+          "order": 3,
+          "name": "BALANAGAR",
+          "amount": 35000.0,
+          "time": "07:20:00",
+          "raw_time": "07:20AM"
+        },
+        {
+          "order": 4,
+          "name": "SHOBANA",
+          "amount": 35000.0,
+          "time": "07:23:00",
+          "raw_time": "07:23AM"
+        },
+        {
+          "order": 5,
+          "name": "FEROZGUDA",
+          "amount": 35000.0,
+          "time": "07:25:00",
+          "raw_time": "07:25AM"
+        },
+        {
+          "order": 6,
+          "name": "BOWENPALLY X ROADS",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 7,
+          "name": "TADBUND",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 8,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "8aa1b69e-e4a8-49a7-923c-c8f0a2d4704c",
+      "zoneId": "f75fe02e-1c5e-493b-b691-42ed0de4f1f7",
+      "zoneCode": "SEC",
+      "busRegistration": "TG08U2891",
+      "routeCode": "R-68",
+      "routeName": "LIFESTYLE TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "LIFESTYLE",
+      "startingTime": "07:30:00",
+      "endingPoint": "COLLEGE",
+      "endingTime": "08:40:00",
+      "displayOrder": 68,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "LIFESTYLE",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 2,
+          "name": "HPS BEGUMPET",
+          "amount": 35000.0,
+          "time": "07:33:00",
+          "raw_time": "07:33AM"
+        },
+        {
+          "order": 3,
+          "name": "AIRPORT",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 4,
+          "name": "PARADISE",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 5,
+          "name": "VINAYAKA TEMPLE",
+          "amount": 35000.0,
+          "time": "07:42:00",
+          "raw_time": "07:42AM"
+        },
+        {
+          "order": 6,
+          "name": "ST. ANN'S SEC-BAD",
+          "amount": 35000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 7,
+          "name": "SANGEETH X ROADS",
+          "amount": 35000.0,
+          "time": "07:47:00",
+          "raw_time": "07:47AM"
+        },
+        {
+          "order": 8,
+          "name": "METTUGUDA CHURCH",
+          "amount": 35000.0,
+          "time": "07:50:00",
+          "raw_time": "07:50AM"
+        },
+        {
+          "order": 9,
+          "name": "TARNAKA AIR PORT BUS STOP",
+          "amount": 35000.0,
+          "time": "07:53:00",
+          "raw_time": "07:53AM"
+        },
+        {
+          "order": 10,
+          "name": "HABSIGUDA BATA",
+          "amount": 35000.0,
+          "time": "07:58:00",
+          "raw_time": "07:58AM"
+        },
+        {
+          "order": 11,
+          "name": "SURVEY OF INDIA",
+          "amount": 35000.0,
+          "time": "08:05:00",
+          "raw_time": "08:05AM"
+        },
+        {
+          "order": 12,
+          "name": "COLLEGE",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "eff625d6-7f80-4210-bfe5-9b6508058c47",
+      "zoneId": "f75fe02e-1c5e-493b-b691-42ed0de4f1f7",
+      "zoneCode": "SEC",
+      "busRegistration": "TS08UK3904",
+      "routeCode": "R-69",
+      "routeName": "SHENOY NURSING HOME TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "SHENOY NURSING HOME",
+      "startingTime": "07:40:00",
+      "endingPoint": "COLLEGE",
+      "endingTime": "08:40:00",
+      "displayOrder": 69,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "SHENOY NURSING HOME",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 2,
+          "name": "ADDAGUTTA",
+          "amount": 35000.0,
+          "time": "07:42:00",
+          "raw_time": "07:42AM"
+        },
+        {
+          "order": 3,
+          "name": "TUKARAMGATE",
+          "amount": 35000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 12,
+          "name": "COLLEGE",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "32d18a73-e3ed-4a4d-a2f4-ad00641b27a1",
+      "zoneId": "f3b2c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      "zoneCode": "ECIL",
+      "busRegistration": "TS08UK4076",
+      "routeCode": "R-03",
+      "routeName": "RK PURAM BUS STOP TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "RK PURAM BUS STOP",
+      "startingTime": "07:35:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 3,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "RK PURAM BUS STOP",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 2,
+          "name": "SAINIKPURI X ROAD",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 3,
+          "name": "SHARADA ECIL",
+          "amount": 35000.0,
+          "time": "07:42:00",
+          "raw_time": "07:42AM"
+        },
+        {
+          "order": 4,
+          "name": "KAMALA NAGAR",
+          "amount": 35000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 5,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "add2adb5-c09d-4cbe-9d27-271fa212df1b",
+      "zoneId": "f3b2c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      "zoneCode": "ECIL",
+      "busRegistration": "TS12UE0712",
+      "routeCode": "R-05",
+      "routeName": "I G STATUE TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "I G STATUE",
+      "startingTime": "07:15:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 5,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "I G STATUE",
+          "amount": 35000.0,
+          "time": "07:15:00",
+          "raw_time": "07:15AM"
+        },
+        {
+          "order": 2,
+          "name": "LOTHUKUNTA",
+          "amount": 35000.0,
+          "time": "07:20:00",
+          "raw_time": "07:20AM"
+        },
+        {
+          "order": 5,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "9a42e52b-346f-4363-9111-a1edd0f44c82",
+      "zoneId": "f3b2c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      "zoneCode": "ECIL",
+      "busRegistration": "TG08U8233",
+      "routeCode": "R-06",
+      "routeName": "RADHIKA TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "RADHIKA",
+      "startingTime": "07:30:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 6,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "RADHIKA",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 2,
+          "name": "PS RAO NAGAR",
+          "amount": 35000.0,
+          "time": "07:36:00",
+          "raw_time": "07:36AM"
+        },
+        {
+          "order": 3,
+          "name": "DUBAI BUILDING",
+          "amount": 35000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 4,
+          "name": "SAI SIDDHARTH SCHOOL",
+          "amount": 35000.0,
+          "time": "07:50:00",
+          "raw_time": "07:50AM"
+        },
+        {
+          "order": 5,
+          "name": "MORE SUPER MARKET",
+          "amount": 35000.0,
+          "time": "07:52:00",
+          "raw_time": "07:52AM"
+        },
+        {
+          "order": 6,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "3e70ce03-810a-4ef4-964c-cda1cc2e2f11",
+      "zoneId": "f3b2c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      "zoneCode": "ECIL",
+      "busRegistration": "TG08U7886",
+      "routeCode": "R-07",
+      "routeName": "JANAPRIYA TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "JANAPRIYA",
+      "startingTime": "07:40:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 7,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "JANAPRIYA",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 2,
+          "name": "NOMA FUNCTION HALL",
+          "amount": 35000.0,
+          "time": "07:50:00",
+          "raw_time": "07:50AM"
+        },
+        {
+          "order": 3,
+          "name": "SURYANAGAR COLONY",
+          "amount": 35000.0,
+          "time": "07:55:00",
+          "raw_time": "07:55AM"
+        },
+        {
+          "order": 4,
+          "name": "CHINGICHRLA BUS DEPOT",
+          "amount": 35000.0,
+          "time": "08:10:00",
+          "raw_time": "08:10AM"
+        },
+        {
+          "order": 5,
+          "name": "RTC COLONY",
+          "amount": 35000.0,
+          "time": "08:12:00",
+          "raw_time": "08:12AM"
+        },
+        {
+          "order": 9,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "93a5f08e-dbc5-4ede-9a96-fa9c450809ac",
+      "zoneId": "f3b2c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      "zoneCode": "ECIL",
+      "busRegistration": "TS08UK3221",
+      "routeCode": "R-08",
+      "routeName": "VYJAYANTHI NACHARAM TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "VYJAYANTHI NACHARAM",
+      "startingTime": "07:50:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 8,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "VYJAYANTHI NACHARAM",
+          "amount": 35000.0,
+          "time": "07:50:00",
+          "raw_time": "07:50AM"
+        },
+        {
+          "order": 2,
+          "name": "RYTHU BAZAR",
+          "amount": 35000.0,
+          "time": "07:52:00",
+          "raw_time": "07:52AM"
+        },
+        {
+          "order": 3,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "1322e9d0-ce59-4917-b0b6-6030830ca19b",
+      "zoneId": "f3b2c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      "zoneCode": "ECIL",
+      "busRegistration": "TS08UK0245",
+      "routeCode": "R-10",
+      "routeName": "DAIE COLONY ECIL TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "DAIE COLONY ECIL",
+      "startingTime": "07:30:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 10,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "DAIE COLONY ECIL",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 2,
+          "name": "LAXMI NAGAR",
+          "amount": 35000.0,
+          "time": "07:32:00",
+          "raw_time": "07:32AM"
+        },
+        {
+          "order": 3,
+          "name": "SP NAGAR",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 4,
+          "name": "UNANI HOSPITAL",
+          "amount": 35000.0,
+          "time": "07:37:00",
+          "raw_time": "07:37AM"
+        },
+        {
+          "order": 5,
+          "name": "NRM COLLEGE",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 6,
+          "name": "KRISHNANAGAR COLONY",
+          "amount": 35000.0,
+          "time": "07:52:00",
+          "raw_time": "07:52AM"
+        },
+        {
+          "order": 7,
+          "name": "MYE VILLAS",
+          "amount": 35000.0,
+          "time": "08:00:00",
+          "raw_time": "08:00AM"
+        },
+        {
+          "order": 8,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "6df6bb3f-b1c7-4d6a-a812-10ab2e5aa158",
+      "zoneId": "f3b2c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      "zoneCode": "ECIL",
+      "busRegistration": "TS08UK0243",
+      "routeCode": "R-15",
+      "routeName": "KUSHAIGUDA VENKATESHWARA TEMPLE TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "KUSHAIGUDA VENKATESHWARA TEMPL",
+      "startingTime": "07:35:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 15,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "KUSHAIGUDA VENKATESHWARA TEMPL",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 2,
+          "name": "NAGARJUNA COLONY",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 3,
+          "name": "VIJAYA HOSPITAL",
+          "amount": 35000.0,
+          "time": "07:42:00",
+          "raw_time": "07:42AM"
+        },
+        {
+          "order": 4,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "f84df260-eb2c-4e8a-8aa5-0a14d15d6b94",
+      "zoneId": "f3b2c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      "zoneCode": "ECIL",
+      "busRegistration": "TS04UA2101",
+      "routeCode": "R-24",
+      "routeName": "RESALA BAZAR WATER TANK TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "REESALA BAZAR WATER TANK",
+      "startingTime": "07:10:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 24,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "REESALA BAZAR WATER TANK",
+          "amount": 35000.0,
+          "time": "07:10:00",
+          "raw_time": "07:10AM"
+        },
+        {
+          "order": 2,
+          "name": "AYYAPPA SWAMY TEMPLE ALWAL",
+          "amount": 35000.0,
+          "time": "07:12:00",
+          "raw_time": "07:12AM"
+        },
+        {
+          "order": 3,
+          "name": "ALWAL",
+          "amount": 35000.0,
+          "time": "07:15:00",
+          "raw_time": "07:15AM"
+        },
+        {
+          "order": 4,
+          "name": "LALBAZAR",
+          "amount": 35000.0,
+          "time": "07:25:00",
+          "raw_time": "07:25AM"
+        },
+        {
+          "order": 5,
+          "name": "TIRUMALGIRI X ROADS",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 6,
+          "name": "GK COLONY",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 7,
+          "name": "ECIL X ROADS",
+          "amount": 35000.0,
+          "time": "07:47:00",
+          "raw_time": "07:47AM"
+        },
+        {
+          "order": 8,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "e03186d0-4381-4b70-915d-1aea98bd18b9",
+      "zoneId": "f3b2c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      "zoneCode": "ECIL",
+      "busRegistration": "TS08UK3391",
+      "routeCode": "R-25",
+      "routeName": "NEREDMET X ROADS TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "NEREDMET X ROADS",
+      "startingTime": "07:20:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 25,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "NEREDMET X ROADS",
+          "amount": 35000.0,
+          "time": "07:20:00",
+          "raw_time": "07.20AM"
+        },
+        {
+          "order": 2,
+          "name": "ANAND BAGH EAST",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07.30AM"
+        },
+        {
+          "order": 3,
+          "name": "ZTC",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07.35AM"
+        },
+        {
+          "order": 4,
+          "name": "LALAPET 1",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07.40AM"
+        },
+        {
+          "order": 5,
+          "name": "LALAPET 2",
+          "amount": 35000.0,
+          "time": "07:42:00",
+          "raw_time": "07:42AM"
+        },
+        {
+          "order": 6,
+          "name": "ST. ANNS UBI BANK",
+          "amount": 35000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 7,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "a523048e-c442-4831-9ea4-573c6f9f94df",
+      "zoneId": "f3b2c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      "zoneCode": "ECIL",
+      "busRegistration": "AP24TA3222",
+      "routeCode": "R-28",
+      "routeName": "DARGA MOULA-ALI TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "DARGA MOULA-ALI",
+      "startingTime": "07:25:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 28,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "DARGA MOULA-ALI",
+          "amount": 35000.0,
+          "time": "07:25:00",
+          "raw_time": "07:25AM"
+        },
+        {
+          "order": 2,
+          "name": "SANTHOSHIMATHA TEMPLE",
+          "amount": 35000.0,
+          "time": "07:27:00",
+          "raw_time": "07:27AM"
+        },
+        {
+          "order": 3,
+          "name": "VINAYAKA NAGAR",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 4,
+          "name": "SAFILGUDA",
+          "amount": 35000.0,
+          "time": "07:32:00",
+          "raw_time": "07:32AM"
+        },
+        {
+          "order": 5,
+          "name": "RK NAGAR",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 6,
+          "name": "MALKAJGIRI",
+          "amount": 35000.0,
+          "time": "07:43:00",
+          "raw_time": "07:43AM"
+        },
+        {
+          "order": 7,
+          "name": "SAIRAM THEATER",
+          "amount": 35000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 8,
+          "name": "MIRJALGUDA",
+          "amount": 35000.0,
+          "time": "07:50:00",
+          "raw_time": "07:50AM"
+        },
+        {
+          "order": 9,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "2f83ec66-5000-4935-b088-d2dc3f299959",
+      "zoneId": "f3b2c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      "zoneCode": "ECIL",
+      "busRegistration": "TS05UA2166",
+      "routeCode": "R-32",
+      "routeName": "YAPRAL TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "YAPRAL",
+      "startingTime": "07:10:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 32,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "YAPRAL",
+          "amount": 35000.0,
+          "time": "07:10:00",
+          "raw_time": "07:10AM"
+        },
+        {
+          "order": 2,
+          "name": "AMMUGUDA",
+          "amount": 35000.0,
+          "time": "07:15:00",
+          "raw_time": "07:15AM"
+        },
+        {
+          "order": 3,
+          "name": "NIRMAL NAGAR",
+          "amount": 35000.0,
+          "time": "07:20:00",
+          "raw_time": "07:20AM"
+        },
+        {
+          "order": 4,
+          "name": "A S RAO NAGAR",
+          "amount": 35000.0,
+          "time": "07:25:00",
+          "raw_time": "07:25AM"
+        },
+        {
+          "order": 5,
+          "name": "HCL",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 6,
+          "name": "NFC",
+          "amount": 35000.0,
+          "time": "07:42:00",
+          "raw_time": "07:42AM"
+        },
+        {
+          "order": 7,
+          "name": "ASHOK NAGAR",
+          "amount": 35000.0,
+          "time": "07:44:00",
+          "raw_time": "07:44AM"
+        },
+        {
+          "order": 8,
+          "name": "EC NAGAR",
+          "amount": 35000.0,
+          "time": "07:48:00",
+          "raw_time": "07:48AM"
+        },
+        {
+          "order": 9,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "a4d718c5-3720-461c-939c-d6b0207201c6",
+      "zoneId": "f3b2c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      "zoneCode": "ECIL",
+      "busRegistration": "AP25Y0045",
+      "routeCode": "R-33",
+      "routeName": "SAINATHPURAM TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "SAINATHPURAM",
+      "startingTime": "07:28:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 33,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "SAINATHPURAM",
+          "amount": 35000.0,
+          "time": "07:28:00",
+          "raw_time": "07:28AM"
+        },
+        {
+          "order": 2,
+          "name": "HMT NAGAR",
+          "amount": 35000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 3,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "6b9808a0-3a82-42a7-8e51-90a12b6570ea",
+      "zoneId": "f3b2c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      "zoneCode": "ECIL",
+      "busRegistration": "TS08UK0244",
+      "routeCode": "R-35",
+      "routeName": "VAYUPURI TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "VAYUPURI",
+      "startingTime": "07:20:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 35,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "VAYUPURI",
+          "amount": 35000.0,
+          "time": "07:20:00",
+          "raw_time": "07:20AM"
+        },
+        {
+          "order": 2,
+          "name": "KAKATIYANAGAR",
+          "amount": 35000.0,
+          "time": "07:25:00",
+          "raw_time": "07:25AM"
+        },
+        {
+          "order": 3,
+          "name": "OLD PS  E-SEVA",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 4,
+          "name": "VANI NAGAR",
+          "amount": 35000.0,
+          "time": "07:38:00",
+          "raw_time": "07:38AM"
+        },
+        {
+          "order": 5,
+          "name": "ANUTEX MALAKJGIRI",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 6,
+          "name": "MALKAJGIRI PS",
+          "amount": 35000.0,
+          "time": "07:43:00",
+          "raw_time": "07:43AM"
+        },
+        {
+          "order": 7,
+          "name": "RAILWAY QUARTERS",
+          "amount": 35000.0,
+          "time": "07:50:00",
+          "raw_time": "07:50AM"
+        },
+        {
+          "order": 8,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "5e59e3cd-24c0-4afb-ae6f-b700d6cd6434",
+      "zoneId": "f3b2c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      "zoneCode": "ECIL",
+      "busRegistration": "TS08UK4702",
+      "routeCode": "R-41",
+      "routeName": "BHAVANI NAGAR SAKETH TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "BHAVANI NAGAR SAKETH",
+      "startingTime": "07:30:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 41,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "BHAVANI NAGAR SAKETH",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 2,
+          "name": "KAPRA OLD MCH",
+          "amount": 35000.0,
+          "time": "07:33:00",
+          "raw_time": "07:33AM"
+        },
+        {
+          "order": 3,
+          "name": "JAMMIGADDA",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 4,
+          "name": "AYYAPPA COLONY",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 5,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "e0d04cb4-e3ee-4059-b6bf-b670315f8fe3",
+      "zoneId": "f3b2c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      "zoneCode": "ECIL",
+      "busRegistration": "TS08UG6564",
+      "routeCode": "R-45",
+      "routeName": "SAIRAM COLONY SAKETH TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "SRI RAM COLONY SAKETH",
+      "startingTime": "07:30:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:35:00",
+      "displayOrder": 45,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "SRI RAM COLONY SAKETH",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 2,
+          "name": "SAKETH PHASE I",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 3,
+          "name": "DAMMAIGUDA X ROADS",
+          "amount": 35000.0,
+          "time": "07:39:00",
+          "raw_time": "07:39AM"
+        },
+        {
+          "order": 4,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:35:00",
+          "raw_time": "08:35AM"
+        }
+      ]
+    },
+    {
+      "id": "6d486397-dbad-4b1d-b763-cdfd90ca338a",
+      "zoneId": "f3b2c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      "zoneCode": "ECIL",
+      "busRegistration": "TS08UK3903",
+      "routeCode": "R-48",
+      "routeName": "KUSHAIGUDA POCHAMMA TEMPLE TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "KUSHAIGUDA POCHAMMA TEMPLE",
+      "startingTime": "07:30:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 48,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "KUSHAIGUDA POCHAMMA TEMPLE",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 2,
+          "name": "CHAKRIPURAM",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 3,
+          "name": "NAGARJUNA PETROL BUNK",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 4,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "f3779ab4-1315-4b6d-977c-7d2f07807822",
+      "zoneId": "f3b2c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      "zoneCode": "ECIL",
+      "busRegistration": "TS08UK3875",
+      "routeCode": "R-57",
+      "routeName": "KRUPA COMPLEX (VIA CHENGICHERLA) TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "KRUPA COMPLEX",
+      "startingTime": "07:30:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 57,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "KRUPA COMPLEX",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 2,
+          "name": "MINI TANK BUND",
+          "amount": 35000.0,
+          "time": "07:35:00",
+          "raw_time": "07:35AM"
+        },
+        {
+          "order": 3,
+          "name": "ANAND BAGH WEST",
+          "amount": 35000.0,
+          "time": "07:38:00",
+          "raw_time": "07:38AM"
+        },
+        {
+          "order": 4,
+          "name": "ANAND BAGH MORE SUPER MARKET",
+          "amount": 35000.0,
+          "time": "07:40:00",
+          "raw_time": "07:40AM"
+        },
+        {
+          "order": 5,
+          "name": "HB PHASE-I PARK",
+          "amount": 35000.0,
+          "time": "07:45:00",
+          "raw_time": "07:45AM"
+        },
+        {
+          "order": 6,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "d8c33a4f-227b-4746-9842-66a7e06f0d99",
+      "zoneId": "f3b2c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      "zoneCode": "ECIL",
+      "busRegistration": "TS08UK3391",
+      "routeCode": "R-61",
+      "routeName": "R L NAGAR TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "RL NAGAR",
+      "startingTime": "08:07:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 61,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "RL NAGAR",
+          "amount": 35000.0,
+          "time": "08:07:00",
+          "raw_time": "08:07AM"
+        },
+        {
+          "order": 2,
+          "name": "RTC COLONY",
+          "amount": 35000.0,
+          "time": "08:10:00",
+          "raw_time": "08:10AM"
+        },
+        {
+          "order": 3,
+          "name": "RAMPALLY VILLAGAE",
+          "amount": 35000.0,
+          "time": "08:12:00",
+          "raw_time": "08:12AM"
+        },
+        {
+          "order": 4,
+          "name": "YAMNAMPET",
+          "amount": 35000.0,
+          "time": "08:15:00",
+          "raw_time": "08:15AM"
+        },
+        {
+          "order": 5,
+          "name": "ANNOJIGUDA",
+          "amount": 25000.0,
+          "time": "08:18:00",
+          "raw_time": "08:18AM"
+        },
+        {
+          "order": 6,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "ed553435-e3ff-42f9-be7d-af81d4e10a81",
+      "zoneId": "f3b2c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      "zoneCode": "ECIL",
+      "busRegistration": "TG08U3240",
+      "routeCode": "R-65",
+      "routeName": "RAMPALLY X ROADS TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "RAMPALLY X ROADS",
+      "startingTime": "07:50:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 65,
+      "feeAmount": 35000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "RAMPALLY X ROADS",
+          "amount": 35000.0,
+          "time": "07:50:00",
+          "raw_time": "07:50AM"
+        },
+        {
+          "order": 2,
+          "name": "NETAJI NAGAR",
+          "amount": 35000.0,
+          "time": "08:00:00",
+          "raw_time": "08:00AM"
+        },
+        {
+          "order": 3,
+          "name": "SATYANARAYANA NAGAR COLONY",
+          "amount": 35000.0,
+          "time": "08:05:00",
+          "raw_time": "08:05AM"
+        },
+        {
+          "order": 4,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "37ad29db-9314-4c79-80fe-9b2b51ed52c5",
+      "zoneId": "a4c3d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e",
+      "zoneCode": "BHON",
+      "busRegistration": "TG08U3440",
+      "routeCode": "R-17",
+      "routeName": "ALAIR TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "ALAIR",
+      "startingTime": "07:05:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 17,
+      "feeAmount": 50000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "ALAIR",
+          "amount": 50000.0,
+          "time": "07:05:00",
+          "raw_time": "07:05AM"
+        },
+        {
+          "order": 2,
+          "name": "RAIGIR",
+          "amount": 50000.0,
+          "time": "07:10:00",
+          "raw_time": "07:10AM"
+        },
+        {
+          "order": 3,
+          "name": "BHONGIR -BYPASS ROAD",
+          "amount": 40000.0,
+          "time": "07:40:00",
+          "raw_time": "7:40AM"
+        },
+        {
+          "order": 4,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    },
+    {
+      "id": "f469782f-3628-493a-a179-dfc053d4121d",
+      "zoneId": "a4c3d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e",
+      "zoneCode": "BHON",
+      "busRegistration": "TG08U3088",
+      "routeCode": "R-43",
+      "routeName": "BHONGIR (VIA GHATKESAR) TO COLLEGE",
+      "direction": "MORNING",
+      "startingPoint": "BHONGIR",
+      "startingTime": "07:25:00",
+      "endingPoint": "COLLEGE CAMPUS",
+      "endingTime": "08:40:00",
+      "displayOrder": 43,
+      "feeAmount": 40000.0,
+      "stops": [
+        {
+          "order": 1,
+          "name": "BHONGIR",
+          "amount": 40000.0,
+          "time": "07:25:00",
+          "raw_time": "07:25AM"
+        },
+        {
+          "order": 2,
+          "name": "BB NAGAR",
+          "amount": 35000.0,
+          "time": "07:30:00",
+          "raw_time": "07:30AM"
+        },
+        {
+          "order": 2,
+          "name": "KONDAMADUGU METTU",
+          "amount": 35000.0,
+          "time": "07:50:00",
+          "raw_time": "07:50AM"
+        },
+        {
+          "order": 3,
+          "name": "AUSHAPUR",
+          "amount": 35000.0,
+          "time": "07:55:00",
+          "raw_time": "07:55AM"
+        },
+        {
+          "order": 4,
+          "name": "GHATKESAR BUS STAND",
+          "amount": 25000.0,
+          "time": "08:00:00",
+          "raw_time": "08:00AM"
+        },
+        {
+          "order": 5,
+          "name": "SHIVA REDDY GUDA TEMPLE",
+          "amount": 25000.0,
+          "time": "08:07:00",
+          "raw_time": "08:07AM"
+        },
+        {
+          "order": 6,
+          "name": "COLLEGE CAMPUS",
+          "amount": null,
+          "time": "08:40:00",
+          "raw_time": "08:40AM"
+        }
+      ]
+    }
+  ]
+}

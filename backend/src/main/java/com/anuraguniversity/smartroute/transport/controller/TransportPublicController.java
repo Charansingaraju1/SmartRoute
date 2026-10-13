@@ -14,6 +14,8 @@ import com.anuraguniversity.smartroute.transport.repository.RouteRepository;
 import com.anuraguniversity.smartroute.transport.repository.BoardingPointRepository;
 import com.anuraguniversity.smartroute.common.enums.Direction;
 import com.anuraguniversity.smartroute.common.dto.ApiResponse;
+import com.anuraguniversity.smartroute.transport.repository.StudentBusAssignmentRepository;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -35,6 +38,7 @@ public class TransportPublicController {
     private final BusRepository busRepository;
     private final RouteRepository routeRepository;
     private final BoardingPointRepository boardingPointRepository;
+    private final StudentBusAssignmentRepository studentBusAssignmentRepository;
 
     @GetMapping("/zones")
     public ResponseEntity<ApiResponse<List<ZoneDTO>>> getZones() {
@@ -56,6 +60,7 @@ public class TransportPublicController {
     }
 
     @GetMapping("/buses")
+    @Transactional(readOnly = true)
     public ResponseEntity<ApiResponse<List<BusDTO>>> getBuses(
             @RequestParam(required = false) Boolean activeOnly) {
         List<Bus> buses;
@@ -64,15 +69,80 @@ public class TransportPublicController {
         } else {
             buses = busRepository.findAll();
         }
-        List<BusDTO> busDTOs = buses.stream().map(BusDTO::from).collect(Collectors.toList());
+        List<BusDTO> busDTOs = buses.stream().map(b -> {
+            BusDTO dto = BusDTO.from(b);
+            long activeCount = studentBusAssignmentRepository.countActiveByBus(b.getId());
+            int effectiveStudents = activeCount > 0 ? (int) activeCount : (b.getCurrentStudentsCount() != null ? b.getCurrentStudentsCount() : 0);
+            dto.setCurrentStudentsCount(effectiveStudents);
+            dto.setAvailableCapacity(Math.max(0, b.getCapacity() - effectiveStudents));
+            return dto;
+        }).collect(Collectors.toList());
         return ResponseEntity.ok(ApiResponse.success(busDTOs));
     }
 
     @GetMapping("/buses/{busId}")
+    @Transactional(readOnly = true)
     public ResponseEntity<ApiResponse<BusDTO>> getBus(@PathVariable UUID busId) {
         Bus bus = busRepository.findById(busId)
                 .orElseThrow(() -> new com.anuraguniversity.smartroute.common.exception.ResourceNotFoundException("Bus not found"));
-        return ResponseEntity.ok(ApiResponse.success(BusDTO.from(bus)));
+        BusDTO dto = BusDTO.from(bus);
+        long activeCount = studentBusAssignmentRepository.countActiveByBus(bus.getId());
+        int effectiveStudents = activeCount > 0 ? (int) activeCount : (bus.getCurrentStudentsCount() != null ? bus.getCurrentStudentsCount() : 0);
+        dto.setCurrentStudentsCount(effectiveStudents);
+        dto.setAvailableCapacity(Math.max(0, bus.getCapacity() - effectiveStudents));
+        return ResponseEntity.ok(ApiResponse.success(dto));
+    }
+
+    @GetMapping("/buses/verify/{identifier}")
+    public ResponseEntity<ApiResponse<BusDTO>> verifyBus(@PathVariable String identifier) {
+        String cleanIdentifier = java.net.URLDecoder.decode(identifier, java.nio.charset.StandardCharsets.UTF_8).trim();
+        if (cleanIdentifier.contains("/")) {
+            cleanIdentifier = cleanIdentifier.substring(cleanIdentifier.lastIndexOf('/') + 1).trim();
+        }
+        if (cleanIdentifier.toUpperCase().startsWith("SMARTROUTE:BUS:")) {
+            cleanIdentifier = cleanIdentifier.substring(15).trim();
+        }
+
+        Bus bus = null;
+
+        try {
+            UUID busId = UUID.fromString(cleanIdentifier);
+            bus = busRepository.findById(busId).orElse(null);
+        } catch (IllegalArgumentException ignored) {}
+
+        if (bus == null) {
+            bus = busRepository.findByRegistrationNumberIgnoreCase(cleanIdentifier).orElse(null);
+        }
+
+        if (bus == null) {
+            String stripped = cleanIdentifier.replaceAll("[\\s\\-_]", "");
+            bus = busRepository.findByRegistrationNumberIgnoreCase(stripped).orElse(null);
+        }
+
+        if (bus == null) {
+            bus = busRepository.findByBusNumberIgnoreCase(cleanIdentifier).orElse(null);
+        }
+
+        if (bus == null) {
+            throw new com.anuraguniversity.smartroute.common.exception.ResourceNotFoundException(
+                "Unregistered or invalid bus. No matching Anurag University bus found for: " + identifier);
+        }
+
+        BusDTO dto = BusDTO.from(bus);
+        dto.setVerified(true);
+
+        Optional<Route> assignedRoute = routeRepository.findFirstByBusIdAndActiveTrue(bus.getId());
+        if (assignedRoute.isPresent()) {
+            Route r = assignedRoute.get();
+            dto.setAssignedRoute(BusDTO.RouteSummary.builder()
+                .id(r.getId())
+                .routeCode(r.getRouteCode())
+                .routeName(r.getRouteName())
+                .direction(r.getDirection())
+                .build());
+        }
+
+        return ResponseEntity.ok(ApiResponse.success(dto, "Bus verified successfully as registered Anurag University Transport"));
     }
 
     @GetMapping("/buses/{busId}/location")
@@ -83,11 +153,12 @@ public class TransportPublicController {
     }
 
     @GetMapping("/routes")
+    @Transactional(readOnly = true)
     public ResponseEntity<ApiResponse<Page<RouteDTO>>> getRoutes(
             @RequestParam(required = false) UUID zoneId,
             @RequestParam(required = false) Direction direction,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "50") int size) {
+            @RequestParam(defaultValue = "100") int size) {
         
         Pageable pageable = PageRequest.of(page, size, Sort.by("routeCode"));
         Page<Route> routes;

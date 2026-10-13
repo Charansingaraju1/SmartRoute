@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import com.anuraguniversity.smartroute.common.enums.UserRole;
 
 @Data
 @Builder
@@ -23,4 +24,6 @@ public class LoginRequest {
     @NotBlank
     @Size(max = 128)
     private String password;
+
+    private UserRole role;
 }

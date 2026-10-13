@@ -16,6 +16,10 @@ public interface RouteRepository extends JpaRepository<Route, java.util.UUID> {
 
     List<Route> findByZoneId(java.util.UUID zoneId);
 
+    List<Route> findByBusId(java.util.UUID busId);
+
+    Optional<Route> findFirstByBusIdAndActiveTrue(java.util.UUID busId);
+
     List<Route> findByZoneIdAndActiveTrue(java.util.UUID zoneId);
 
     Page<Route> findByZoneIdAndActiveTrue(java.util.UUID zoneId, Pageable pageable);

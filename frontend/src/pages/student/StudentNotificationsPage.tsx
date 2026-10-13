@@ -50,20 +50,20 @@ const notificationIcons: Record<string, React.ComponentType<{ className?: string
 };
 
 const notificationColors: Record<string, string> = {
-  BUS_ASSIGNMENT: 'bg-blue-100 text-blue-700',
-  ROUTE_CHANGE: 'bg-blue-100 text-blue-700',
-  STOP_CHANGE: 'bg-green-100 text-green-700',
-  DELAY: 'bg-orange-100 text-orange-700',
-  DISRUPTION: 'bg-red-100 text-red-700',
-  MISSED_BUS: 'bg-orange-100 text-orange-700',
-  SOS: 'bg-red-100 text-red-700',
-  PAYMENT_STATUS: 'bg-green-100 text-green-700',
-  ANNOUNCEMENT: 'bg-purple-100 text-purple-700',
-  THREE_STOPS_AWAY: 'bg-cyan-100 text-cyan-700',
-  MORNING_TRANSPORT: 'bg-yellow-100 text-yellow-700',
-  EVENING_TRANSPORT: 'bg-indigo-100 text-indigo-700',
-  BUS_PASS_UPDATE: 'bg-purple-100 text-purple-700',
-  CAPACITY_CHANGE: 'bg-blue-100 text-blue-700',
+  BUS_ASSIGNMENT: 'bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300',
+  ROUTE_CHANGE: 'bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300',
+  STOP_CHANGE: 'bg-green-100 text-green-800 dark:bg-emerald-950/60 dark:text-emerald-300',
+  DELAY: 'bg-orange-100 text-orange-800 dark:bg-orange-950/60 dark:text-orange-300',
+  DISRUPTION: 'bg-red-100 text-red-800 dark:bg-rose-950/60 dark:text-rose-300',
+  MISSED_BUS: 'bg-orange-100 text-orange-800 dark:bg-orange-950/60 dark:text-orange-300',
+  SOS: 'bg-red-100 text-red-800 dark:bg-rose-950/60 dark:text-rose-300',
+  PAYMENT_STATUS: 'bg-green-100 text-green-800 dark:bg-emerald-950/60 dark:text-emerald-300',
+  ANNOUNCEMENT: 'bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300',
+  THREE_STOPS_AWAY: 'bg-cyan-100 text-cyan-800 dark:bg-cyan-950/60 dark:text-cyan-300',
+  MORNING_TRANSPORT: 'bg-yellow-100 text-yellow-800 dark:bg-amber-950/60 dark:text-amber-300',
+  EVENING_TRANSPORT: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-300',
+  BUS_PASS_UPDATE: 'bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300',
+  CAPACITY_CHANGE: 'bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300',
 };
 
 function cn(...args: any[]) {
@@ -84,8 +84,7 @@ export function StudentNotificationsPage() {
 
   const markAsReadMutation = useMutation({
     mutationFn: async (id: string) => {
-      // Assuming there's a mark as read endpoint
-      return id;
+      return api.markNotificationAsRead(id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['student-notifications'] });
@@ -94,8 +93,7 @@ export function StudentNotificationsPage() {
 
   const markAllAsReadMutation = useMutation({
     mutationFn: async () => {
-      // Assuming there's a mark all as read endpoint
-      return true;
+      return api.markAllNotificationsAsRead();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['student-notifications'] });
@@ -200,10 +198,10 @@ export function StudentNotificationsPage() {
             <p className="text-xs text-green-700">Read</p>
           </div>
         </Card>
-        <Card className="bg-purple-50 border-purple-200">
+        <Card className="bg-stone-100 border-stone-200 dark:bg-stone-800/80 dark:border-stone-700">
           <div className="p-4 text-center">
-            <p className="font-heading text-2xl font-bold text-purple-600">{selectedIds.length}</p>
-            <p className="text-xs text-purple-700">Selected</p>
+            <p className="font-heading text-2xl font-bold text-stone-800 dark:text-stone-200">{selectedIds.length}</p>
+            <p className="text-xs text-stone-600 dark:text-stone-400">Selected</p>
           </div>
         </Card>
       </div>
@@ -245,8 +243,8 @@ export function StudentNotificationsPage() {
       ) : (
         <>
           {selectedIds.length > 0 && (
-            <div className="mb-4 p-3 bg-terracotta-50 border border-terracotta-200 rounded-lg flex items-center justify-between">
-              <span className="text-sm font-medium text-terracotta-700">{selectedIds.length} notifications selected</span>
+            <div className="mb-4 p-3 bg-terracotta-50 dark:bg-amber-950/40 border border-terracotta-200 dark:border-amber-800/60 rounded-lg flex items-center justify-between">
+              <span className="text-sm font-medium text-terracotta-700 dark:text-amber-300">{selectedIds.length} notifications selected</span>
               <button
                 onClick={() => {
                   selectedIds.forEach(id => handleMarkAsRead(id));
@@ -263,13 +261,13 @@ export function StudentNotificationsPage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="text-left text-xs text-stone-500 border-b border-stone-200 bg-stone-50">
+                  <tr className="text-left text-xs text-stone-500 dark:text-slate-400 border-b border-stone-200 dark:border-slate-700 bg-stone-50 dark:bg-[#111827]">
                     <th className="p-3 font-medium w-12">
                       <input
                         type="checkbox"
                         checked={selectedIds.length === filteredNotifications.length && filteredNotifications.length > 0}
                         onChange={handleSelectAll}
-                        className="w-4 h-4 rounded border-stone-300 text-terracotta-500 focus:ring-terracotta-500"
+                        className="w-4 h-4 rounded border-stone-300 dark:border-slate-700 text-terracotta-500 focus:ring-terracotta-500 dark:bg-slate-900"
                       />
                     </th>
                     <th className="p-3 font-medium">Type</th>
@@ -283,14 +281,14 @@ export function StudentNotificationsPage() {
                 <tbody>
                   {filteredNotifications.map((notification: { id: string; type: string; title: string; message: string; read: boolean; createdAt: string; actionUrl?: string; relatedEntityType?: string }) => {
                     const Icon = notificationIcons[notification.type] || Bell;
-                    const colorClass = notificationColors[notification.type] || 'bg-stone-100 text-stone-700';
+                    const colorClass = notificationColors[notification.type] || 'bg-stone-100 text-stone-700 dark:bg-slate-800 dark:text-slate-300';
                     return (
                       <tr
                         key={notification.id}
                         className={cn(
-                          'border-b border-stone-100 last:border-0 transition-colors',
-                          !notification.read && 'bg-stone-50/50',
-                          selectedIds.includes(notification.id) && 'bg-terracotta-50'
+                          'border-b border-stone-100 dark:border-slate-800 last:border-0 transition-colors',
+                          !notification.read && 'bg-stone-50/50 dark:bg-slate-800/30',
+                          selectedIds.includes(notification.id) && 'bg-terracotta-50 dark:bg-amber-950/30'
                         )}
                       >
                         <td className="p-3">

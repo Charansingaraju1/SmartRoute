@@ -1,5 +1,9 @@
 package com.anuraguniversity.smartroute.common.exception;
 
+import com.anuraguniversity.smartroute.auth.exception.AccountLockedException;
+import com.anuraguniversity.smartroute.auth.exception.InvalidCredentialsException;
+import com.anuraguniversity.smartroute.auth.exception.OAuthNotConfiguredException;
+import com.anuraguniversity.smartroute.auth.exception.RoleMismatchException;
 import com.anuraguniversity.smartroute.common.dto.ErrorResponse;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -119,6 +123,76 @@ public class GlobalExceptionHandler {
             .build());
     }
 
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCredentials(
+            InvalidCredentialsException ex, HttpServletRequest request) {
+        log.warn("Invalid credentials: {} {}", request.getMethod(), request.getRequestURI());
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.builder()
+            .timestamp(Instant.now())
+            .status(HttpStatus.UNAUTHORIZED.value())
+            .error("Unauthorized")
+            .message(ex.getMessage())
+            .path(request.getRequestURI())
+            .build());
+    }
+
+    @ExceptionHandler(RoleMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleRoleMismatch(
+            RoleMismatchException ex, HttpServletRequest request) {
+        log.warn("Role mismatch: {} {} - {}", request.getMethod(), request.getRequestURI(), ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ErrorResponse.builder()
+            .timestamp(Instant.now())
+            .status(HttpStatus.FORBIDDEN.value())
+            .error("Forbidden")
+            .message(ex.getMessage())
+            .path(request.getRequestURI())
+            .build());
+    }
+
+    @ExceptionHandler(AccountLockedException.class)
+    public ResponseEntity<ErrorResponse> handleAccountLocked(
+            AccountLockedException ex, HttpServletRequest request) {
+        log.warn("Account locked: {} {}", request.getMethod(), request.getRequestURI());
+
+        return ResponseEntity.status(HttpStatus.LOCKED).body(ErrorResponse.builder()
+            .timestamp(Instant.now())
+            .status(HttpStatus.LOCKED.value())
+            .error("Locked")
+            .message(ex.getMessage())
+            .path(request.getRequestURI())
+            .build());
+    }
+
+    @ExceptionHandler(OAuthNotConfiguredException.class)
+    public ResponseEntity<ErrorResponse> handleOAuthNotConfigured(
+            OAuthNotConfiguredException ex, HttpServletRequest request) {
+        log.warn("OAuth not configured: {} {}", request.getMethod(), request.getRequestURI());
+
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(ErrorResponse.builder()
+            .timestamp(Instant.now())
+            .status(HttpStatus.SERVICE_UNAVAILABLE.value())
+            .error("Service Unavailable")
+            .message(ex.getMessage())
+            .path(request.getRequestURI())
+            .build());
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFound(
+            ResourceNotFoundException ex, HttpServletRequest request) {
+        log.warn("Resource not found: {} {} - {}", request.getMethod(), request.getRequestURI(), ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.builder()
+            .timestamp(Instant.now())
+            .status(HttpStatus.NOT_FOUND.value())
+            .error("Not Found")
+            .message(ex.getMessage())
+            .path(request.getRequestURI())
+            .build());
+    }
+
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDenied(
             AccessDeniedException ex, HttpServletRequest request) {
@@ -228,6 +302,34 @@ public class GlobalExceptionHandler {
             .status(HttpStatus.NOT_FOUND.value())
             .error("Not Found")
             .message("The requested resource was not found")
+            .path(request.getRequestURI())
+            .build());
+    }
+
+    @ExceptionHandler(com.anuraguniversity.smartroute.auth.exception.EmailDeliveryException.class)
+    public ResponseEntity<ErrorResponse> handleEmailDelivery(
+            com.anuraguniversity.smartroute.auth.exception.EmailDeliveryException ex, HttpServletRequest request) {
+        log.error("Email delivery failed for {} {}: {}", request.getMethod(), request.getRequestURI(), ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(ErrorResponse.builder()
+            .timestamp(Instant.now())
+            .status(HttpStatus.SERVICE_UNAVAILABLE.value())
+            .error("Service Unavailable")
+            .message(ex.getMessage())
+            .path(request.getRequestURI())
+            .build());
+    }
+
+    @ExceptionHandler(org.springframework.mail.MailException.class)
+    public ResponseEntity<ErrorResponse> handleMailException(
+            org.springframework.mail.MailException ex, HttpServletRequest request) {
+        log.error("Mail service error for {} {}: {}", request.getMethod(), request.getRequestURI(), ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(ErrorResponse.builder()
+            .timestamp(Instant.now())
+            .status(HttpStatus.SERVICE_UNAVAILABLE.value())
+            .error("Service Unavailable")
+            .message("Failed to send verification email. Please check mail service configuration or try again later.")
             .path(request.getRequestURI())
             .build());
     }

@@ -47,7 +47,8 @@ export function TeacherTransportOpsPage() {
     queryFn: () => api.getTeacherTransportOps(),
   });
 
-  const opsData = ops || [];
+  const opsData = Array.isArray(ops) ? ops : [];
+  const isSummary = ops && typeof ops === 'object' && !Array.isArray(ops);
 
   const toggleForm = (op?: any) => {
     if (op) {
@@ -130,58 +131,58 @@ export function TeacherTransportOpsPage() {
         <Card className="bg-yellow-50 border-yellow-200" padding="lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs text-stone-500 uppercase tracking-wide">Pending</p>
-              <p className="font-heading text-3xl font-bold text-yellow-600">{opsData.filter(o => o.status === 'PENDING').length}</p>
+              <p className="text-xs text-stone-500 uppercase tracking-wide">Active Delays</p>
+              <p className="font-heading text-3xl font-bold text-yellow-600">{isSummary ? ((ops as any).activeDelays ?? 0) : opsData.filter(o => o.status === 'PENDING').length}</p>
             </div>
-            <Settings className="h-12 w-12 text-yellow-600" />
+            <Clock className="h-12 w-12 text-yellow-600" />
           </div>
         </Card>
         <Card className="bg-blue-50 border-blue-200" padding="lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs text-stone-500 uppercase tracking-wide">In Progress</p>
-              <p className="font-heading text-3xl font-bold text-blue-600">{opsData.filter(o => o.status === 'IN_PROGRESS').length}</p>
+              <p className="text-xs text-stone-500 uppercase tracking-wide">Active Disruptions</p>
+              <p className="font-heading text-3xl font-bold text-blue-600">{isSummary ? ((ops as any).activeDisruptions ?? 0) : opsData.filter(o => o.status === 'IN_PROGRESS').length}</p>
             </div>
-            <Settings className="h-12 w-12 text-blue-600" />
+            <AlertTriangle className="h-12 w-12 text-blue-600" />
           </div>
         </Card>
-        <Card className="bg-green-50 border-green-200" padding="lg">
+        <Card className="bg-red-50 border-red-200" padding="lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs text-stone-500 uppercase tracking-wide">Completed</p>
-              <p className="font-heading text-3xl font-bold text-green-600">{opsData.filter(o => o.status === 'COMPLETED').length}</p>
+              <p className="text-xs text-stone-500 uppercase tracking-wide">Active SOS Alerts</p>
+              <p className="font-heading text-3xl font-bold text-red-600">{isSummary ? ((ops as any).activeSOSRequests ?? 0) : opsData.filter(o => o.status === 'COMPLETED').length}</p>
             </div>
-            <Settings className="h-12 w-12 text-green-600" />
+            <Shield className="h-12 w-12 text-red-600" />
           </div>
         </Card>
         <Card className="bg-stone-50 border-stone-200" padding="lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs text-stone-500 uppercase tracking-wide">Total</p>
-              <p className="font-heading text-3xl font-bold text-charcoal-500">{opsData.length}</p>
+              <p className="text-xs text-stone-500 uppercase tracking-wide">Assigned Buses</p>
+              <p className="font-heading text-3xl font-bold text-charcoal-500">{isSummary ? ((ops as any).totalAssignedBuses ?? 0) : opsData.length}</p>
             </div>
-            <Settings className="h-12 w-12 text-terracotta-500" />
+            <Bus className="h-12 w-12 text-terracotta-500" />
           </div>
         </Card>
       </div>
 
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-          <div className="bg-stone-50 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-up">
-            <div className="p-6 border-b border-stone-200 sticky top-0 bg-stone-50 flex items-center justify-between">
-              <h2 className="font-heading text-xl font-semibold text-charcoal-500">New Transport Operation</h2>
-              <button onClick={handleCancel} className="p-2 text-stone-500 hover:text-stone-700 rounded-lg hover:bg-stone-100">
+          <div className="bg-stone-50 dark:bg-[#182235] border border-transparent dark:border-[#334155] rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-up shadow-xl">
+            <div className="p-6 border-b border-stone-200 dark:border-[#334155] sticky top-0 bg-stone-50 dark:bg-[#182235] flex items-center justify-between z-10">
+              <h2 className="font-heading text-xl font-semibold text-charcoal-500 dark:text-[#F1F5F9]">New Transport Operation</h2>
+              <button onClick={handleCancel} className="p-2 text-stone-500 hover:text-stone-700 dark:text-slate-400 dark:hover:text-slate-200 rounded-lg hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors">
                 <X className="h-5 w-5" />
               </button>
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Operation Type *</label>
+                  <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Operation Type *</label>
                   <select
                     value={formData.type}
                     onChange={e => setFormData({ ...formData, type: e.target.value as any })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                     required
                   >
                     <option value="BUS_ASSIGNMENT">Bus Assignment</option>
@@ -193,11 +194,11 @@ export function TeacherTransportOpsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Priority *</label>
+                  <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Priority *</label>
                   <select
                     value={formData.priority}
                     onChange={e => setFormData({ ...formData, priority: e.target.value as any })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                     required
                   >
                     <option value="LOW">Low</option>
@@ -208,66 +209,66 @@ export function TeacherTransportOpsPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">Title *</label>
+                <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Title *</label>
                 <input
                   type="text"
                   value={formData.title}
                   onChange={e => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 placeholder:text-stone-400 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+                  className="w-full px-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] placeholder:text-stone-400 dark:placeholder:text-slate-500 focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                   required
                   placeholder="Operation title"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">Description</label>
+                <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Description</label>
                 <textarea
                   value={formData.description}
                   onChange={e => setFormData({ ...formData, description: e.target.value })}
                   rows={3}
-                  className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:bg-stone-50 focus:outline-none"
+                  className="w-full rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] px-4 py-2.5 text-sm text-stone-900 dark:text-[#F1F5F9] placeholder:text-stone-400 dark:placeholder:text-slate-500 focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 focus:bg-stone-50 dark:focus:bg-[#111827] focus:outline-none"
                   placeholder="Describe the operation..."
                 />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Affected Bus (Optional)</label>
+                  <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Affected Bus (Optional)</label>
                   <select
                     value={formData.busId}
                     onChange={e => setFormData({ ...formData, busId: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                   >
                     <option value="">Select Bus</option>
                     <option value="bus-1">Bus TS08 UK 1234</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Affected Route (Optional)</label>
+                  <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Affected Route (Optional)</label>
                   <select
                     value={formData.routeId}
                     onChange={e => setFormData({ ...formData, routeId: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                   >
                     <option value="">Select Route</option>
                     <option value="route-1">Route A1 - Morning</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Affected Stop (Optional)</label>
+                  <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Affected Stop (Optional)</label>
                   <select
                     value={formData.stopId}
                     onChange={e => setFormData({ ...formData, stopId: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                   >
                     <option value="">Select Stop</option>
                     <option value="stop-1">Stop 1 - Main Gate</option>
                   </select>
                 </div>
               </div>
-              <div className="flex gap-3 pt-4 border-t border-stone-200">
+              <div className="flex gap-3 pt-4 border-t border-stone-200 dark:border-[#334155]">
                 <button type="submit" className="flex-1 px-6 py-3 bg-terracotta-500 text-stone-50 rounded-lg font-medium hover:bg-terracotta-400 transition-colors flex items-center justify-center gap-2">
                   Create Operation
                 </button>
-                <button type="button" onClick={handleCancel} className="px-6 py-3 border border-stone-300 text-stone-600 rounded-lg font-medium hover:bg-stone-100 transition-colors">
+                <button type="button" onClick={handleCancel} className="px-6 py-3 border border-stone-300 dark:border-slate-700 text-stone-600 dark:text-slate-300 rounded-lg font-medium hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors">
                   Cancel
                 </button>
               </div>

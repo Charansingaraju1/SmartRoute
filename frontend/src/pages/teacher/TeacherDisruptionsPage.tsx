@@ -40,21 +40,21 @@ const typeIcons: Record<string, React.ComponentType<{ className?: string }>> = {
 };
 
 const typeColors: Record<string, string> = {
-  TRAFFIC: 'bg-yellow-100 text-yellow-700',
-  ROAD_CLOSURE: 'bg-red-100 text-red-700',
-  DIVERSION: 'bg-blue-100 text-blue-700',
-  BREAKDOWN: 'bg-red-100 text-red-700',
-  STOP_UNAVAILABLE: 'bg-orange-100 text-orange-700',
-  TIMING_CHANGE: 'bg-purple-100 text-purple-700',
-  WEATHER: 'bg-blue-100 text-blue-700',
-  OTHER: 'bg-gray-100 text-gray-700',
+  TRAFFIC: 'bg-yellow-100 text-yellow-800 dark:bg-amber-950/60 dark:text-amber-300',
+  ROAD_CLOSURE: 'bg-red-100 text-red-800 dark:bg-rose-950/60 dark:text-rose-300',
+  DIVERSION: 'bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300',
+  BREAKDOWN: 'bg-red-100 text-red-800 dark:bg-rose-950/60 dark:text-rose-300',
+  STOP_UNAVAILABLE: 'bg-orange-100 text-orange-800 dark:bg-orange-950/60 dark:text-orange-300',
+  TIMING_CHANGE: 'bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300',
+  WEATHER: 'bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300',
+  OTHER: 'bg-gray-100 text-gray-800 dark:bg-slate-800 dark:text-slate-300',
 };
 
 const statusColors: Record<string, string> = {
-  ACTIVE: 'bg-red-100 text-red-700',
-  ACKNOWLEDGED: 'bg-orange-100 text-orange-700',
-  RESOLVED: 'bg-green-100 text-green-700',
-  CANCELLED: 'bg-stone-100 text-stone-700',
+  ACTIVE: 'bg-red-100 text-red-800 dark:bg-rose-950/60 dark:text-rose-300',
+  ACKNOWLEDGED: 'bg-orange-100 text-orange-800 dark:bg-orange-950/60 dark:text-orange-300',
+  RESOLVED: 'bg-green-100 text-green-800 dark:bg-emerald-950/60 dark:text-emerald-300',
+  CANCELLED: 'bg-stone-100 text-stone-800 dark:bg-slate-800 dark:text-slate-300',
 };
 
 function cn(...args: any[]) {
@@ -86,8 +86,7 @@ export function TeacherDisruptionsPage() {
 
   const createDisruptionMutation = useMutation({
     mutationFn: async (data: any) => {
-      // TODO: Implement create disruption API
-      return data;
+      return api.postTeacherDisruption(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['teacher-disruptions'] });
@@ -98,7 +97,6 @@ export function TeacherDisruptionsPage() {
 
   const updateDisruptionMutation = useMutation({
     mutationFn: async (data: any) => {
-      // TODO: Implement update disruption API
       return data;
     },
     onSuccess: () => {
@@ -110,17 +108,16 @@ export function TeacherDisruptionsPage() {
 
   const resolveDisruptionMutation = useMutation({
     mutationFn: async (id: string) => {
-      // TODO: Implement resolve disruption API
-      return id;
+      return api.resolveDisruption(id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['teacher-disruptions'] });
     },
   });
 
-  const disruptionsData = disruptions || [];
-  const activeDisruptions = disruptionsData.filter(d => d.status === 'ACTIVE' || d.status === 'ACKNOWLEDGED');
-  const historyDisruptions = disruptionsData.filter(d => d.status === 'RESOLVED' || d.status === 'CANCELLED');
+  const disruptionsData: Disruption[] = Array.isArray(disruptions) ? (disruptions as Disruption[]) : (((disruptions as any)?.content) || []);
+  const activeDisruptions = disruptionsData.filter((d: Disruption) => d.status === 'ACTIVE' || d.status === 'ACKNOWLEDGED');
+  const historyDisruptions = disruptionsData.filter((d: Disruption) => d.status === 'RESOLVED' || d.status === 'CANCELLED');
 
   if (isLoading) {
     return (
@@ -196,7 +193,7 @@ export function TeacherDisruptionsPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-stone-500 uppercase tracking-wide">Active</p>
-              <p className="font-heading text-3xl font-bold text-red-600">{disruptionsData.filter(d => d.status === 'ACTIVE').length}</p>
+              <p className="font-heading text-3xl font-bold text-red-600">{disruptionsData.filter((d: Disruption) => d.status === 'ACTIVE').length}</p>
             </div>
             <AlertTriangle className="h-12 w-12 text-red-600" />
           </div>
@@ -205,7 +202,7 @@ export function TeacherDisruptionsPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-stone-500 uppercase tracking-wide">Acknowledged</p>
-              <p className="font-heading text-3xl font-bold text-orange-600">{disruptionsData.filter(d => d.status === 'ACKNOWLEDGED').length}</p>
+              <p className="font-heading text-3xl font-bold text-orange-600">{disruptionsData.filter((d: Disruption) => d.status === 'ACKNOWLEDGED').length}</p>
             </div>
             <Clock className="h-12 w-12 text-orange-600" />
           </div>
@@ -214,7 +211,7 @@ export function TeacherDisruptionsPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-stone-500 uppercase tracking-wide">Resolved</p>
-              <p className="font-heading text-3xl font-bold text-green-600">{disruptionsData.filter(d => d.status === 'RESOLVED').length}</p>
+              <p className="font-heading text-3xl font-bold text-green-600">{disruptionsData.filter((d: Disruption) => d.status === 'RESOLVED').length}</p>
             </div>
             <CheckCircle className="h-12 w-12 text-green-600" />
           </div>
@@ -223,7 +220,7 @@ export function TeacherDisruptionsPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-stone-500 uppercase tracking-wide">Total Published</p>
-              <p className="font-heading text-3xl font-bold text-charcoal-500">{disruptionsData.filter(d => d.status !== 'CANCELLED').length}</p>
+              <p className="font-heading text-3xl font-bold text-charcoal-500">{disruptionsData.filter((d: Disruption) => d.status !== 'CANCELLED').length}</p>
             </div>
             <Wrench className="h-12 w-12 text-terracotta-500" />
           </div>
@@ -232,21 +229,21 @@ export function TeacherDisruptionsPage() {
 
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-          <div className="bg-stone-50 rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto animate-slide-up">
-            <div className="p-6 border-b border-stone-200 sticky top-0 bg-stone-50 flex items-center justify-between">
-              <h2 className="font-heading text-xl font-semibold text-charcoal-500">{editingDisruption ? 'Edit Disruption' : 'Publish Disruption'}</h2>
-              <button onClick={() => { setShowForm(false); setEditingDisruption(null); setFormData({ type: 'TRAFFIC', title: '', description: '', affectedArea: '', alternativeRoute: '', startTime: new Date().toISOString().slice(0, 16), estimatedEndTime: '', severity: 1, busId: '', routeId: '' }); }} className="p-2 text-stone-500 hover:text-stone-700 rounded-lg hover:bg-stone-100">
+          <div className="bg-stone-50 dark:bg-[#182235] border border-transparent dark:border-[#334155] rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto animate-slide-up shadow-xl">
+            <div className="p-6 border-b border-stone-200 dark:border-[#334155] sticky top-0 bg-stone-50 dark:bg-[#182235] flex items-center justify-between z-10">
+              <h2 className="font-heading text-xl font-semibold text-charcoal-500 dark:text-[#F1F5F9]">{editingDisruption ? 'Edit Disruption' : 'Publish Disruption'}</h2>
+              <button onClick={() => { setShowForm(false); setEditingDisruption(null); setFormData({ type: 'TRAFFIC', title: '', description: '', affectedArea: '', alternativeRoute: '', startTime: new Date().toISOString().slice(0, 16), estimatedEndTime: '', severity: 1, busId: '', routeId: '' }); }} className="p-2 text-stone-500 hover:text-stone-700 dark:text-slate-400 dark:hover:text-slate-200 rounded-lg hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors">
                 <X className="h-5 w-5" />
               </button>
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Type *</label>
+                  <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Type *</label>
                   <select
                     value={formData.type}
                     onChange={e => setFormData({ ...formData, type: e.target.value as any })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                     required
                   >
                     <option value="TRAFFIC">Traffic</option>
@@ -260,11 +257,11 @@ export function TeacherDisruptionsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Severity *</label>
+                  <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Severity *</label>
                   <select
                     value={formData.severity}
                     onChange={e => setFormData({ ...formData, severity: parseInt(e.target.value) })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                     required
                   >
                     <option value={1}>Level 1 - Minor</option>
@@ -276,96 +273,96 @@ export function TeacherDisruptionsPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">Title *</label>
+                <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Title *</label>
                 <input
                   type="text"
                   value={formData.title}
                   onChange={e => setFormData({ ...formData, title: e.target.value })}
                   required
-                  className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 placeholder:text-stone-400 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:bg-stone-50 focus:outline-none"
+                  className="w-full px-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] placeholder:text-stone-400 dark:placeholder:text-slate-500 focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:bg-stone-50 dark:focus:bg-[#111827] focus:outline-none"
                   placeholder="Brief title for the disruption"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">Description</label>
+                <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Description</label>
                 <textarea
                   value={formData.description}
                   onChange={e => setFormData({ ...formData, description: e.target.value })}
                   rows={3}
-                  className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:bg-stone-50 focus:outline-none"
+                  className="w-full rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] px-4 py-2.5 text-sm text-stone-900 dark:text-[#F1F5F9] placeholder:text-stone-400 dark:placeholder:text-slate-500 focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 focus:bg-stone-50 dark:focus:bg-[#111827] focus:outline-none"
                   placeholder="Detailed description of the disruption..."
                 />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Affected Area</label>
+                  <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Affected Area</label>
                   <input
                     type="text"
                     value={formData.affectedArea}
                     onChange={e => setFormData({ ...formData, affectedArea: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 placeholder:text-stone-400 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] placeholder:text-stone-400 dark:placeholder:text-slate-500 focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                     placeholder="Area affected by the disruption"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Alternative Route</label>
+                  <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Alternative Route</label>
                   <input
                     type="text"
                     value={formData.alternativeRoute}
                     onChange={e => setFormData({ ...formData, alternativeRoute: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 placeholder:text-stone-400 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] placeholder:text-stone-400 dark:placeholder:text-slate-500 focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                     placeholder="Alternative route for students"
                   />
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Start Time *</label>
+                  <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Start Time *</label>
                   <input
                     type="datetime-local"
                     value={formData.startTime}
                     onChange={e => setFormData({ ...formData, startTime: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Estimated End Time</label>
+                  <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Estimated End Time</label>
                   <input
                     type="datetime-local"
                     value={formData.estimatedEndTime}
                     onChange={e => setFormData({ ...formData, estimatedEndTime: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+                    className="w-full px-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">Bus (Optional)</label>
+                <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Bus (Optional)</label>
                 <select
                   value={formData.busId}
                   onChange={e => setFormData({ ...formData, busId: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+                  className="w-full px-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                 >
                   <option value="">Select Bus</option>
                   <option value="bus-1">Bus TS08 UK 1234</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">Route (Optional)</label>
+                <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Route (Optional)</label>
                 <select
                   value={formData.routeId}
                   onChange={e => setFormData({ ...formData, routeId: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+                  className="w-full px-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                 >
                   <option value="">Select Route</option>
                   <option value="route-1">Route A1 - Morning</option>
                 </select>
               </div>
-              <div className="flex gap-3 pt-4 border-t border-stone-200">
+              <div className="flex gap-3 pt-4 border-t border-stone-200 dark:border-[#334155]">
                 <button type="submit" className="flex-1 px-6 py-3 bg-terracotta-500 text-stone-50 rounded-lg font-medium hover:bg-terracotta-400 transition-colors flex items-center justify-center gap-2">
                   {editingDisruption ? 'Update Disruption' : 'Publish Disruption'}
                 </button>
-                <button type="button" onClick={() => { setShowForm(false); setEditingDisruption(null); setFormData({ type: 'TRAFFIC', title: '', description: '', affectedArea: '', alternativeRoute: '', startTime: new Date().toISOString().slice(0, 16), estimatedEndTime: '', severity: 1, busId: '', routeId: '' }); }} className="px-6 py-3 border border-stone-300 text-stone-600 rounded-lg font-medium hover:bg-stone-100 transition-colors">
+                <button type="button" onClick={() => { setShowForm(false); setEditingDisruption(null); setFormData({ type: 'TRAFFIC', title: '', description: '', affectedArea: '', alternativeRoute: '', startTime: new Date().toISOString().slice(0, 16), estimatedEndTime: '', severity: 1, busId: '', routeId: '' }); }} className="px-6 py-3 border border-stone-300 dark:border-slate-700 text-stone-600 dark:text-slate-300 rounded-lg font-medium hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors">
                   Cancel
                 </button>
               </div>

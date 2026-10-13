@@ -3,13 +3,16 @@ import { api } from '@/services/api';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { User, Mail, Lock, GraduationCap, Calendar, Settings, Edit2, Loader2, Shield, Bell, Truck, MapPin, CreditCard, XCircle, Camera, Image, Save, X, AlertCircle, Clock } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
+import { useAuth } from '@/features/auth/context/AuthContext';
+
 interface StudentProfile {
   id: string;
-  user: {
+  userId?: string;
+  user?: {
     id: string;
     name: string;
     email: string;
@@ -47,6 +50,7 @@ function cn(...args: any[]) {
 
 export function StudentProfilePage() {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -87,6 +91,18 @@ export function StudentProfilePage() {
     },
   });
 
+  const studentUser = profile?.user || user;
+
+  useEffect(() => {
+    if ((profile || user) && !editing) {
+      setFormData({
+        name: studentUser?.name || '',
+        emergencyContactName: profile?.emergencyContactName || '',
+        emergencyContactPhone: profile?.emergencyContactPhone || '',
+      });
+    }
+  }, [profile, user, editing, studentUser]);
+
   if (isLoading) {
     return (
       <div className="container-app py-12">
@@ -108,14 +124,6 @@ export function StudentProfilePage() {
         </div>
       </div>
     );
-  }
-
-  if (!editing) {
-    setFormData({
-      name: profile.user.name,
-      emergencyContactName: profile.emergencyContactName || '',
-      emergencyContactPhone: profile.emergencyContactPhone || '',
-    });
   }
 
   return (
@@ -147,44 +155,44 @@ export function StudentProfilePage() {
               <form onSubmit={e => { e.preventDefault(); updateProfileMutation.mutate(formData); }} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-1">Full Name</label>
+                    <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Full Name</label>
                     <input
                       type="text"
                       value={formData.name}
                       onChange={e => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:bg-stone-50 focus:outline-none"
+                      className="w-full rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] px-4 py-2.5 text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:bg-stone-50 dark:focus:bg-[#111827] focus:outline-none"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-1">Email</label>
+                    <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Email</label>
                     <input
                       type="email"
-                      value={profile.user.email}
+                      value={studentUser?.email || ''}
                       disabled
-                      className="w-full rounded-lg border border-stone-300 bg-stone-100 px-4 py-2.5 text-sm text-stone-500"
+                      className="w-full rounded-lg border border-stone-300 dark:border-slate-800 bg-stone-100 dark:bg-slate-900 px-4 py-2.5 text-sm text-stone-500 dark:text-slate-400 cursor-not-allowed"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Emergency Contact Name</label>
+                  <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Emergency Contact Name</label>
                   <input
                     type="text"
                     value={formData.emergencyContactName}
                     onChange={e => setFormData({ ...formData, emergencyContactName: e.target.value })}
-                    className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:bg-stone-50 focus:outline-none"
+                    className="w-full rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] px-4 py-2.5 text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:bg-stone-50 dark:focus:bg-[#111827] focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Emergency Contact Phone</label>
+                  <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Emergency Contact Phone</label>
                   <input
                     type="tel"
                     value={formData.emergencyContactPhone}
                     onChange={e => setFormData({ ...formData, emergencyContactPhone: e.target.value })}
-                    className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:bg-stone-50 focus:outline-none"
+                    className="w-full rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] px-4 py-2.5 text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:bg-stone-50 dark:focus:bg-[#111827] focus:outline-none"
                   />
                 </div>
-                <div className="flex gap-3 pt-4 border-t border-stone-200">
+                <div className="flex gap-3 pt-4 border-t border-stone-200 dark:border-[#334155]">
                   <button
                     type="submit"
                     disabled={updateProfileMutation.isPending}
@@ -196,7 +204,7 @@ export function StudentProfilePage() {
                   <button
                     type="button"
                     onClick={() => setEditing(false)}
-                    className="px-6 py-2.5 border border-stone-300 text-stone-600 rounded-lg hover:bg-stone-100 transition-colors"
+                    className="px-6 py-2.5 border border-stone-300 dark:border-slate-700 text-stone-600 dark:text-slate-300 rounded-lg hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors"
                   >
                     Cancel
                   </button>
@@ -207,14 +215,14 @@ export function StudentProfilePage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Full Name</p>
-                    <p className="font-medium text-lg text-charcoal-500">{profile.user.name}</p>
+                    <p className="font-medium text-lg text-charcoal-500">{studentUser?.name || 'Student'}</p>
                   </div>
                   <div>
                     <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Email</p>
                     <div className="flex items-center gap-2">
-                      <p className="font-medium text-charcoal-500">{profile.user.email}</p>
-                      <Badge variant={profile.user.emailVerified ? 'success' : 'warning'} size="sm">
-                        {profile.user.emailVerified ? 'Verified' : 'Pending'}
+                      <p className="font-medium text-charcoal-500">{studentUser?.email || ''}</p>
+                      <Badge variant={studentUser?.emailVerified ? 'success' : 'warning'} size="sm">
+                        {studentUser?.emailVerified ? 'Verified' : 'Pending'}
                       </Badge>
                     </div>
                   </div>
@@ -347,39 +355,39 @@ export function StudentProfilePage() {
             {changingPassword ? (
               <form onSubmit={e => { e.preventDefault(); changePasswordMutation.mutate(passwordForm); }} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">Current Password</label>
+                  <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Current Password</label>
                   <input
                     type="password"
                     value={passwordForm.currentPassword}
                     onChange={e => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
-                    className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:bg-stone-50 focus:outline-none"
+                    className="w-full rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] px-4 py-2.5 text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
                     required
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-1">New Password</label>
+                    <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">New Password</label>
                     <input
                       type="password"
                       value={passwordForm.newPassword}
                       onChange={e => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-                      className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:bg-stone-50 focus:outline-none"
+                      className="w-full rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] px-4 py-2.5 text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
                       required
                       minLength={8}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-1">Confirm New Password</label>
+                    <label className="block text-sm font-medium text-stone-700 dark:text-slate-300 mb-1">Confirm New Password</label>
                     <input
                       type="password"
                       value={passwordForm.confirmPassword}
                       onChange={e => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
-                      className="w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:bg-stone-50 focus:outline-none"
+                      className="w-full rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] px-4 py-2.5 text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
                       required
                     />
                   </div>
                 </div>
-                <div className="flex gap-3 pt-4 border-t border-stone-200">
+                <div className="flex gap-3 pt-4 border-t border-stone-200 dark:border-slate-800">
                   <button
                     type="submit"
                     disabled={changePasswordMutation.isPending}
@@ -391,7 +399,7 @@ export function StudentProfilePage() {
                   <button
                     type="button"
                     onClick={() => { setChangingPassword(false); setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' }); }}
-                    className="px-6 py-2.5 border border-stone-300 text-stone-600 rounded-lg hover:bg-stone-100 transition-colors"
+                    className="px-6 py-2.5 border border-stone-300 dark:border-slate-700 text-stone-600 dark:text-slate-300 rounded-lg hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors flex items-center"
                   >
                     <X className="h-4 w-4 mr-1" />
                     Cancel
@@ -400,21 +408,21 @@ export function StudentProfilePage() {
               </form>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-stone-50 rounded-xl p-4 border border-stone-200 text-center">
-                  <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Account Status</p>
-                  <Badge variant={profile.user.active ? 'success' : 'danger'} size="sm">
-                    {profile.user.active ? 'Active' : 'Inactive'}
+                <div className="bg-stone-50 dark:bg-[#111827] rounded-xl p-4 border border-stone-200 dark:border-slate-800 text-center">
+                  <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-1">Account Status</p>
+                  <Badge variant={studentUser?.active !== false ? 'success' : 'danger'} size="sm">
+                    {studentUser?.active !== false ? 'Active' : 'Inactive'}
                   </Badge>
                 </div>
-                <div className="bg-stone-50 rounded-xl p-4 border border-stone-200 text-center">
-                  <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Email Verified</p>
-                  <Badge variant={profile.user.emailVerified ? 'success' : 'warning'} size="sm">
-                    {profile.user.emailVerified ? 'Verified' : 'Pending'}
+                <div className="bg-stone-50 dark:bg-[#111827] rounded-xl p-4 border border-stone-200 dark:border-slate-800 text-center">
+                  <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-1">Email Verified</p>
+                  <Badge variant={studentUser?.emailVerified ? 'success' : 'warning'} size="sm">
+                    {studentUser?.emailVerified ? 'Verified' : 'Pending'}
                   </Badge>
                 </div>
-                <div className="bg-stone-50 rounded-xl p-4 border border-stone-200 text-center">
-                  <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Last Login</p>
-                  <p className="text-charcoal-500">{profile.user.lastLoginAt ? new Date(profile.user.lastLoginAt).toLocaleDateString() : 'Never'}</p>
+                <div className="bg-stone-50 dark:bg-[#111827] rounded-xl p-4 border border-stone-200 dark:border-slate-800 text-center">
+                  <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-1">Last Login</p>
+                  <p className="text-charcoal-500 dark:text-[#F1F5F9]">{studentUser?.lastLoginAt ? new Date(studentUser.lastLoginAt).toLocaleDateString() : 'Never'}</p>
                 </div>
               </div>
             )}
@@ -422,19 +430,19 @@ export function StudentProfilePage() {
 
           {/* Notification Preferences */}
           <Card padding="lg">
-            <h2 className="font-heading text-lg font-semibold text-charcoal-500 mb-6 flex items-center gap-2">
+            <h2 className="font-heading text-lg font-semibold text-charcoal-500 dark:text-[#F1F5F9] mb-6 flex items-center gap-2">
               <Bell className="h-5 w-5 text-terracotta-500" />
               Notification Preferences
             </h2>
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-stone-50 rounded-lg border border-stone-200">
+              <div className="flex items-center justify-between p-4 bg-stone-50 dark:bg-[#111827] rounded-lg border border-stone-200 dark:border-slate-800">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                    <Mail className="h-5 w-5 text-blue-600" />
+                  <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-950/40 flex items-center justify-center">
+                    <Mail className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div>
-                    <p className="font-medium text-charcoal-500">Email Notifications</p>
-                    <p className="text-sm text-stone-500">Receive notifications via email</p>
+                    <p className="font-medium text-charcoal-500 dark:text-[#F1F5F9]">Email Notifications</p>
+                    <p className="text-sm text-stone-500 dark:text-slate-400">Receive notifications via email</p>
                   </div>
                 </div>
                 <input
@@ -444,14 +452,14 @@ export function StudentProfilePage() {
                   className="w-5 h-5 rounded border-stone-300 text-terracotta-500 focus:ring-terracotta-500"
                 />
               </div>
-              <div className="flex items-center justify-between p-4 bg-stone-50 rounded-lg border border-stone-200">
+              <div className="flex items-center justify-between p-4 bg-stone-50 dark:bg-[#111827] rounded-lg border border-stone-200 dark:border-slate-800">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
-                    <Bell className="h-5 w-5 text-indigo-600" />
+                  <div className="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-950/40 flex items-center justify-center">
+                    <Bell className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                   </div>
                   <div>
-                    <p className="font-medium text-charcoal-500">Push Notifications</p>
-                    <p className="text-sm text-stone-500">Receive push notifications on your device</p>
+                    <p className="font-medium text-charcoal-500 dark:text-[#F1F5F9]">Push Notifications</p>
+                    <p className="text-sm text-stone-500 dark:text-slate-400">Receive push notifications on your device</p>
                   </div>
                 </div>
                 <input
@@ -461,14 +469,14 @@ export function StudentProfilePage() {
                   className="w-5 h-5 rounded border-stone-300 text-terracotta-500 focus:ring-terracotta-500"
                 />
               </div>
-              <div className="flex items-center justify-between p-4 bg-stone-50 rounded-lg border border-stone-200">
+              <div className="flex items-center justify-between p-4 bg-stone-50 dark:bg-[#111827] rounded-lg border border-stone-200 dark:border-slate-800">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                    <Bell className="h-5 w-5 text-purple-600" />
+                  <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-950/40 flex items-center justify-center">
+                    <Bell className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                   </div>
                   <div>
-                    <p className="font-medium text-charcoal-500">In-App Notifications</p>
-                    <p className="text-sm text-stone-500">Receive notifications within the app</p>
+                    <p className="font-medium text-charcoal-500 dark:text-[#F1F5F9]">In-App Notifications</p>
+                    <p className="text-sm text-stone-500 dark:text-slate-400">Receive notifications within the app</p>
                   </div>
                 </div>
                 <input
@@ -478,14 +486,14 @@ export function StudentProfilePage() {
                   className="w-5 h-5 rounded border-stone-300 text-terracotta-500 focus:ring-terracotta-500"
                 />
               </div>
-              <div className="flex items-center justify-between p-4 bg-stone-50 rounded-lg border border-stone-200">
+              <div className="flex items-center justify-between p-4 bg-stone-50 dark:bg-[#111827] rounded-lg border border-stone-200 dark:border-slate-800">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
-                    <Shield className="h-5 w-5 text-red-600" />
+                  <div className="w-10 h-10 rounded-lg bg-red-100 dark:bg-red-950/40 flex items-center justify-center">
+                    <Shield className="h-5 w-5 text-red-600 dark:text-red-400" />
                   </div>
                   <div>
-                    <p className="font-medium text-charcoal-500">SOS Notifications</p>
-                    <p className="text-sm text-stone-500">Receive emergency SOS alerts (cannot be disabled)</p>
+                    <p className="font-medium text-charcoal-500 dark:text-[#F1F5F9]">SOS Notifications</p>
+                    <p className="text-sm text-stone-500 dark:text-slate-400">Receive emergency SOS alerts (cannot be disabled)</p>
                   </div>
                 </div>
                 <input
@@ -502,36 +510,36 @@ export function StudentProfilePage() {
         <div className="space-y-6">
           {/* Account Info */}
           <Card padding="lg">
-            <h2 className="font-heading text-lg font-semibold text-charcoal-500 mb-6 flex items-center gap-2">
+            <h2 className="font-heading text-lg font-semibold text-charcoal-500 dark:text-[#F1F5F9] mb-6 flex items-center gap-2">
               <GraduationCap className="h-5 w-5 text-terracotta-500" />
               Account Information
             </h2>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-stone-50 rounded-xl p-4 border border-stone-200">
-                  <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Role</p>
-                  <Badge variant="secondary">{profile.user.role}</Badge>
+                <div className="bg-stone-50 dark:bg-[#111827] rounded-xl p-4 border border-stone-200 dark:border-slate-800">
+                  <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-1">Role</p>
+                  <Badge variant="secondary">{studentUser?.role || 'STUDENT'}</Badge>
                 </div>
-                <div className="bg-stone-50 rounded-xl p-4 border border-stone-200">
-                  <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Account Created</p>
-                  <p className="font-medium text-charcoal-500">{new Date(profile.user.createdAt).toLocaleDateString()}</p>
+                <div className="bg-stone-50 dark:bg-[#111827] rounded-xl p-4 border border-stone-200 dark:border-slate-800">
+                  <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-1">Account Created</p>
+                  <p className="font-medium text-charcoal-500 dark:text-[#F1F5F9]">{studentUser?.createdAt ? new Date(studentUser.createdAt).toLocaleDateString() : 'Active'}</p>
                 </div>
               </div>
-              <div className="pt-4 border-t border-stone-200">
-                <p className="text-sm text-stone-500">Need help? Contact <a href="mailto:transport@anuraguniversity.edu.in" className="text-terracotta-600 hover:underline">transport@anuraguniversity.edu.in</a></p>
+              <div className="pt-4 border-t border-stone-200 dark:border-slate-800">
+                <p className="text-sm text-stone-500 dark:text-slate-400">Need help? Contact <a href="mailto:transport@anuraguniversity.edu.in" className="text-terracotta-600 hover:underline">transport@anuraguniversity.edu.in</a></p>
               </div>
             </div>
             </Card>
 
           {/* Danger Zone */}
-          <Card padding="lg" className="border-red-200 bg-red-50">
-            <h2 className="font-heading text-lg font-semibold text-red-700 mb-4 flex items-center gap-2">
+          <Card padding="lg" className="border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/20">
+            <h2 className="font-heading text-lg font-semibold text-red-700 dark:text-red-400 mb-4 flex items-center gap-2">
               <AlertCircle className="h-5 w-5" />
               Danger Zone
             </h2>
-            <p className="text-red-600 mb-4">These actions are irreversible. Please proceed with caution.</p>
+            <p className="text-red-600 dark:text-red-300 mb-4">These actions are irreversible. Please proceed with caution.</p>
             <div className="flex gap-3">
-              <button className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors flex items-center gap-2">
+              <button className="px-4 py-2 border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors flex items-center gap-2">
                 <XCircle className="h-4 w-4" />
                 Deactivate Account
               </button>

@@ -1,14 +1,15 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { api } from '@/services/api';
-import type { User } from '@/types/api';
+import type { User, AuthResponse } from '@/types/api';
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  registerStudent: (data: { name: string; email: string; password: string; confirmPassword: string }) => Promise<void>;
-  registerTeacher: (data: { name: string; email: string; password: string; confirmPassword: string }) => Promise<void>;
+  login: (email: string, password: string, role?: 'STUDENT' | 'TEACHER') => Promise<User | null>;
+  loginWithGoogle: (idToken: string, role?: 'STUDENT' | 'TEACHER') => Promise<User | null>;
+  registerStudent: (data: { name: string; email: string; password: string; confirmPassword: string }) => Promise<AuthResponse>;
+  registerTeacher: (data: { name: string; email: string; password: string; confirmPassword: string }) => Promise<AuthResponse>;
   verifyOTP: (email: string, otp: string, type: 'REGISTRATION' | 'FORGOT_PASSWORD' | 'LOGIN' | 'EMAIL_VERIFICATION') => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
   resetPassword: (email: string, otp: string, newPassword: string, confirmPassword: string) => Promise<void>;
@@ -49,19 +50,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     refreshUser();
   }, [refreshUser]);
 
-  const login = async (email: string, password: string) => {
-    const response = await api.login({ email, password });
+  const login = async (email: string, password: string, role?: 'STUDENT' | 'TEACHER'): Promise<User | null> => {
+    const response = await api.login({ email, password, role });
     if (response.user) {
+      // Authoritative client-side verification defense-in-depth:
+      // If a role was requested and doesn't match the server-returned authoritative user role,
+      // reject immediately and wipe any stored tokens.
+      if (role && response.user.role !== role) {
+        await api.logout();
+        setUser(null);
+        throw new Error(
+          response.user.role === 'TEACHER'
+            ? 'This account is registered as a Teacher. Please use Teacher Login.'
+            : 'This account is registered as a Student. Please use Student Login.'
+        );
+      }
       setUser(response.user);
+      return response.user;
     }
+    return null;
   };
 
-  const registerStudent = async (data: { name: string; email: string; password: string; confirmPassword: string }) => {
-    await api.registerStudent(data);
+  const loginWithGoogle = async (idToken: string, role?: 'STUDENT' | 'TEACHER'): Promise<User | null> => {
+    const response = await api.loginWithGoogle(idToken, role);
+    if (response.user) {
+      if (role && response.user.role !== role) {
+        await api.logout();
+        setUser(null);
+        throw new Error(
+          response.user.role === 'TEACHER'
+            ? 'This account is registered as a Teacher. Please use Teacher Login.'
+            : 'This account is registered as a Student. Please use Student Login.'
+        );
+      }
+      setUser(response.user);
+      return response.user;
+    }
+    return null;
   };
 
-  const registerTeacher = async (data: { name: string; email: string; password: string; confirmPassword: string }) => {
-    await api.registerTeacher(data);
+  const registerStudent = async (data: { name: string; email: string; password: string; confirmPassword: string }): Promise<AuthResponse> => {
+    return await api.registerStudent(data);
+  };
+
+  const registerTeacher = async (data: { name: string; email: string; password: string; confirmPassword: string }): Promise<AuthResponse> => {
+    return await api.registerTeacher(data);
   };
 
   const verifyOTP = async (email: string, otp: string, type: 'REGISTRATION' | 'FORGOT_PASSWORD' | 'LOGIN' | 'EMAIL_VERIFICATION') => {
@@ -94,6 +127,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isLoading,
     isAuthenticated: !!user,
     login,
+    loginWithGoogle,
     registerStudent,
     registerTeacher,
     verifyOTP,

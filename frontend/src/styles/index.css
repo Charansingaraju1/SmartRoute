@@ -20,25 +20,70 @@
     --color-info: #2563EB;
   }
 
+  .dark {
+    --color-primary: #F4F4F6;
+    --color-primary-light: #E4E4E7;
+    --color-secondary: #C06B4A;
+    --color-accent: #D4D4D8;
+    --color-background: #121214;
+    --color-surface: #18181B;
+    --color-card: #1C1C20;
+    --color-text-primary: #F4F4F6;
+    --color-text-secondary: #A1A1AA;
+    --color-text-muted: #71717A;
+    --color-border: #2E2E34;
+    --color-error: #EF4444;
+    --color-success: #10B981;
+    --color-warning: #F59E0B;
+    --color-info: #A1A1AA;
+  }
+
   * {
-    @apply border-stone-200;
+    @apply border-stone-200 dark:border-stone-800;
   }
 
   html {
     @apply scroll-smooth;
   }
 
+  html.dark {
+    color-scheme: dark;
+  }
+
   body {
-    @apply bg-stone-50 text-stone-900 antialiased font-sans;
+    @apply bg-stone-50 text-stone-900 antialiased font-sans transition-colors duration-200 dark:bg-[#121214] dark:text-[#F4F4F6];
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
   ::selection {
-    @apply bg-terracotta-500/30 text-stone-900;
+    @apply bg-terracotta-500/30 text-stone-900 dark:bg-stone-700/60 dark:text-stone-100;
   }
 
   :focus-visible {
-    @apply outline-none ring-2 ring-terracotta-500 ring-offset-2 ring-offset-stone-50;
+    @apply outline-none ring-2 ring-terracotta-500 ring-offset-2 ring-offset-stone-50 dark:ring-stone-400 dark:ring-offset-[#121214];
+  }
+
+  .dark .text-charcoal-500 {
+    color: #F4F4F6;
+  }
+
+  .dark .text-charcoal-600,
+  .dark .text-charcoal-700 {
+    color: #A1A1AA;
+  }
+
+  .dark table th {
+    background-color: #18181B;
+    border-color: #2E2E34;
+    color: #A1A1AA;
+  }
+
+  .dark table td {
+    border-color: #2E2E34;
+  }
+
+  .dark table tr:hover {
+    background-color: rgba(36, 36, 42, 0.5);
   }
 }
 
@@ -48,27 +93,27 @@
   }
 
   .btn-primary {
-    @apply btn bg-charcoal-500 text-stone-50 hover:bg-charcoal-400 active:bg-charcoal-600 focus-visible:ring-charcoal-500;
+    @apply btn bg-charcoal-500 text-white hover:bg-charcoal-400 active:bg-charcoal-600 focus-visible:ring-charcoal-500 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-white dark:active:bg-stone-200 dark:focus-visible:ring-stone-400;
   }
 
   .btn-secondary {
-    @apply btn bg-terracotta-500 text-stone-50 hover:bg-terracotta-400 active:bg-terracotta-600 focus-visible:ring-terracotta-500;
+    @apply btn bg-terracotta-500 text-white hover:bg-terracotta-400 active:bg-terracotta-600 focus-visible:ring-terracotta-500 dark:bg-terracotta-600 dark:text-white dark:hover:bg-terracotta-500 dark:active:bg-terracotta-700 dark:focus-visible:ring-terracotta-400;
   }
 
   .btn-outline {
-    @apply btn border-2 border-charcoal-500 text-charcoal-500 hover:bg-charcoal-500 hover:text-stone-50 active:bg-charcoal-600 focus-visible:ring-charcoal-500;
+    @apply btn border-2 border-charcoal-500 text-charcoal-500 hover:bg-charcoal-500 hover:text-white active:bg-charcoal-600 focus-visible:ring-charcoal-500 dark:border-stone-700 dark:text-stone-200 dark:hover:bg-stone-800 dark:hover:text-stone-50 dark:focus-visible:ring-stone-400;
   }
 
   .btn-ghost {
-    @apply btn text-charcoal-600 hover:bg-stone-100 active:bg-stone-200 focus-visible:ring-charcoal-500;
+    @apply btn text-charcoal-600 hover:bg-stone-100 active:bg-stone-200 focus-visible:ring-charcoal-500 dark:text-stone-300 dark:hover:bg-stone-800/80 dark:active:bg-stone-700;
   }
 
   .btn-danger {
-    @apply btn bg-red-600 text-stone-50 hover:bg-red-500 active:bg-red-700 focus-visible:ring-red-500;
+    @apply btn bg-red-600 text-white hover:bg-red-500 active:bg-red-700 focus-visible:ring-red-500 dark:bg-red-600/90 dark:text-white dark:hover:bg-red-500 dark:active:bg-red-700 dark:focus-visible:ring-red-400;
   }
 
   .btn-success {
-    @apply btn bg-green-600 text-stone-50 hover:bg-green-500 active:bg-green-700 focus-visible:ring-green-500;
+    @apply btn bg-green-600 text-white hover:bg-green-500 active:bg-green-700 focus-visible:ring-green-500 dark:bg-emerald-600/90 dark:text-white dark:hover:bg-emerald-500 dark:active:bg-emerald-700 dark:focus-visible:ring-emerald-400;
   }
 
   .btn-sm {
@@ -80,23 +125,23 @@
   }
 
   .input {
-    @apply w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 transition-all duration-200 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:bg-stone-50 focus:outline-none disabled:bg-stone-100 disabled:cursor-not-allowed;
+    @apply w-full rounded-lg border border-stone-300 bg-stone-50 px-4 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 transition-all duration-200 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:bg-stone-50 focus:outline-none disabled:bg-stone-100 disabled:cursor-not-allowed dark:border-stone-700 dark:bg-[#18181B] dark:text-[#F4F4F6] dark:placeholder:text-stone-500 dark:focus:border-stone-400 dark:focus:ring-stone-400/20 dark:focus:bg-[#18181B] dark:disabled:bg-stone-900;
   }
 
   .input-error {
-    @apply border-red-500 focus:border-red-500 focus:ring-red-500/20;
+    @apply border-red-500 focus:border-red-500 focus:ring-red-500/20 dark:border-red-500 dark:focus:border-red-500;
   }
 
   .label {
-    @apply block text-sm font-medium text-stone-700 mb-1.5;
+    @apply block text-sm font-medium text-stone-700 mb-1.5 dark:text-stone-300;
   }
 
   .card {
-    @apply bg-stone-50 border border-stone-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200;
+    @apply bg-stone-50 border border-stone-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 dark:bg-[#18181B] dark:border-[#2E2E34] dark:text-[#F4F4F6] dark:hover:shadow-stone-950/60;
   }
 
   .card-elevated {
-    @apply bg-stone-50 border border-stone-200 rounded-xl shadow-lg;
+    @apply bg-stone-50 border border-stone-200 rounded-xl shadow-lg dark:bg-[#1C1C20] dark:border-[#2E2E34] dark:text-[#F4F4F6];
   }
 
   .badge {
@@ -104,27 +149,27 @@
   }
 
   .badge-primary {
-    @apply badge bg-charcoal-100 text-charcoal-700;
+    @apply badge bg-charcoal-100 text-charcoal-700 dark:bg-stone-800 dark:text-stone-200 dark:border dark:border-stone-700/60;
   }
 
   .badge-secondary {
-    @apply badge bg-terracotta-100 text-terracotta-700;
+    @apply badge bg-terracotta-100 text-terracotta-700 dark:bg-stone-800 dark:text-terracotta-400 dark:border dark:border-terracotta-900/40;
   }
 
   .badge-success {
-    @apply badge bg-green-100 text-green-700;
+    @apply badge bg-green-100 text-green-700 dark:bg-emerald-950/50 dark:text-emerald-400 dark:border dark:border-emerald-800/40;
   }
 
   .badge-warning {
-    @apply badge bg-yellow-100 text-yellow-700;
+    @apply badge bg-yellow-100 text-yellow-700 dark:bg-amber-950/50 dark:text-amber-400 dark:border dark:border-amber-800/40;
   }
 
   .badge-danger {
-    @apply badge bg-red-100 text-red-700;
+    @apply badge bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-400 dark:border dark:border-red-800/40;
   }
 
   .badge-info {
-    @apply badge bg-blue-100 text-blue-700;
+    @apply badge bg-blue-100 text-blue-700 dark:bg-stone-800 dark:text-blue-200 dark:border dark:border-stone-700/60;
   }
 
   .container-app {
@@ -151,7 +196,7 @@
   }
 
   .text-gradient {
-    @apply bg-gradient-to-r from-charcoal-500 to-terracotta-500 bg-clip-text text-transparent;
+    @apply text-charcoal-500 dark:text-stone-100 font-semibold;
   }
 
   .animate-in {
@@ -159,8 +204,49 @@
   }
 
   .glass {
-    @apply bg-stone-50/80 backdrop-blur-sm border border-stone-200/50;
+    @apply bg-stone-50/90 border border-stone-200 dark:bg-[#18181B]/95 dark:border-[#2E2E34];
   }
+}
+
+/* Leaflet Dark Mode Adaptations */
+.dark .leaflet-bar a {
+  background-color: #18181B !important;
+  color: #F4F4F6 !important;
+  border-bottom: 1px solid #2E2E34 !important;
+}
+
+.dark .leaflet-bar a:hover {
+  background-color: #24242A !important;
+  color: #FAFAFA !important;
+}
+
+.dark .leaflet-bar a.leaflet-disabled {
+  background-color: #141416 !important;
+  color: #71717A !important;
+}
+
+.dark .leaflet-popup-content-wrapper,
+.dark .leaflet-popup-tip {
+  background-color: #18181B !important;
+  color: #F4F4F6 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -2px rgba(0, 0, 0, 0.6) !important;
+}
+
+.dark .leaflet-popup-close-button {
+  color: #A1A1AA !important;
+}
+
+.dark .leaflet-popup-close-button:hover {
+  color: #F4F4F6 !important;
+}
+
+.dark .leaflet-control-attribution {
+  background-color: rgba(24, 24, 27, 0.85) !important;
+  color: #A1A1AA !important;
+}
+
+.dark .leaflet-control-attribution a {
+  color: #E4E4E7 !important;
 }
 
 /* Print styles */

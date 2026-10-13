@@ -79,10 +79,10 @@ export function Footer() {
 
         <div className="mt-12 pt-8 border-t border-charcoal-400">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-stone-500 text-sm">
+            <p className="text-stone-400 text-sm">
               © {currentYear} Anurag University. All rights reserved.
             </p>
-            <div className="flex items-center gap-6 text-sm text-stone-500">
+            <div className="flex items-center gap-6 text-sm text-stone-400">
               <Link to="/privacy" className="hover:text-stone-100 transition-colors">Privacy Policy</Link>
               <Link to="/terms" className="hover:text-stone-100 transition-colors">Terms of Service</Link>
               <Link to="/accessibility" className="hover:text-stone-100 transition-colors">Accessibility</Link>

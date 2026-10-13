@@ -32,30 +32,30 @@ export function TeacherLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col bg-stone-50">
+    <div className="min-h-screen flex flex-col bg-stone-50 dark:bg-[#121214] text-stone-900 dark:text-[#F4F4F6] transition-colors">
       <Header />
-      <div className="flex flex-1 pt-16">
+      <div className="flex flex-1 pt-20">
         <aside
           className={clsx(
-            'fixed lg:static inset-y-0 left-0 z-30 bg-stone-50 border-r border-stone-200 transition-all duration-300 flex flex-col',
+            'fixed lg:static inset-y-0 left-0 z-30 bg-stone-50 dark:bg-[#18181B] border-r border-stone-200 dark:border-[#2E2E34] transition-all duration-300 flex flex-col',
             sidebarCollapsed ? 'w-16' : 'w-64',
             sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
           )}
           aria-label="Teacher navigation"
         >
-          <div className="flex h-16 items-center justify-between px-4 border-b border-stone-200">
+          <div className="flex h-20 items-center justify-between px-4 border-b border-stone-200 dark:border-stone-800">
             {!sidebarCollapsed && (
-              <span className="font-heading text-lg font-bold text-charcoal-500">SmartRoute</span>
+              <span className="font-heading text-lg font-bold text-charcoal-500 dark:text-stone-100">Navigation</span>
             )}
             <button
-              className="lg:hidden p-2 rounded-lg text-stone-600 hover:bg-stone-100"
+              className="lg:hidden p-2 rounded-lg text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800"
               onClick={() => setSidebarOpen(false)}
               aria-label="Close sidebar"
             >
               <X className="h-5 w-5" />
             </button>
             <button
-              className="hidden lg:flex p-2 rounded-lg text-stone-600 hover:bg-stone-100"
+              className="hidden lg:flex p-2 rounded-lg text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800"
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
               aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             >
@@ -69,11 +69,11 @@ export function TeacherLayout() {
                 key={item.path}
                 to={item.path}
                 className={({ isActive }) => clsx(
-                  'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                  'flex items-center gap-3 px-3 py-2.5 rounded-lg text-[15px] font-medium transition-colors',
                   sidebarCollapsed ? 'justify-center' : '',
                   isActive
-                    ? 'bg-terracotta-50 text-terracotta-700'
-                    : 'text-stone-600 hover:bg-stone-100 hover:text-charcoal-500'
+                    ? 'bg-terracotta-50 dark:bg-terracotta-950/40 text-terracotta-700 dark:text-terracotta-300'
+                    : 'text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-charcoal-500 dark:hover:text-stone-100'
                 )}
                 title={sidebarCollapsed ? item.label : undefined}
                 onClick={() => setSidebarOpen(false)}
@@ -84,15 +84,15 @@ export function TeacherLayout() {
             ))}
           </nav>
 
-          <div className="p-4 border-t border-stone-200">
+          <div className="p-4 border-t border-stone-200 dark:border-stone-800">
             <div className={clsx('flex items-center gap-3 px-3 py-2 rounded-lg', sidebarCollapsed ? 'justify-center' : '')}>
-              <div className="w-8 h-8 rounded-full bg-terracotta-100 flex items-center justify-center flex-shrink-0">
-                <GraduationCap className="h-4 w-4 text-terracotta-600" />
+              <div className="w-8 h-8 rounded-full bg-terracotta-100 dark:bg-terracotta-900/60 flex items-center justify-center flex-shrink-0">
+                <GraduationCap className="h-4 w-4 text-terracotta-600 dark:text-terracotta-300" />
               </div>
               {!sidebarCollapsed && (
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-charcoal-500 truncate">Teacher</p>
-                  <p className="text-xs text-stone-500 truncate">Anurag University</p>
+                  <p className="text-sm font-medium text-charcoal-500 dark:text-stone-200 truncate">Teacher</p>
+                  <p className="text-xs text-stone-500 dark:text-stone-400 truncate">Anurag University</p>
                 </div>
               )}
             </div>
@@ -107,7 +107,7 @@ export function TeacherLayout() {
           />
         )}
 
-        <main className="flex-1 lg:ml-0 ml-0 p-4 lg:p-6 lg:ml-64 transition-all duration-300">
+        <main className="flex-1 lg:ml-0 ml-0 p-4 lg:p-6 lg:ml-64 transition-all duration-300 bg-stone-50 dark:bg-[#121214] text-stone-900 dark:text-[#F4F4F6]">
           <Outlet />
         </main>
       </div>

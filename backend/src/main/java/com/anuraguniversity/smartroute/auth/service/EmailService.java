@@ -1,11 +1,14 @@
 package com.anuraguniversity.smartroute.auth.service;
 
+import com.anuraguniversity.smartroute.auth.exception.EmailDeliveryException;
 import com.anuraguniversity.smartroute.common.enums.OTPType;
 import com.anuraguniversity.smartroute.config.SmartRouteProperties;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.mail.MailAuthenticationException;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -19,25 +22,71 @@ public class EmailService {
     private final JavaMailSender mailSender;
     private final SmartRouteProperties properties;
 
-    @Async
+    public boolean isMailConfigured() {
+        String host = properties.getMail().getHost();
+        if ("localhost".equalsIgnoreCase(host) || "127.0.0.1".equalsIgnoreCase(host)) {
+            return true;
+        }
+
+        String username = properties.getMail().getUsername();
+        String password = properties.getMail().getPassword();
+
+        if (username == null || username.trim().isEmpty() || password == null || password.trim().isEmpty()) {
+            return false;
+        }
+
+        String u = username.trim().toLowerCase();
+        String p = password.trim().toLowerCase();
+
+        if (u.contains("your-email") || u.contains("your-actual-email") || u.contains("your_email") || u.contains("example.com")) {
+            return false;
+        }
+
+        if (p.contains("your-app-password") || p.contains("your-16-character-app-password") || p.contains("your_app_password") || p.contains("your_strong_password")) {
+            return false;
+        }
+
+        return true;
+    }
+
     public void sendOTP(String toEmail, String otpCode, OTPType type) {
+        if (!isMailConfigured()) {
+            log.error("Failed to send OTP email to {}: SMTP credentials are not configured or are placeholder values in .env. MAIL_USERNAME and MAIL_PASSWORD (Google App Password) are required.", toEmail);
+            throw new EmailDeliveryException(
+                "Email delivery is not configured. Please configure valid MAIL_USERNAME and MAIL_PASSWORD (requires a Google App Password for Gmail) in .env."
+            );
+        }
+
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             
-            helper.setFrom(properties.getMail().getFrom());
+            String from = properties.getMail().getFrom();
+            if (from == null || from.isBlank()) {
+                from = "noreply@anuraguniversity.edu.in";
+            }
+            helper.setFrom(from, "SmartRoute Anurag University");
             helper.setTo(toEmail);
             helper.setSubject(buildSubject(type));
             helper.setText(buildBody(otpCode, type), true);
             
             mailSender.send(message);
-            log.info("OTP email sent to {} for type {}", toEmail, type);
-        } catch (MessagingException e) {
-            log.error("Failed to send OTP email to {}: {}", toEmail, e.getMessage());
+            log.info("OTP verification email successfully dispatched to {} for type {}", toEmail, type);
+        } catch (MailAuthenticationException e) {
+            log.error("Failed to send OTP email to {}: SMTP authentication failed. Please verify MAIL_USERNAME and MAIL_PASSWORD (requires Google App Password for Gmail).", toEmail);
+            throw new EmailDeliveryException("Failed to send verification email: SMTP authentication failed. Please verify your email credentials and Google App Password.", e);
+        } catch (MailSendException e) {
+            log.error("Failed to send OTP email to {}: Mail server connection or delivery error: {}", toEmail, e.getMessage());
+            throw new EmailDeliveryException("Failed to send verification email: Unable to connect to mail server. Please check your network and mail settings.", e);
         } catch (org.springframework.mail.MailException e) {
-            // SMTP transport unavailable (e.g. no local mail catcher running). Registration must
-            // still succeed; the actuator mail health check is disabled for this reason.
-            log.error("OTP email delivery unavailable for {}: {}", toEmail, e.getMessage());
+            log.error("Failed to send OTP email to {}: Mail exception: {}", toEmail, e.getMessage());
+            throw new EmailDeliveryException("Failed to send verification email. Please check email service configuration or try again later.", e);
+        } catch (MessagingException e) {
+            log.error("Failed to construct OTP email message for {}: {}", toEmail, e.getMessage());
+            throw new EmailDeliveryException("Failed to prepare verification email. Please try again later.", e);
+        } catch (Exception e) {
+            log.error("Unexpected error sending OTP email to {}: {}", toEmail, e.getMessage());
+            throw new EmailDeliveryException("Failed to send verification email due to an unexpected error.", e);
         }
     }
 

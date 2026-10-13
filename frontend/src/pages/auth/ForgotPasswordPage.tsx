@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Bus, Mail, Lock } from 'lucide-react';
+import { Bus, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Card } from '@/components/ui/Card';
@@ -36,8 +36,11 @@ export function ForgotPasswordPage() {
   const { addToast } = useToast();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [step, setStep] = useState<'email' | 'otp' | 'reset'>('email');
   const [otpEmail, setOtpEmail] = useState('');
+  const [errorBanner, setErrorBanner] = useState<string | null>(null);
 
   const emailForm = useForm<ForgotPasswordForm>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -56,13 +59,16 @@ export function ForgotPasswordPage() {
 
   const onSubmit = async (data: ForgotPasswordForm) => {
     setLoading(true);
+    setErrorBanner(null);
     try {
       await forgotPassword(data.email);
       setOtpEmail(data.email);
       setStep('otp');
       addToast({ type: 'success', title: 'OTP sent', message: 'If the email exists, a password reset code has been sent.' });
     } catch (err: any) {
-      addToast({ type: 'error', title: 'Failed', message: 'Failed to send reset code. Please try again.' });
+      const message = err.response?.data?.message || err.message || 'Failed to send reset code. Please try again.';
+      setErrorBanner(message);
+      addToast({ type: 'error', title: 'Failed to send reset code', message });
     } finally {
       setLoading(false);
     }
@@ -99,7 +105,7 @@ export function ForgotPasswordPage() {
         <div className="text-center">
           <Link to="/" className="inline-flex items-center gap-2 mb-6">
             <Bus className="h-10 w-10 text-terracotta-500" />
-            <span className="font-heading text-2xl font-bold text-charcoal-500">SmartRoute</span>
+            <span className="font-heading text-2xl font-bold text-charcoal-500 dark:text-[#F1F5F9]">SmartRoute</span>
           </Link>
         </div>
 
@@ -107,9 +113,16 @@ export function ForgotPasswordPage() {
           {step === 'email' && (
             <form onSubmit={emailForm.handleSubmit(onSubmit)} className="space-y-6" noValidate>
               <div className="text-center mb-6">
-                <h2 className="font-heading text-2xl font-bold text-charcoal-500">Forgot Password?</h2>
-                <p className="mt-2 text-stone-600">Enter your university email and we'll send you a reset code.</p>
+                <h2 className="font-heading text-2xl font-bold text-charcoal-500 dark:text-[#F1F5F9]">Forgot Password?</h2>
+                <p className="mt-2 text-stone-600 dark:text-[#A7B3C7]">Enter your university email and we'll send you a reset code.</p>
               </div>
+
+              {errorBanner && (
+                <div className="p-3.5 rounded-lg bg-red-50 dark:bg-rose-950/60 border border-red-200 dark:border-rose-900 text-red-800 dark:text-rose-300 text-xs sm:text-sm leading-relaxed" role="alert">
+                  <p className="font-semibold text-red-900 dark:text-rose-200 mb-0.5">Configuration Required</p>
+                  <p>{errorBanner}</p>
+                </div>
+              )}
 
               <Input
                 {...emailForm.register('email')}
@@ -127,7 +140,7 @@ export function ForgotPasswordPage() {
               </Button>
 
               <div className="text-center">
-                <Link to="/login" className="text-sm font-medium text-terracotta-600 hover:text-terracotta-700">
+                <Link to="/login" className="text-sm font-medium text-terracotta-600 hover:text-terracotta-700 dark:text-blue-400 dark:hover:text-blue-300">
                   ← Back to Sign In
                 </Link>
               </div>
@@ -137,8 +150,8 @@ export function ForgotPasswordPage() {
           {step === 'otp' && (
             <form onSubmit={otpForm.handleSubmit(handleOTPVerify)} className="space-y-6" noValidate>
               <div className="text-center mb-6">
-                <h2 className="font-heading text-2xl font-bold text-charcoal-500">Verify Your Identity</h2>
-                <p className="mt-2 text-stone-600">We've sent a 6-digit code to <strong>{otpEmail}</strong></p>
+                <h2 className="font-heading text-2xl font-bold text-charcoal-500 dark:text-[#F1F5F9]">Verify Your Identity</h2>
+                <p className="mt-2 text-stone-600 dark:text-[#A7B3C7]">We've sent a 6-digit code to <strong>{otpEmail}</strong></p>
               </div>
 
               <div className="flex gap-3 justify-center">
@@ -148,7 +161,7 @@ export function ForgotPasswordPage() {
                     {...otpForm.register('otp')}
                     type="text"
                     maxLength={1}
-                    className="w-12 h-12 text-center text-2xl font-medium rounded-lg border border-stone-300 bg-stone-50 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+                    className="w-12 h-12 text-center text-2xl font-medium rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#182235] text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
                     autoComplete="one-time-code"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       const value = e.target.value;
@@ -169,7 +182,7 @@ export function ForgotPasswordPage() {
               </div>
 
               {otpForm.formState.errors.otp && (
-                <p className="text-center text-sm text-red-600">{otpForm.formState.errors.otp.message}</p>
+                <p className="text-center text-sm text-red-600 dark:text-rose-400">{otpForm.formState.errors.otp.message}</p>
               )}
 
               <Button type="submit" className="w-full" size="lg" loading={loading}>Verify Code</Button>
@@ -188,35 +201,65 @@ export function ForgotPasswordPage() {
           {step === 'reset' && (
             <form onSubmit={resetForm.handleSubmit(handleResetPassword)} className="space-y-6" noValidate>
               <div className="text-center mb-6">
-                <h2 className="font-heading text-2xl font-bold text-charcoal-500">Set New Password</h2>
-                <p className="mt-2 text-stone-600">Your new password must be different from previous passwords.</p>
+                <h2 className="font-heading text-2xl font-bold text-charcoal-500 dark:text-[#F1F5F9]">Set New Password</h2>
+                <p className="mt-2 text-stone-600 dark:text-[#A7B3C7]">Your new password must be different from previous passwords.</p>
               </div>
 
-              <Input
-                {...resetForm.register('newPassword')}
-                type="password"
-                label="New Password"
-                placeholder="At least 8 characters"
-                leftIcon={<Lock className="h-5 w-5" />}
-                error={resetForm.formState.errors.newPassword?.message}
-                autoComplete="new-password"
-                disabled={loading}
-              />
+              <div className="relative">
+                <Input
+                  {...resetForm.register('newPassword')}
+                  type={showPassword ? 'text' : 'password'}
+                  label="New Password"
+                  placeholder="At least 8 characters"
+                  leftIcon={<Lock className="h-5 w-5" />}
+                  rightIcon={
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="pointer-events-auto p-1 text-stone-400 dark:text-slate-400 hover:text-stone-600 dark:hover:text-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta-500 rounded transition-colors"
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    >
+                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    </button>
+                  }
+                  error={resetForm.formState.errors.newPassword?.message}
+                  autoComplete="new-password"
+                  disabled={loading}
+                />
+              </div>
 
-              <Input
-                {...resetForm.register('confirmPassword')}
-                type="password"
-                label="Confirm New Password"
-                placeholder="Re-enter your password"
-                leftIcon={<Lock className="h-5 w-5" />}
-                error={resetForm.formState.errors.confirmPassword?.message}
-                autoComplete="new-password"
-                disabled={loading}
-              />
+              <div className="relative">
+                <Input
+                  {...resetForm.register('confirmPassword')}
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  label="Confirm New Password"
+                  placeholder="Re-enter your password"
+                  leftIcon={<Lock className="h-5 w-5" />}
+                  rightIcon={
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="pointer-events-auto p-1 text-stone-400 dark:text-slate-400 hover:text-stone-600 dark:hover:text-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta-500 rounded transition-colors"
+                      aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                    >
+                      {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    </button>
+                  }
+                  error={resetForm.formState.errors.confirmPassword?.message}
+                  autoComplete="new-password"
+                  disabled={loading}
+                />
+              </div>
 
               <Button type="submit" className="w-full" size="lg" loading={loading}>
                 Reset Password
               </Button>
+
+              <div className="text-center">
+                <Link to="/login" className="text-sm font-medium text-terracotta-600 hover:text-terracotta-700 dark:text-blue-400 dark:hover:text-blue-300">
+                  ← Back to Sign In
+                </Link>
+              </div>
             </form>
           )}
         </Card>

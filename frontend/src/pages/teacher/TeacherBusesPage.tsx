@@ -80,7 +80,7 @@ function BusCard({ bus, isExpanded, onToggleExpand }: { bus: Bus; isExpanded: bo
         <div className="flex items-center gap-2 ml-4">
           <button
             onClick={onToggleExpand}
-            className="p-2 rounded-lg text-stone-500 hover:text-charcoal-500 hover:bg-stone-100 transition-colors"
+            className="p-2 rounded-lg text-stone-500 hover:text-charcoal-500 dark:hover:text-[#F1F5F9] hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors"
             aria-expanded={isExpanded}
             aria-label={isExpanded ? 'Collapse bus details' : 'Expand bus details'}
           >
@@ -90,85 +90,85 @@ function BusCard({ bus, isExpanded, onToggleExpand }: { bus: Bus; isExpanded: bo
       </div>
 
       {isExpanded && (
-        <div className="mt-4 pt-4 border-t border-stone-200 animate-slide-down">
+        <div className="mt-4 pt-4 border-t border-stone-200 dark:border-[#334155] animate-slide-down">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div className="bg-stone-50 rounded-xl p-4 border border-stone-200">
-              <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Capacity</p>
+            <div className="bg-stone-50 dark:bg-[#111827] rounded-xl p-4 border border-stone-200 dark:border-slate-800">
+              <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-1">Capacity</p>
               <div className="flex items-baseline gap-2">
-                <p className="font-mono text-2xl font-bold text-charcoal-500">{bus.capacity}</p>
-                <p className="text-sm text-stone-500">seats</p>
+                <p className="font-mono text-2xl font-bold text-charcoal-500 dark:text-[#F1F5F9]">{bus.capacity}</p>
+                <p className="text-sm text-stone-500 dark:text-slate-400">seats</p>
               </div>
             </div>
-            <div className="bg-stone-50 rounded-xl p-4 border border-stone-200">
-              <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Current Students</p>
-              <p className="font-mono text-2xl font-bold text-charcoal-500">{bus.currentStudentsCount}</p>
+            <div className="bg-stone-50 dark:bg-[#111827] rounded-xl p-4 border border-stone-200 dark:border-slate-800">
+              <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-1">Current Students</p>
+              <p className="font-mono text-2xl font-bold text-charcoal-500 dark:text-[#F1F5F9]">{bus.currentStudentsCount}</p>
             </div>
-            <div className="bg-stone-50 rounded-xl p-4 border border-stone-200">
-              <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Available</p>
-              <p className="font-mono text-2xl font-bold text-green-600">{bus.availableCapacity}</p>
+            <div className="bg-stone-50 dark:bg-[#111827] rounded-xl p-4 border border-stone-200 dark:border-slate-800">
+              <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-1">Available</p>
+              <p className="font-mono text-2xl font-bold text-green-600 dark:text-emerald-400">{bus.availableCapacity}</p>
             </div>
-            <div className="bg-stone-50 rounded-xl p-4 border border-stone-200">
-              <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Utilization</p>
-              <p className="font-mono text-2xl font-bold text-terracotta-600">
+            <div className="bg-stone-50 dark:bg-[#111827] rounded-xl p-4 border border-stone-200 dark:border-slate-800">
+              <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-1">Utilization</p>
+              <p className="font-mono text-2xl font-bold text-terracotta-600 dark:text-terracotta-400">
                 {bus.capacity > 0 ? Math.round((bus.currentStudentsCount / bus.capacity) * 100) : 0}%
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div className="bg-stone-50 rounded-xl p-4 border border-stone-200">
-              <p className="text-xs text-stone-500 uppercase tracking-wide mb-2">Driver</p>
+            <div className="bg-stone-50 dark:bg-[#111827] rounded-xl p-4 border border-stone-200 dark:border-slate-800">
+              <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-2">Driver</p>
               {bus.driverName && (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-terracotta-100 flex items-center justify-center">
-                    <Users className="h-5 w-5 text-terracotta-600" />
+                  <div className="w-10 h-10 rounded-full bg-terracotta-100 dark:bg-terracotta-950/60 flex items-center justify-center">
+                    <Users className="h-5 w-5 text-terracotta-600 dark:text-terracotta-400" />
                   </div>
                   <div>
-                    <p className="font-medium text-charcoal-500">{bus.driverName}</p>
-                    {bus.driverPhone && <p className="text-sm text-stone-500">{bus.driverPhone}</p>}
+                    <p className="font-medium text-charcoal-500 dark:text-[#F1F5F9]">{bus.driverName}</p>
+                    {bus.driverPhone && <p className="text-sm text-stone-500 dark:text-slate-400">{bus.driverPhone}</p>}
                   </div>
                 </div>
               )}
-              {!bus.driverName && <p className="text-stone-500">Not assigned</p>}
+              {!bus.driverName && <p className="text-stone-500 dark:text-slate-400">Not assigned</p>}
             </div>
-            <div className="bg-stone-50 rounded-xl p-4 border border-stone-200">
-              <p className="text-xs text-stone-500 uppercase tracking-wide mb-2">Conductor</p>
+            <div className="bg-stone-50 dark:bg-[#111827] rounded-xl p-4 border border-stone-200 dark:border-slate-800">
+              <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-2">Conductor</p>
               {bus.conductorName && (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                    <Users className="h-5 w-5 text-blue-600" />
+                  <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-950/60 flex items-center justify-center">
+                    <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div>
-                    <p className="font-medium text-charcoal-500">{bus.conductorName}</p>
-                    {bus.conductorPhone && <p className="text-sm text-stone-500">{bus.conductorPhone}</p>}
+                    <p className="font-medium text-charcoal-500 dark:text-[#F1F5F9]">{bus.conductorName}</p>
+                    {bus.conductorPhone && <p className="text-sm text-stone-500 dark:text-slate-400">{bus.conductorPhone}</p>}
                   </div>
                 </div>
               )}
-              {!bus.conductorName && <p className="text-stone-500">Not assigned</p>}
+              {!bus.conductorName && <p className="text-stone-500 dark:text-slate-400">Not assigned</p>}
             </div>
           </div>
 
-          <div className="border-t border-stone-200 pt-4">
-            <h4 className="font-medium text-charcoal-500 mb-3 flex items-center gap-2">
+          <div className="border-t border-stone-200 dark:border-[#334155] pt-4">
+            <h4 className="font-medium text-charcoal-500 dark:text-[#F1F5F9] mb-3 flex items-center gap-2">
               <Settings className="h-4 w-4 text-terracotta-500" />
               Bus Details
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              {bus.model && <div><p className="text-xs text-stone-500">Model</p><p className="font-medium text-charcoal-500">{bus.model}</p></div>}
-              {bus.fuelType && <div><p className="text-xs text-stone-500">Fuel Type</p><p className="font-medium text-charcoal-500">{bus.fuelType}</p></div>}
-              {bus.manufactureYear && <div><p className="text-xs text-stone-500">Year</p><p className="font-medium text-charcoal-500">{bus.manufactureYear}</p></div>}
-              {bus.gpsDeviceId && <div><p className="text-xs text-stone-500">GPS Device</p><p className="font-mono text-charcoal-500">{bus.gpsDeviceId}</p></div>}
+              {bus.model && <div><p className="text-xs text-stone-500 dark:text-slate-400">Model</p><p className="font-medium text-charcoal-500 dark:text-[#F1F5F9]">{bus.model}</p></div>}
+              {bus.fuelType && <div><p className="text-xs text-stone-500 dark:text-slate-400">Fuel Type</p><p className="font-medium text-charcoal-500 dark:text-[#F1F5F9]">{bus.fuelType}</p></div>}
+              {bus.manufactureYear && <div><p className="text-xs text-stone-500 dark:text-slate-400">Year</p><p className="font-medium text-charcoal-500 dark:text-[#F1F5F9]">{bus.manufactureYear}</p></div>}
+              {bus.gpsDeviceId && <div><p className="text-xs text-stone-500 dark:text-slate-400">GPS Device</p><p className="font-mono text-charcoal-500 dark:text-[#F1F5F9]">{bus.gpsDeviceId}</p></div>}
             </div>
           </div>
 
           <div className="mt-4 flex gap-3">
-            <button className="px-4 py-2 border border-stone-300 text-stone-600 rounded-lg hover:bg-stone-100 transition-colors text-sm font-medium flex items-center gap-2">
+            <button className="px-4 py-2 border border-stone-300 dark:border-slate-700 text-stone-600 dark:text-slate-300 rounded-lg hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors text-sm font-medium flex items-center gap-2">
               <Edit className="h-4 w-4" /> Edit
             </button>
-            <button className="px-4 py-2 border border-stone-300 text-stone-600 rounded-lg hover:bg-stone-100 transition-colors text-sm font-medium flex items-center gap-2">
+            <button className="px-4 py-2 border border-stone-300 dark:border-slate-700 text-stone-600 dark:text-slate-300 rounded-lg hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors text-sm font-medium flex items-center gap-2">
               <Eye className="h-4 w-4" /> View Students
             </button>
-            <button className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors text-sm font-medium flex items-center gap-2">
+            <button className="px-4 py-2 border border-red-300 dark:border-rose-800 text-red-600 dark:text-rose-400 rounded-lg hover:bg-red-50 dark:hover:bg-rose-950/40 transition-colors text-sm font-medium flex items-center gap-2">
               <Trash2 className="h-4 w-4" /> Deactivate
             </button>
           </div>
@@ -255,7 +255,7 @@ export function TeacherBusesPage() {
           <select
             value={statusFilter}
             onChange={e => setStatusFilter(e.target.value as 'all' | 'active' | 'inactive')}
-            className="px-4 py-2 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+            className="px-4 py-2 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
           >
             <option value="all">All Status</option>
             <option value="active">Active Only</option>
@@ -264,7 +264,7 @@ export function TeacherBusesPage() {
           <select
             value={sortBy}
             onChange={e => setSortBy(e.target.value as 'registration' | 'capacity' | 'students')}
-            className="px-4 py-2 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+            className="px-4 py-2 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
           >
             <option value="registration">Sort by Registration</option>
             <option value="capacity">Sort by Capacity</option>
@@ -282,7 +282,7 @@ export function TeacherBusesPage() {
               placeholder="Search by registration, bus number, driver, route..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 placeholder:text-stone-400 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+              className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] placeholder:text-stone-400 dark:placeholder:text-slate-500 focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
             />
           </div>
         </div>

@@ -98,9 +98,29 @@ public class StudentController {
     public ResponseEntity<ApiResponse<StudentDTO.BusPassDTO>> uploadBusPass(
             @AuthenticationPrincipal User user,
             @RequestParam("image") org.springframework.web.multipart.MultipartFile image) {
-        // Handle file upload for bus pass image
-        // This would save the file and update the student's bus pass image URL
-        return ResponseEntity.ok(ApiResponse.success(null, "Bus pass upload endpoint - to be implemented"));
+        StudentDTO.BusPassDTO uploaded = studentService.uploadBusPass(user.getId(), image);
+        return ResponseEntity.ok(ApiResponse.success(uploaded, "Bus pass uploaded successfully"));
+    }
+
+    @GetMapping("/bus-pass/image/{fileName:[a-zA-Z0-9_.-]+}")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<org.springframework.core.io.Resource> getBusPassImage(@PathVariable String fileName) {
+        try {
+            java.nio.file.Path filePath = java.nio.file.Paths.get("uploads", "bus-passes", fileName).toAbsolutePath().normalize();
+            if (!java.nio.file.Files.exists(filePath)) {
+                return ResponseEntity.notFound().build();
+            }
+            org.springframework.core.io.Resource resource = new org.springframework.core.io.UrlResource(filePath.toUri());
+            String contentType = java.nio.file.Files.probeContentType(filePath);
+            if (contentType == null) {
+                contentType = "application/octet-stream";
+            }
+            return ResponseEntity.ok()
+                    .contentType(org.springframework.http.MediaType.parseMediaType(contentType))
+                    .body(resource);
+        } catch (java.io.IOException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/gps")

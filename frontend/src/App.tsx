@@ -1,8 +1,9 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from '@/features/auth/context/AuthContext';
+import { ThemeProvider } from '@/features/theme/ThemeContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { Toaster } from '@/components/ui/Toaster';
+import { Toaster, ToastProvider } from '@/components/ui/Toaster';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Layout } from '@/layouts/Layout';
@@ -15,6 +16,7 @@ import { HomePage } from '@/pages/HomePage';
 import { BusInfoPage } from '@/pages/BusInfoPage';
 import { RoutesPage } from '@/pages/RoutesPage';
 import { TimingsPage } from '@/pages/TimingsPage';
+import { BusQRScannerPage } from '@/pages/BusQRScannerPage';
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { StudentRegisterPage } from '@/pages/auth/StudentRegisterPage';
 import { TeacherRegisterPage } from '@/pages/auth/TeacherRegisterPage';
@@ -67,7 +69,7 @@ function PrivateRoute({ children, allowedRoles }: { children: React.ReactNode; a
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-stone-50">
+      <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-[#121214]">
         <div className="animate-pulse-subtle flex h-12 w-12 items-center justify-center rounded-full bg-terracotta-500/20">
           <svg className="h-6 w-6 text-terracotta-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -97,6 +99,7 @@ function AppRoutes() {
         <Route path="/buses" element={<BusInfoPage />} />
         <Route path="/routes" element={<RoutesPage />} />
         <Route path="/timings" element={<TimingsPage />} />
+        <Route path="/scan" element={<BusQRScannerPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register/student" element={<StudentRegisterPage />} />
         <Route path="/register/teacher" element={<TeacherRegisterPage />} />
@@ -113,6 +116,7 @@ function AppRoutes() {
             <PrivateRoute allowedRoles={['STUDENT']}>
               <Routes>
                 <Route path="dashboard" element={<StudentDashboardPage />} />
+                <Route path="scan" element={<BusQRScannerPage />} />
                 <Route path="my-bus" element={<StudentMyBusPage />} />
                 <Route path="my-route" element={<StudentMyRoutePage />} />
                 <Route path="boarding-point" element={<StudentBoardingPointPage />} />
@@ -139,6 +143,7 @@ function AppRoutes() {
             <PrivateRoute allowedRoles={['TEACHER']}>
               <Routes>
                 <Route path="dashboard" element={<TeacherDashboardPage />} />
+                <Route path="scan" element={<BusQRScannerPage />} />
                 <Route path="buses" element={<TeacherBusesPage />} />
                 <Route path="routes" element={<TeacherRoutesPage />} />
                 <Route path="passengers" element={<TeacherPassengersPage />} />
@@ -168,13 +173,17 @@ function AppRoutes() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <div className="min-h-screen flex flex-col bg-stone-50">
-          <AppRoutes />
-          <Toaster />
-          <ReactQueryDevtools initialIsOpen={false} />
-        </div>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <ToastProvider>
+            <div className="min-h-screen flex flex-col bg-stone-50 dark:bg-[#121214] text-stone-900 dark:text-[#F4F4F6] transition-colors duration-200">
+              <AppRoutes />
+              <Toaster />
+              <ReactQueryDevtools initialIsOpen={false} />
+            </div>
+          </ToastProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

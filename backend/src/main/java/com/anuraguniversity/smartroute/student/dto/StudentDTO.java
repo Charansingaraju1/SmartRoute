@@ -2,6 +2,7 @@ package com.anuraguniversity.smartroute.student.dto;
 
 import com.anuraguniversity.smartroute.student.entity.Student;
 import com.anuraguniversity.smartroute.student.entity.MissedBusRequest;
+import com.anuraguniversity.smartroute.buspass.entity.BusPassRecord;
 import com.anuraguniversity.smartroute.transport.entity.Bus;
 import com.anuraguniversity.smartroute.transport.entity.Route;
 import com.anuraguniversity.smartroute.transport.entity.BoardingPoint;
@@ -103,9 +104,18 @@ public class StudentDTO {
         private Integer currentStudentsCount;
         private Integer availableCapacity;
         private String driverName;
+        private String driverPhone;
         private String conductorName;
+        private String conductorPhone;
+        private Boolean active;
+        private RouteInfo route;
 
         public static BusInfo from(Bus bus) {
+            return from(bus, null);
+        }
+
+        public static BusInfo from(Bus bus, Route route) {
+            if (bus == null) return null;
             return BusInfo.builder()
                     .id(bus.getId())
                     .registrationNumber(bus.getRegistrationNumber())
@@ -114,7 +124,11 @@ public class StudentDTO {
                     .currentStudentsCount(bus.getCurrentStudentsCount())
                     .availableCapacity(bus.getAvailableCapacity())
                     .driverName(bus.getDriverName())
+                    .driverPhone(bus.getDriverPhone())
                     .conductorName(bus.getConductorName())
+                    .conductorPhone(bus.getConductorPhone())
+                    .active(bus.getActive())
+                    .route(route != null ? RouteInfo.from(route) : null)
                     .build();
         }
     }
@@ -132,9 +146,24 @@ public class StudentDTO {
         private LocalTime startingTime;
         private String endingPoint;
         private LocalTime endingTime;
+        private String description;
+        private Double distanceKm;
+        private Integer estimatedDurationMinutes;
         private BigDecimal feeAmount;
+        private Boolean active;
+        private ZoneSummary zone;
+        private BusSummary bus;
+        private List<BoardingPointInfo> boardingPoints;
 
         public static RouteInfo from(Route route) {
+            if (route == null) return null;
+            List<BoardingPointInfo> bpList = null;
+            try {
+                if (route.getBoardingPoints() != null) {
+                    bpList = route.getBoardingPoints().stream().map(BoardingPointInfo::from).collect(Collectors.toList());
+                }
+            } catch (Exception ignored) {}
+
             return RouteInfo.builder()
                     .id(route.getId())
                     .routeCode(route.getRouteCode())
@@ -144,9 +173,46 @@ public class StudentDTO {
                     .startingTime(route.getStartingTime())
                     .endingPoint(route.getEndingPoint())
                     .endingTime(route.getEndingTime())
+                    .description(route.getDescription())
+                    .distanceKm(route.getDistanceKm())
+                    .estimatedDurationMinutes(route.getEstimatedDurationMinutes())
                     .feeAmount(route.getFeeAmount())
+                    .active(route.getActive())
+                    .zone(route.getZone() != null ? ZoneSummary.builder()
+                            .id(route.getZone().getId())
+                            .name(route.getZone().getName())
+                            .code(route.getZone().getCode())
+                            .build() : null)
+                    .bus(route.getBus() != null ? BusSummary.builder()
+                            .id(route.getBus().getId())
+                            .registrationNumber(route.getBus().getRegistrationNumber())
+                            .capacity(route.getBus().getCapacity())
+                            .currentStudentsCount(route.getBus().getCurrentStudentsCount())
+                            .build() : null)
+                    .boardingPoints(bpList)
                     .build();
         }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ZoneSummary {
+        private UUID id;
+        private String name;
+        private String code;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class BusSummary {
+        private UUID id;
+        private String registrationNumber;
+        private Integer capacity;
+        private Integer currentStudentsCount;
     }
 
     @Data
@@ -162,8 +228,11 @@ public class StudentDTO {
         private BigDecimal latitude;
         private BigDecimal longitude;
         private String landmark;
+        private Boolean active;
+        private RouteInfo route;
 
         public static BoardingPointInfo from(BoardingPoint bp) {
+            if (bp == null) return null;
             return BoardingPointInfo.builder()
                     .id(bp.getId())
                     .stopName(bp.getStopName())
@@ -173,7 +242,17 @@ public class StudentDTO {
                     .latitude(bp.getLatitude())
                     .longitude(bp.getLongitude())
                     .landmark(bp.getLandmark())
+                    .active(bp.getActive())
                     .build();
+        }
+
+        public static BoardingPointInfo from(BoardingPoint bp, Route route) {
+            if (bp == null) return null;
+            BoardingPointInfo info = from(bp);
+            if (route != null) {
+                info.setRoute(RouteInfo.from(route));
+            }
+            return info;
         }
     }
 
@@ -220,14 +299,40 @@ public class StudentDTO {
         private AssignmentInfo morningAssignment;
         private AssignmentInfo eveningAssignment;
         private List<AssignmentInfo> allActiveAssignments;
+        private BusInfo bus;
+        private RouteInfo route;
+        private BoardingPointInfo boardingPoint;
 
-        public static StudentAssignmentDTO from(Student student, StudentBusAssignment morningAssignment, 
+        public static StudentAssignmentDTO from(Student student, StudentBusAssignment morningAssignment,
                 List<StudentBusAssignment> activeAssignments) {
+            Bus assignedBus = morningAssignment != null ? morningAssignment.getBus() : student.getBus();
+            Route assignedRoute = morningAssignment != null ? morningAssignment.getRoute() : student.getRoute();
+            BoardingPoint assignedBoardingPoint = morningAssignment != null ? morningAssignment.getBoardingPoint() : student.getBoardingPoint();
+
+            if (assignedBus == null && activeAssignments != null && !activeAssignments.isEmpty()) {
+                assignedBus = activeAssignments.get(0).getBus();
+            }
+            if (assignedRoute == null && activeAssignments != null && !activeAssignments.isEmpty()) {
+                assignedRoute = activeAssignments.get(0).getRoute();
+            }
+            if (assignedBoardingPoint == null && activeAssignments != null && !activeAssignments.isEmpty()) {
+                assignedBoardingPoint = activeAssignments.get(0).getBoardingPoint();
+            }
+
+            if (assignedRoute != null && assignedBus == null && assignedRoute.getBus() != null) {
+                assignedBus = assignedRoute.getBus();
+            }
+
             return StudentAssignmentDTO.builder()
                     .studentId(student.getId())
                     .morningAssignment(morningAssignment != null ? AssignmentInfo.from(morningAssignment) : null)
-                    .eveningAssignment(null) // Could be enhanced to find evening assignment
-                    .allActiveAssignments(activeAssignments.stream().map(AssignmentInfo::from).collect(Collectors.toList()))
+                    .eveningAssignment(null)
+                    .allActiveAssignments(activeAssignments != null
+                            ? activeAssignments.stream().map(AssignmentInfo::from).collect(Collectors.toList())
+                            : List.of())
+                    .bus(assignedBus != null ? BusInfo.from(assignedBus, assignedRoute) : null)
+                    .route(assignedRoute != null ? RouteInfo.from(assignedRoute) : null)
+                    .boardingPoint(assignedBoardingPoint != null ? BoardingPointInfo.from(assignedBoardingPoint, assignedRoute) : null)
                     .build();
         }
     }
@@ -371,19 +476,100 @@ public class StudentDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class BusPassDTO {
+        private UUID id;
+        private String status;
+        private LocalDate validFrom;
+        private LocalDate validUntil;
+        private String passNumber;
         private Boolean verified;
         private Instant verifiedAt;
+        private UUID verifiedBy;
         private String imageUrl;
         private String qrCode;
+        private String qrCodeData;
         private String ocrExtractedData;
+        private String verificationNotes;
+        private String rejectionReason;
+        private String academicYear;
+        private Boolean feePaid;
+        private BigDecimal feeAmount;
+        private UUID paymentRecordId;
+        private BusInfo bus;
+        private RouteInfo route;
+        private BoardingPointInfo boardingPoint;
+        private RouteInfo studentAssignedRoute;
+        private BusInfo studentAssignedBus;
 
-        public static BusPassDTO from(Student student) {
+        public static BusPassDTO from(Student student, BusPassRecord record) {
+            if (record != null) {
+                // Strict isolation: The bus pass record's route and bus reflect only what is recognized
+                // and verified on the document, NEVER silently falling back to the student's existing assignment!
+                Bus passBus = record.getBus();
+                Route passRoute = record.getRoute();
+                String passNo = com.anuraguniversity.smartroute.buspass.service.BusPassRecognitionService.canonicalizePassNumber(record.getPassNumber());
+
+                return BusPassDTO.builder()
+                        .id(record.getId())
+                        .status(record.getStatus() != null ? record.getStatus() : "PENDING_VERIFICATION")
+                        .validFrom(record.getValidFrom())
+                        .validUntil(record.getValidUntil())
+                        .passNumber(passNo)
+                        .verified("ACTIVE".equalsIgnoreCase(record.getStatus()))
+                        .verifiedAt(record.getVerifiedAt() != null ? record.getVerifiedAt() : null)
+                        .verifiedBy(record.getVerifiedBy())
+                        .imageUrl(record.getImageUrl() != null ? record.getImageUrl() : student.getBusPassImageUrl())
+                        .qrCode(student.getQrCode())
+                        .qrCodeData(record.getQrCodeData() != null ? record.getQrCodeData() : student.getQrCode())
+                        .ocrExtractedData(record.getOcrExtractedData())
+                        .verificationNotes(record.getVerificationNotes())
+                        .rejectionReason(record.getRejectionReason())
+                        .academicYear(record.getAcademicYear() != null ? record.getAcademicYear() : student.getAcademicYear())
+                        .feePaid(Boolean.TRUE.equals(record.getFeePaid()))
+                        .feeAmount(record.getFeeAmount())
+                        .paymentRecordId(record.getPaymentRecordId())
+                        .bus(passBus != null ? BusInfo.from(passBus) : null)
+                        .route(passRoute != null ? RouteInfo.from(passRoute) : null)
+                        .boardingPoint(student.getBoardingPoint() != null ? BoardingPointInfo.from(student.getBoardingPoint()) : null)
+                        .studentAssignedRoute(student.getRoute() != null ? RouteInfo.from(student.getRoute()) : null)
+                        .studentAssignedBus(student.getBus() != null ? BusInfo.from(student.getBus()) : null)
+                        .build();
+            }
+
+            // Fallback from student entity if no separate record exists yet
+            boolean hasPass = student.getBusPassImageUrl() != null || Boolean.TRUE.equals(student.getBusPassVerified());
+            if (!hasPass && student.getBus() == null) {
+                return null;
+            }
+
+            boolean isVerified = Boolean.TRUE.equals(student.getBusPassVerified());
+            String status = isVerified ? "ACTIVE" : "PENDING_VERIFICATION";
+            String passNo = com.anuraguniversity.smartroute.buspass.service.BusPassRecognitionService.canonicalizePassNumber(
+                    student.getStudentId() != null ? student.getStudentId() : null);
+
             return BusPassDTO.builder()
-                    .verified(student.getBusPassVerified())
+                    .id(student.getId())
+                    .status(status)
+                    .validFrom(student.getCreatedAt() != null ? LocalDate.ofInstant(student.getCreatedAt(), java.time.ZoneId.systemDefault()) : LocalDate.now())
+                    .validUntil(LocalDate.now().plusMonths(6))
+                    .passNumber(passNo)
+                    .verified(isVerified)
                     .verifiedAt(student.getBusPassVerifiedAt())
                     .imageUrl(student.getBusPassImageUrl())
                     .qrCode(student.getQrCode())
+                    .qrCodeData(student.getQrCode())
+                    .academicYear(student.getAcademicYear())
+                    .feePaid(isVerified)
+                    .feeAmount(student.getRoute() != null ? student.getRoute().getFeeAmount() : null)
+                    .bus(isVerified && student.getBus() != null ? BusInfo.from(student.getBus()) : null)
+                    .route(isVerified && student.getRoute() != null ? RouteInfo.from(student.getRoute()) : null)
+                    .boardingPoint(student.getBoardingPoint() != null ? BoardingPointInfo.from(student.getBoardingPoint()) : null)
+                    .studentAssignedRoute(student.getRoute() != null ? RouteInfo.from(student.getRoute()) : null)
+                    .studentAssignedBus(student.getBus() != null ? BusInfo.from(student.getBus()) : null)
                     .build();
+        }
+
+        public static BusPassDTO from(Student student) {
+            return from(student, null);
         }
     }
 

@@ -6,6 +6,8 @@ import com.anuraguniversity.smartroute.auth.entity.User;
 import com.anuraguniversity.smartroute.auth.repository.OTPRepository;
 import com.anuraguniversity.smartroute.auth.repository.UserRepository;
 import com.anuraguniversity.smartroute.audit.service.AuditService;
+import com.anuraguniversity.smartroute.auth.exception.EmailDeliveryException;
+import com.anuraguniversity.smartroute.auth.exception.RoleMismatchException;
 import com.anuraguniversity.smartroute.common.enums.OTPType;
 import com.anuraguniversity.smartroute.common.enums.UserRole;
 import com.anuraguniversity.smartroute.common.exception.ResourceNotFoundException;
@@ -39,11 +41,12 @@ public class AuthService {
     private final AuditService auditService;
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
+    private final GoogleTokenVerifier googleTokenVerifier;
 
     @Transactional
     public AuthResponse registerStudent(RegisterRequest request) {
         validateRegistrationRequest(request);
-        
+
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email already registered");
         }
@@ -61,22 +64,44 @@ public class AuthService {
         profile.setUser(user);
         studentRepository.save(profile);
 
-        sendOTP(user.getEmail(), OTPType.REGISTRATION);
+        if (properties.getOtp().isRequireEmailVerification()) {
+            sendOTP(user.getEmail(), OTPType.REGISTRATION);
+
+            auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.CREATE,
+                "User", user.getId().toString(), user.getEmail(), null, null);
+
+            return AuthResponse.builder()
+                .message("Registration successful. Please verify your email with the OTP sent.")
+                .email(user.getEmail())
+                .requiresOTPVerification(true)
+                .build();
+        }
+
+        // Email OTP bypassed for local development:
+        // Do NOT mark email as verified (user.emailVerified remains false).
+        // Issue tokens and return requiresOTPVerification(false).
+        String accessToken = jwtTokenProvider.generateToken(user.getId(), user.getRole().name());
+        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
 
         auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.CREATE,
-            "User", user.getId().toString(), user.getEmail(), null, null);
+            "User", user.getId().toString(), user.getEmail(), null, "Email OTP verification bypassed for local development");
 
         return AuthResponse.builder()
-            .message("Registration successful. Please verify your email with the OTP sent.")
+            .accessToken(accessToken)
+            .refreshToken(refreshToken)
+            .tokenType("Bearer")
+            .expiresIn(jwtTokenProvider.getExpiration())
+            .user(UserDTO.from(user))
+            .message("Registration successful. Email verification skipped for local development.")
             .email(user.getEmail())
-            .requiresOTPVerification(true)
+            .requiresOTPVerification(false)
             .build();
     }
 
     @Transactional
     public AuthResponse registerTeacher(RegisterRequest request) {
         validateRegistrationRequest(request);
-        
+
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email already registered");
         }
@@ -94,15 +119,37 @@ public class AuthService {
         profile.setUser(user);
         teacherRepository.save(profile);
 
-        sendOTP(user.getEmail(), OTPType.REGISTRATION);
+        if (properties.getOtp().isRequireEmailVerification()) {
+            sendOTP(user.getEmail(), OTPType.REGISTRATION);
+
+            auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.CREATE,
+                "User", user.getId().toString(), user.getEmail(), null, null);
+
+            return AuthResponse.builder()
+                .message("Registration successful. Please verify your email with the OTP sent.")
+                .email(user.getEmail())
+                .requiresOTPVerification(true)
+                .build();
+        }
+
+        // Email OTP bypassed for local development:
+        // Do NOT mark email as verified (user.emailVerified remains false).
+        // Issue tokens and return requiresOTPVerification(false).
+        String accessToken = jwtTokenProvider.generateToken(user.getId(), user.getRole().name());
+        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
 
         auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.CREATE,
-            "User", user.getId().toString(), user.getEmail(), null, null);
+            "User", user.getId().toString(), user.getEmail(), null, "Email OTP verification bypassed for local development");
 
         return AuthResponse.builder()
-            .message("Registration successful. Please verify your email with the OTP sent.")
+            .accessToken(accessToken)
+            .refreshToken(refreshToken)
+            .tokenType("Bearer")
+            .expiresIn(jwtTokenProvider.getExpiration())
+            .user(UserDTO.from(user))
+            .message("Registration successful. Email verification skipped for local development.")
             .email(user.getEmail())
-            .requiresOTPVerification(true)
+            .requiresOTPVerification(false)
             .build();
     }
 
@@ -115,8 +162,7 @@ public class AuthService {
             throw new IllegalArgumentException("OTP expired or maximum attempts reached");
         }
 
-        String hashedOTP = hashOTP(request.getOtp());
-        if (!hashedOTP.equals(otp.getOtpHash())) {
+        if (!passwordEncoder.matches(request.getOtp(), otp.getOtpHash())) {
             otp.incrementAttempt();
             otpRepository.save(otp);
             throw new IllegalArgumentException("Invalid OTP");
@@ -133,7 +179,7 @@ public class AuthService {
             userRepository.save(user);
         }
 
-        auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.OTP_VERIFY, 
+        auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.OTP_VERIFY,
             "OTP", otp.getId().toString(), request.getEmail(), null, null);
     }
 
@@ -149,11 +195,29 @@ public class AuthService {
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             user.incrementFailedLoginAttempts();
             userRepository.save(user);
-            
-            auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.LOGIN_FAILED, 
+
+            auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.LOGIN_FAILED,
                 "User", user.getId().toString(), user.getEmail(), null, "Invalid password");
-            
+
             throw new com.anuraguniversity.smartroute.auth.exception.InvalidCredentialsException("Invalid email or password");
+        }
+
+        // AUTHORITATIVE ROLE ENFORCEMENT:
+        // Validate that requested role matches authoritative user.getRole() from database.
+        if (request.getRole() != null) {
+            if (user.getRole() == UserRole.TEACHER && request.getRole() == UserRole.STUDENT) {
+                auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.LOGIN_FAILED,
+                    "User", user.getId().toString(), user.getEmail(), null, "Role mismatch: Teacher attempted Student login");
+                throw new RoleMismatchException("This account is registered as a Teacher. Please use Teacher Login.");
+            } else if (user.getRole() == UserRole.STUDENT && request.getRole() == UserRole.TEACHER) {
+                auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.LOGIN_FAILED,
+                    "User", user.getId().toString(), user.getEmail(), null, "Role mismatch: Student attempted Teacher login");
+                throw new RoleMismatchException("This account is registered as a Student. Please use Student Login.");
+            } else if (user.getRole() != request.getRole()) {
+                auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.LOGIN_FAILED,
+                    "User", user.getId().toString(), user.getEmail(), null, "Role mismatch: " + user.getRole() + " vs " + request.getRole());
+                throw new RoleMismatchException("Role mismatch. Please select the correct login role.");
+            }
         }
 
         user.resetFailedLoginAttempts();
@@ -163,7 +227,7 @@ public class AuthService {
         String accessToken = jwtTokenProvider.generateToken(user.getId(), user.getRole().name());
         String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
 
-        auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.LOGIN, 
+        auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.LOGIN,
             "User", user.getId().toString(), user.getEmail(), null, null);
 
         return AuthResponse.builder()
@@ -177,13 +241,89 @@ public class AuthService {
     }
 
     @Transactional
+    public AuthResponse loginWithGoogle(GoogleLoginRequest request) {
+        if (request == null || request.getIdToken() == null || request.getIdToken().trim().isEmpty()) {
+            throw new com.anuraguniversity.smartroute.auth.exception.InvalidCredentialsException("Google ID token is required");
+        }
+
+        // Validate Google token securely with Google's identity verification service
+        GoogleTokenPayload payload = googleTokenVerifier.verify(request.getIdToken().trim());
+        String email = payload.getEmail().toLowerCase().trim();
+
+        // STRICT ROLE AND ACCOUNT ENFORCEMENT:
+        // Look up existing user in database. Never trust or accept a role supplied by the browser.
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new com.anuraguniversity.smartroute.auth.exception.InvalidCredentialsException(
+                "No SmartRoute account found for " + email + ". Please register as a Student or Teacher first."
+            ));
+
+        if (!user.isActive()) {
+            throw new com.anuraguniversity.smartroute.auth.exception.InvalidCredentialsException("Account is deactivated. Please contact transport administration.");
+        }
+
+        if (!user.isAccountNonLocked()) {
+            throw new com.anuraguniversity.smartroute.auth.exception.AccountLockedException("Account temporarily locked. Try again later.");
+        }
+
+        // AUTHORITATIVE ROLE ENFORCEMENT FOR GOOGLE OAUTH:
+        if (request.getRole() != null) {
+            if (user.getRole() == UserRole.TEACHER && request.getRole() == UserRole.STUDENT) {
+                auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.LOGIN_FAILED,
+                    "User", user.getId().toString(), user.getEmail(), null, "Role mismatch in Google login: Teacher attempted Student login");
+                throw new RoleMismatchException("This account is registered as a Teacher. Please use Teacher Login.");
+            } else if (user.getRole() == UserRole.STUDENT && request.getRole() == UserRole.TEACHER) {
+                auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.LOGIN_FAILED,
+                    "User", user.getId().toString(), user.getEmail(), null, "Role mismatch in Google login: Student attempted Teacher login");
+                throw new RoleMismatchException("This account is registered as a Student. Please use Student Login.");
+            } else if (user.getRole() != request.getRole()) {
+                auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.LOGIN_FAILED,
+                    "User", user.getId().toString(), user.getEmail(), null, "Role mismatch in Google login: " + user.getRole() + " vs " + request.getRole());
+                throw new RoleMismatchException("Role mismatch. Please select the correct login role.");
+            }
+        }
+
+        // Google has verified this email address; ensure emailVerified is marked true
+        if (!Boolean.TRUE.equals(user.getEmailVerified())) {
+            user.setEmailVerified(true);
+        }
+
+        user.resetFailedLoginAttempts();
+        user.setLastLoginAt(Instant.now());
+        userRepository.save(user);
+
+        // Issue JWT token with the user's authentic role directly from the database entity
+        String accessToken = jwtTokenProvider.generateToken(user.getId(), user.getRole().name());
+        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
+
+        auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.LOGIN,
+            "User", user.getId().toString(), user.getEmail(), null, "Google OAuth");
+
+        log.info("User {} successfully authenticated via Google OAuth with genuine role {}", user.getEmail(), user.getRole());
+
+        return AuthResponse.builder()
+            .accessToken(accessToken)
+            .refreshToken(refreshToken)
+            .tokenType("Bearer")
+            .expiresIn(jwtTokenProvider.getExpiration())
+            .user(UserDTO.from(user))
+            .message("Google sign-in successful")
+            .build();
+    }
+
+    @Transactional
     public void forgotPassword(ForgotPasswordRequest request) {
+        if (!emailService.isMailConfigured()) {
+            throw new EmailDeliveryException(
+                "Password reset is unavailable: Email delivery is not configured. Please configure valid MAIL_USERNAME and MAIL_PASSWORD (requires a Google App Password for Gmail) in .env."
+            );
+        }
+
         User user = userRepository.findByEmail(request.getEmail().toLowerCase().trim())
             .orElse(null);
 
         if (user != null && user.isActive()) {
             sendOTP(user.getEmail(), OTPType.FORGOT_PASSWORD);
-            auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.PASSWORD_RESET, 
+            auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.PASSWORD_RESET,
                 "User", user.getId().toString(), user.getEmail(), null, null);
         }
         // Always return success to prevent email enumeration
@@ -198,8 +338,7 @@ public class AuthService {
             throw new IllegalArgumentException("OTP expired or maximum attempts reached");
         }
 
-        String hashedOTP = hashOTP(request.getOtp());
-        if (!hashedOTP.equals(otp.getOtpHash())) {
+        if (!passwordEncoder.matches(request.getOtp(), otp.getOtpHash())) {
             otp.incrementAttempt();
             otpRepository.save(otp);
             throw new IllegalArgumentException("Invalid OTP");
@@ -215,19 +354,25 @@ public class AuthService {
             user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
             user.setPasswordChangedAt(Instant.now());
             userRepository.save(user);
-            
-            auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.PASSWORD_CHANGE, 
+
+            auditService.logWithStrings(user.getId(), null, com.anuraguniversity.smartroute.common.enums.AuditAction.PASSWORD_CHANGE,
                 "User", user.getId().toString(), user.getEmail(), null, null);
         }
     }
 
     @Transactional
     public void resendOTP(ResendOTPRequest request) {
+        if (!emailService.isMailConfigured()) {
+            throw new EmailDeliveryException(
+                "OTP delivery is unavailable: Email delivery is not configured. Please configure valid MAIL_USERNAME and MAIL_PASSWORD (requires a Google App Password for Gmail) in .env."
+            );
+        }
+
         String email = request.getEmail().toLowerCase().trim();
         OTPType type = request.getType();
 
         OTP existing = otpRepository.findFirstByEmailAndTypeOrderByCreatedAtDesc(email, type).orElse(null);
-        if (existing != null && existing.getResendCooldownUntil() != null 
+        if (existing != null && existing.getResendCooldownUntil() != null
                 && existing.getResendCooldownUntil().isAfter(Instant.now())) {
             throw new IllegalArgumentException("Please wait before requesting another OTP");
         }
@@ -256,8 +401,9 @@ public class AuthService {
         otpRepository.save(otp);
 
         emailService.sendOTP(email, otpCode, type);
+        log.info("OTP generated and dispatched for email: {}", email);
 
-        auditService.logWithStrings(null, null, com.anuraguniversity.smartroute.common.enums.AuditAction.OTP_REQUEST, 
+        auditService.logWithStrings(null, null, com.anuraguniversity.smartroute.common.enums.AuditAction.OTP_REQUEST,
             "OTP", null, email, null, null);
     }
 
@@ -290,10 +436,10 @@ public class AuthService {
         if (!jwtTokenProvider.validateToken(refreshToken)) {
             throw new IllegalArgumentException("Invalid or expired refresh token");
         }
-        
+
         UUID userId = jwtTokenProvider.getUserIdFromToken(refreshToken);
         String role = jwtTokenProvider.getRoleFromToken(refreshToken);
-        
+
         if (!"refresh".equals(jwtTokenProvider.getClaims(refreshToken).get("type"))) {
             throw new IllegalArgumentException("Invalid token type");
         }

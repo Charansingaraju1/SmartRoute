@@ -41,8 +41,12 @@ class ApiService {
   private setupInterceptors() {
     this.client.interceptors.request.use(
       (config: InternalAxiosRequestConfig) => {
-        if (this.accessToken && config.headers) {
-          config.headers.Authorization = `Bearer ${this.accessToken}`;
+        const token = this.accessToken || (typeof localStorage !== 'undefined' ? localStorage.getItem('accessToken') : null);
+        if (token && config.headers) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        if (config.data instanceof FormData && config.headers) {
+          delete config.headers['Content-Type'];
         }
         return config;
       },
@@ -54,7 +58,9 @@ class ApiService {
       async (error: AxiosError) => {
         const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
-        if (error.response?.status === 401 && !originalRequest._retry && this.refreshToken) {
+        const isAuthEndpoint = Boolean(originalRequest?.url?.includes('/auth/'));
+
+        if (error.response?.status === 401 && !originalRequest._retry && this.refreshToken && !isAuthEndpoint) {
           originalRequest._retry = true;
           
           try {
@@ -103,22 +109,30 @@ class ApiService {
 
   async registerStudent(data: RegisterRequest): Promise<AuthResponse> {
     const response = await this.client.post<{ success: boolean; data: AuthResponse }>('/auth/register/student', data);
-    if (response.data.data?.accessToken) {
-      this.setTokens(response.data.data.accessToken, response.data.data.refreshToken!);
-    }
+    // Do NOT store tokens here — registration redirects to /login.
+    // The user must complete a fresh login cycle to set up their session.
     return response.data.data;
   }
 
   async registerTeacher(data: RegisterRequest): Promise<AuthResponse> {
     const response = await this.client.post<{ success: boolean; data: AuthResponse }>('/auth/register/teacher', data);
+    // Do NOT store tokens here — registration redirects to /login.
+    // The user must complete a fresh login cycle to set up their session.
+    return response.data.data;
+  }
+
+  async login(data: LoginRequest): Promise<AuthResponse> {
+    this.clearTokens();
+    const response = await this.client.post<{ success: boolean; data: AuthResponse }>('/auth/login', data);
     if (response.data.data?.accessToken) {
       this.setTokens(response.data.data.accessToken, response.data.data.refreshToken!);
     }
     return response.data.data;
   }
 
-  async login(data: LoginRequest): Promise<AuthResponse> {
-    const response = await this.client.post<{ success: boolean; data: AuthResponse }>('/auth/login', data);
+  async loginWithGoogle(idToken: string, role?: 'STUDENT' | 'TEACHER'): Promise<AuthResponse> {
+    this.clearTokens();
+    const response = await this.client.post<{ success: boolean; data: AuthResponse }>('/auth/google', { idToken, role });
     if (response.data.data?.accessToken) {
       this.setTokens(response.data.data.accessToken, response.data.data.refreshToken!);
     }
@@ -149,12 +163,20 @@ class ApiService {
   }
 
   async logout(): Promise<void> {
-    await this.client.post('/auth/logout');
-    this.clearTokens();
+    try {
+      await this.client.post('/auth/logout');
+    } finally {
+      this.clearTokens();
+    }
   }
 
   async getCurrentUser(): Promise<User> {
-    const response = await this.client.get<{ success: boolean; data: User }>('/auth/me');
+    const response = await this.client.get<{ success: boolean; data: any }>('/auth/me');
+    return (response.data.data?.user || response.data.data) as User;
+  }
+
+  async verifyBus(identifier: string) {
+    const response = await this.client.get<{ success: boolean; data: any; message?: string }>(`/buses/verify/${encodeURIComponent(identifier)}`);
     return response.data.data;
   }
 
@@ -178,8 +200,10 @@ class ApiService {
     const params = new URLSearchParams();
     if (zoneId) params.append('zoneId', zoneId);
     if (direction) params.append('direction', direction);
-    const response = await this.client.get<{ success: boolean; data: any[] }>(`/routes?${params}`);
-    return response.data.data;
+    params.append('size', '100');
+    const response = await this.client.get<{ success: boolean; data: any }>(`/routes?${params}`);
+    const data = response.data.data;
+    return Array.isArray(data) ? data : (data?.content || []);
   }
 
   async getRoute(id: string) {
@@ -188,8 +212,9 @@ class ApiService {
   }
 
   async getStops(routeId: string) {
-    const response = await this.client.get<{ success: boolean; data: any[] }>(`/stops?routeId=${routeId}`);
-    return response.data.data;
+    const response = await this.client.get<{ success: boolean; data: any }>(`/stops?routeId=${routeId}`);
+    const data = response.data.data;
+    return Array.isArray(data) ? data : (data?.content || []);
   }
 
   // Student APIs
@@ -216,6 +241,11 @@ class ApiService {
   // Teacher APIs
   async getTeacherProfile() {
     const response = await this.client.get<{ success: boolean; data: any }>('/teacher/profile');
+    return response.data.data;
+  }
+
+  async updateTeacherProfile(data: { name?: string; department?: string; designation?: string; phone?: string }) {
+    const response = await this.client.put<{ success: boolean; data: any }>('/teacher/profile', data);
     return response.data.data;
   }
 
@@ -265,7 +295,8 @@ class ApiService {
   }
 
   async getStudentPayments(page = 0, size = 20) {
-    const response = await this.client.get<{ success: boolean; data: any }>(`/student/payments?page=${page}&size=${size}`);
+    // Backend route: PaymentController @RequestMapping("/payment") + @GetMapping("/student/payments")
+    const response = await this.client.get<{ success: boolean; data: any }>(`/payment/student/payments?page=${page}&size=${size}`);
     return response.data.data;
   }
 
@@ -281,30 +312,34 @@ class ApiService {
 
   async postStudentBusPass(data: FormData) {
     const response = await this.client.post<{ success: boolean; data: any }>('/student/bus-pass', data, {
-      headers: { 'Content-Type': 'multipart/form-data' }
+      headers: { 'Content-Type': undefined }
     });
     return response.data.data;
   }
 
   // Teacher APIs
-  async getTeacherMissedBus() {
-    const response = await this.client.get<{ success: boolean; data: any[] }>('/teacher/missed-bus');
-    return response.data.data;
+  async getTeacherMissedBus(page = 0, size = 50) {
+    const response = await this.client.get<{ success: boolean; data: any }>(`/teacher/missed-bus?page=${page}&size=${size}`);
+    const data = response.data.data;
+    return Array.isArray(data) ? data : (data?.content || []);
   }
 
-  async getTeacherDelays() {
-    const response = await this.client.get<{ success: boolean; data: any[] }>('/teacher/delays');
-    return response.data.data;
+  async getTeacherDelays(page = 0, size = 50) {
+    const response = await this.client.get<{ success: boolean; data: any }>(`/teacher/delays?page=${page}&size=${size}`);
+    const data = response.data.data;
+    return Array.isArray(data) ? data : (data?.content || []);
   }
 
-  async getTeacherDisruptions() {
-    const response = await this.client.get<{ success: boolean; data: any[] }>('/teacher/disruptions');
-    return response.data.data;
+  async getTeacherDisruptions(page = 0, size = 50) {
+    const response = await this.client.get<{ success: boolean; data: any }>(`/teacher/disruptions?page=${page}&size=${size}`);
+    const data = response.data.data;
+    return Array.isArray(data) ? data : (data?.content || []);
   }
 
-  async getTeacherSOS() {
-    const response = await this.client.get<{ success: boolean; data: any[] }>('/teacher/sos');
-    return response.data.data;
+  async getTeacherSOS(page = 0, size = 50) {
+    const response = await this.client.get<{ success: boolean; data: any }>(`/teacher/sos?page=${page}&size=${size}`);
+    const data = response.data.data;
+    return Array.isArray(data) ? data : (data?.content || []);
   }
 
   async getTeacherTransportOps() {
@@ -322,6 +357,51 @@ class ApiService {
     return response.data.data;
   }
 
+  async getTeacherStudents() {
+    const response = await this.client.get<{ success: boolean; data: any[] }>('/teacher/students');
+    return response.data.data;
+  }
+
+  async createTeacherAssignment(data: {
+    studentId: string;
+    busId: string;
+    routeId: string;
+    boardingPointId?: string;
+    direction?: string;
+    startDate?: string;
+    endDate?: string;
+    assignmentNotes?: string;
+  }) {
+    const response = await this.client.post<{ success: boolean; data: any }>('/teacher/assignments', data);
+    return response.data.data;
+  }
+
+  async updateTeacherAssignment(id: string, data: {
+    busId?: string;
+    routeId?: string;
+    boardingPointId?: string;
+    direction?: string;
+    status?: string;
+    startDate?: string;
+    endDate?: string;
+    assignmentNotes?: string;
+  }) {
+    const response = await this.client.put<{ success: boolean; data: any }>(`/teacher/assignments/${id}`, data);
+    return response.data.data;
+  }
+
+  async deleteTeacherAssignment(id: string, reason?: string) {
+    const params = reason ? `?reason=${encodeURIComponent(reason)}` : '';
+    const response = await this.client.delete<{ success: boolean; data: any }>(`/teacher/assignments/${id}${params}`);
+    return response.data.data;
+  }
+
+  async getTeacherBusStudents(busId: string) {
+    // Backend: GET /teacher/bus/{busId}/students — enforces teacher-bus ownership
+    const response = await this.client.get<{ success: boolean; data: any[] }>(`/teacher/bus/${busId}/students`);
+    return response.data.data ?? [];
+  }
+
   async postTeacherDelay(data: any) {
     const response = await this.client.post<{ success: boolean; data: any }>('/teacher/delays', data);
     return response.data.data;
@@ -337,8 +417,12 @@ class ApiService {
     return response.data.data;
   }
 
-  async assignAlternativeBus(requestId: string, busId: string) {
-    const response = await this.client.post<{ success: boolean; data: any }>(`/teacher/missed-bus/${requestId}/alternative`, { busId });
+  async assignAlternativeBus(requestId: string, alternativeBusId: string, notes?: string) {
+    const payload: { alternativeBusId: string; notes?: string } = { alternativeBusId };
+    if (notes && notes.trim().length > 0) {
+      payload.notes = notes.trim();
+    }
+    const response = await this.client.post<{ success: boolean; data: any }>(`/teacher/missed-bus/${requestId}/alternative`, payload);
     return response.data.data;
   }
 
@@ -390,7 +474,7 @@ class ApiService {
 
   // Payment APIs
   async getPaymentHistory(page = 0, size = 20) {
-    const response = await this.client.get<{ success: boolean; data: any }>(`/student/payments?page=${page}&size=${size}`);
+    const response = await this.client.get<{ success: boolean; data: any }>(`/payment/student/payments?page=${page}&size=${size}`);
     return response.data.data;
   }
 

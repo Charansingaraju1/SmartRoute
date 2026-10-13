@@ -37,4 +37,8 @@ public interface StudentBusAssignmentRepository extends JpaRepository<StudentBus
 
     @Query("SELECT a FROM StudentBusAssignment a WHERE a.student.id = :studentId AND a.status IN ('ACTIVE', 'PENDING')")
     List<StudentBusAssignment> findActiveOrPendingByStudent(@Param("studentId") java.util.UUID studentId);
+
+    List<StudentBusAssignment> findByBusIdIn(List<java.util.UUID> busIds);
+
+    List<StudentBusAssignment> findByBusIdInAndStatus(List<java.util.UUID> busIds, AssignmentStatus status);
 }

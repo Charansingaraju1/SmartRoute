@@ -9,6 +9,8 @@ import com.anuraguniversity.smartroute.transport.repository.BusRepository;
 import com.anuraguniversity.smartroute.transport.repository.BoardingPointRepository;
 import com.anuraguniversity.smartroute.transport.repository.RouteRepository;
 import com.anuraguniversity.smartroute.transport.repository.ZoneRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
@@ -35,54 +37,203 @@ public class TransportWorkbookImporter {
     private final BusRepository busRepository;
     private final RouteRepository routeRepository;
     private final BoardingPointRepository boardingPointRepository;
+    private final ObjectMapper objectMapper;
 
     @Value("${smartroute.transport.workbook-path:classpath:data/AU_College_Transport_2026-2027-1.xls}")
     private Resource workbookResource;
 
+    @Value("${smartroute.transport.json-path:classpath:data/transport_data.json}")
+    private Resource jsonResource;
+
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a");
     private static final DateTimeFormatter TIME_FORMATTER_24 = DateTimeFormatter.ofPattern("HH:mm");
     private static final Set<String> KNOWN_SHEETS = Set.of(
-        "Routes", "Zone routes", "DSNR Zone", "Ramanthapur Zone", 
+        "Routes", "Zone routes", "DSNR Zone", "Ramanthapur Zone",
         "Uppal Zone", "Secunderabad Zone", "ECIL Zone", "Bhongir Zone"
     );
 
     @Transactional
     public ImportResult importWorkbook() {
         ImportResult result = new ImportResult();
-        
-        if (!workbookResource.exists()) {
-            log.warn("Transport workbook not found at: {}", workbookResource.getDescription());
-            result.addError("Workbook not found: " + workbookResource.getDescription());
-            result.setWorkbookMissing(true);
+
+        if (workbookResource != null && workbookResource.exists()) {
+            try (InputStream is = workbookResource.getInputStream();
+                 Workbook workbook = WorkbookFactory.create(is)) {
+
+                log.info("Workbook loaded: {} sheets", workbook.getNumberOfSheets());
+
+                for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+                    Sheet sheet = workbook.getSheetAt(i);
+                    String sheetName = sheet.getSheetName();
+                    log.info("Processing sheet: {}", sheetName);
+
+                    if (KNOWN_SHEETS.contains(sheetName) || sheetName.contains("Zone") || sheetName.contains("Route")) {
+                        processSheet(sheet, sheetName, result);
+                    } else {
+                        log.debug("Skipping unknown sheet: {}", sheetName);
+                    }
+                }
+
+                verifyImport(result);
+                logImportSummary(result);
+                return result;
+
+            } catch (Exception e) {
+                log.error("Failed to import workbook", e);
+                result.addError("Workbook import failed: " + e.getMessage());
+            }
+        }
+
+        if (jsonResource != null && jsonResource.exists()) {
+            log.info("Importing transport data from {}", jsonResource.getDescription());
+            importFromJson(jsonResource, result);
+            verifyImport(result);
+            logImportSummary(result);
             return result;
         }
 
-        try (InputStream is = workbookResource.getInputStream();
-             Workbook workbook = WorkbookFactory.create(is)) {
+        log.warn("Transport data source not found: {} / {}",
+            workbookResource != null ? workbookResource.getDescription() : "null",
+            jsonResource != null ? jsonResource.getDescription() : "null");
+        result.addError("No transport data source found");
+        result.setWorkbookMissing(true);
+        return result;
+    }
 
-            log.info("Workbook loaded: {} sheets", workbook.getNumberOfSheets());
-            
-            for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
-                Sheet sheet = workbook.getSheetAt(i);
-                String sheetName = sheet.getSheetName();
-                log.info("Processing sheet: {}", sheetName);
-                
-                if (KNOWN_SHEETS.contains(sheetName) || sheetName.contains("Zone") || sheetName.contains("Route")) {
-                    processSheet(sheet, sheetName, result);
-                } else {
-                    log.debug("Skipping unknown sheet: {}", sheetName);
+    private void importFromJson(Resource resource, ImportResult result) {
+        try (InputStream is = resource.getInputStream()) {
+            JsonNode root = objectMapper.readTree(is);
+
+            // 1. Zones
+            if (root.has("zones")) {
+                for (JsonNode zNode : root.get("zones")) {
+                    String code = zNode.path("code").asText();
+                    String name = zNode.path("name").asText();
+                    String desc = zNode.path("description").asText("Zone imported from AU Transport document");
+                    int order = zNode.path("displayOrder").asInt(1);
+
+                    Zone zone = zoneRepository.findByCode(code).orElseGet(() ->
+                        zoneRepository.findByName(name).orElse(null)
+                    );
+
+                    if (zone == null) {
+                        zone = Zone.create(name, code, desc, order);
+                        zone = zoneRepository.save(zone);
+                        result.incrementZoneCount();
+                    } else {
+                        zone.setName(name);
+                        zone.setDescription(desc);
+                        zone.setDisplayOrder(order);
+                        zone.setActive(true);
+                        zoneRepository.save(zone);
+                    }
                 }
             }
 
-            verifyImport(result);
-            logImportSummary(result);
+            // 2. Buses
+            if (root.has("buses")) {
+                for (JsonNode bNode : root.get("buses")) {
+                    String reg = bNode.path("registrationNumber").asText().trim();
+                    String busNum = bNode.path("busNumber").asText();
+                    int capacity = bNode.path("capacity").asInt(50);
+                    String model = bNode.path("model").asText("Anurag University Transport");
+                    String fuel = bNode.path("fuelType").asText("Diesel");
+                    String driver = bNode.hasNonNull("driverName") ? bNode.get("driverName").asText() : null;
+                    String phone = bNode.hasNonNull("driverPhone") ? bNode.get("driverPhone").asText() : null;
 
+                    Bus bus = busRepository.findByRegistrationNumber(reg).orElse(null);
+                    if (bus == null) {
+                        bus = new Bus();
+                        bus.setRegistrationNumber(reg);
+                        bus.setBusNumber(busNum);
+                        bus.setCapacity(capacity);
+                        bus.setModel(model);
+                        bus.setFuelType(fuel);
+                        bus.setDriverName(driver);
+                        bus.setDriverPhone(phone);
+                        bus.setActive(true);
+                        bus.setCurrentStudentsCount(0);
+                        busRepository.save(bus);
+                        result.incrementUniqueBusCount();
+                    } else {
+                        bus.setBusNumber(busNum);
+                        if (driver != null) bus.setDriverName(driver);
+                        if (phone != null) bus.setDriverPhone(phone);
+                        bus.setActive(true);
+                        busRepository.save(bus);
+                    }
+                }
+            }
+
+            // 3. Routes & Boarding Points
+            if (root.has("routes")) {
+                for (JsonNode rNode : root.get("routes")) {
+                    String zoneCode = rNode.path("zoneCode").asText();
+                    String busReg = rNode.path("busRegistration").asText();
+                    String routeCode = rNode.path("routeCode").asText();
+                    String routeName = rNode.path("routeName").asText();
+                    String startingPoint = rNode.path("startingPoint").asText();
+                    String startingTimeStr = rNode.path("startingTime").asText();
+                    String endingPoint = rNode.path("endingPoint").asText();
+                    String endingTimeStr = rNode.path("endingTime").asText();
+                    int displayOrder = rNode.path("displayOrder").asInt(1);
+                    BigDecimal fee = rNode.has("feeAmount") && !rNode.get("feeAmount").isNull()
+                        ? BigDecimal.valueOf(rNode.get("feeAmount").asDouble()) : null;
+
+                    Zone zone = zoneRepository.findByCode(zoneCode).orElse(null);
+                    if (zone == null) continue;
+
+                    Bus bus = busRepository.findByRegistrationNumber(busReg).orElse(null);
+
+                    Route route = routeRepository.findByRouteCodeAndZoneIdAndDirection(
+                        routeCode, zone.getId(), com.anuraguniversity.smartroute.common.enums.Direction.MORNING
+                    ).orElse(null);
+
+                    if (route == null) {
+                        route = Route.create(zone, routeCode, routeName, com.anuraguniversity.smartroute.common.enums.Direction.MORNING, displayOrder);
+                        result.incrementRouteAssignmentCount();
+                    } else {
+                        route.setRouteName(routeName);
+                        route.setDisplayOrder(displayOrder);
+                    }
+
+                    route.setStartingPoint(startingPoint);
+                    route.setStartingTime(parseTime(startingTimeStr));
+                    route.setEndingPoint(endingPoint);
+                    route.setEndingTime(parseTime(endingTimeStr));
+                    route.setFeeAmount(fee);
+                    route.setActive(true);
+                    if (bus != null) {
+                        route.setBus(bus);
+                    }
+                    route = routeRepository.save(route);
+
+                    if (rNode.has("stops")) {
+                        for (JsonNode sNode : rNode.get("stops")) {
+                            int order = sNode.path("order").asInt();
+                            String stopName = sNode.path("name").asText();
+                            String stopTimeStr = sNode.path("time").asText();
+
+                            BoardingPoint bp = boardingPointRepository.findByRouteIdAndStopOrder(route.getId(), order).orElse(null);
+                            if (bp == null) {
+                                bp = BoardingPoint.create(route, stopName, null, order, parseTime(stopTimeStr), null, null, null);
+                                result.incrementBoardingStopCount();
+                            } else {
+                                bp.setStopName(stopName);
+                                bp.setStopTime(parseTime(stopTimeStr));
+                                bp.setActive(true);
+                            }
+                            boardingPointRepository.save(bp);
+                        }
+                    }
+
+                    result.incrementTransformed();
+                }
+            }
         } catch (Exception e) {
-            log.error("Failed to import workbook", e);
-            result.addError("Import failed: " + e.getMessage());
+            log.error("Failed to import from JSON", e);
+            result.addError("JSON import failed: " + e.getMessage());
         }
-
-        return result;
     }
 
     private void processSheet(Sheet sheet, String sheetName, ImportResult result) {
@@ -95,13 +246,13 @@ public class TransportWorkbookImporter {
 
     private void processRoutesSheet(Sheet sheet, ImportResult result) {
         AtomicInteger rowNum = new AtomicInteger(0);
-        
+
         sheet.forEach(row -> {
             if (rowNum.get() == 0) {
                 rowNum.incrementAndGet();
                 return; // Skip header
             }
-            
+
             try {
                 String zoneName = getStringCellValue(row.getCell(0));
                 String routeCode = getStringCellValue(row.getCell(1));
@@ -142,7 +293,7 @@ public class TransportWorkbookImporter {
                     return;
                 }
 
-                updateRouteDetails(route, startingPoint, startingTimeStr, endingPoint, endingTimeStr, 
+                updateRouteDetails(route, startingPoint, startingTimeStr, endingPoint, endingTimeStr,
                     description, distanceStr, durationStr, feeStr);
 
                 if (StringUtils.hasText(busReg)) {
@@ -170,7 +321,7 @@ public class TransportWorkbookImporter {
         if (zone == null) return;
 
         AtomicInteger rowNum = new AtomicInteger(0);
-        
+
         sheet.forEach(row -> {
             if (rowNum.get() == 0) {
                 rowNum.incrementAndGet();
@@ -269,7 +420,7 @@ public class TransportWorkbookImporter {
         return code;
     }
 
-    private Route findOrCreateRoute(Zone zone, String routeCode, String routeName, 
+    private Route findOrCreateRoute(Zone zone, String routeCode, String routeName,
             com.anuraguniversity.smartroute.common.enums.Direction direction, ImportResult result) {
         return routeRepository.findByRouteCodeAndZoneIdAndDirection(routeCode, zone.getId(), direction)
             .orElseGet(() -> {
@@ -282,7 +433,7 @@ public class TransportWorkbookImporter {
     }
 
     private void updateRouteDetails(Route route, String startingPoint, String startingTimeStr,
-            String endingPoint, String endingTimeStr, String description, 
+            String endingPoint, String endingTimeStr, String description,
             String distanceStr, String durationStr, String feeStr) {
         if (StringUtils.hasText(startingPoint)) route.setStartingPoint(startingPoint);
         if (StringUtils.hasText(startingTimeStr)) route.setStartingTime(parseTime(startingTimeStr));
@@ -307,7 +458,7 @@ public class TransportWorkbookImporter {
     private BoardingPoint findOrCreateBoardingPoint(Route route, int stopOrder, BoardingPointData stopData, ImportResult result) {
         return boardingPointRepository.findByRouteIdAndStopOrder(route.getId(), stopOrder)
             .orElseGet(() -> {
-                BoardingPoint bp = BoardingPoint.create(route, stopData.name(), stopData.description(), 
+                BoardingPoint bp = BoardingPoint.create(route, stopData.name(), stopData.description(),
                     stopOrder, stopData.time(), stopData.latitude(), stopData.longitude(), stopData.landmark());
                 BoardingPoint saved = boardingPointRepository.save(bp);
                 result.incrementBoardingStopCount();
@@ -333,12 +484,18 @@ public class TransportWorkbookImporter {
         try {
             if (cleaned.contains("AM") || cleaned.contains("PM")) {
                 return LocalTime.parse(cleaned, TIME_FORMATTER);
+            } else if (cleaned.length() == 8 && cleaned.chars().filter(ch -> ch == ':').count() == 2) {
+                return LocalTime.parse(cleaned);
             } else {
                 return LocalTime.parse(cleaned, TIME_FORMATTER_24);
             }
         } catch (Exception e) {
-            log.warn("Failed to parse time: {}", timeStr);
-            return null;
+            try {
+                return LocalTime.parse(cleaned);
+            } catch (Exception ignored) {
+                log.warn("Failed to parse time: {}", timeStr);
+                return null;
+            }
         }
     }
 
@@ -365,7 +522,7 @@ public class TransportWorkbookImporter {
         };
     }
 
-    private record BoardingPointData(String name, String description, LocalTime time, 
+    private record BoardingPointData(String name, String description, LocalTime time,
                                      BigDecimal latitude, BigDecimal longitude, String landmark) {}
 
     private BoardingPointData parseStopData(String stopData, int order) {
@@ -411,7 +568,7 @@ public class TransportWorkbookImporter {
         List<Bus> allBuses = busRepository.findAll();
         Map<String, Long> regCounts = allBuses.stream()
             .collect(java.util.stream.Collectors.groupingBy(Bus::getRegistrationNumber, java.util.stream.Collectors.counting()));
-        
+
         regCounts.entrySet().stream()
             .filter(e -> e.getValue() > 1)
             .forEach(e -> result.addDuplicateRegistration(e.getKey(), e.getValue()));

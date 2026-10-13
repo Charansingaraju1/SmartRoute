@@ -1,4 +1,4 @@
-﻿import { useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { api } from '@/services/api';
 import { Card } from '@/components/ui/Card';
@@ -71,7 +71,7 @@ function RouteCard({ route, isExpanded, onToggle }: { route: Route; isExpanded: 
         </div>
         <button
           onClick={onToggle}
-          className="p-2 rounded-lg text-stone-500 hover:text-charcoal-500 hover:bg-stone-100 transition-colors ml-4"
+          className="p-2 rounded-lg text-stone-500 hover:text-charcoal-500 dark:hover:text-[#F1F5F9] hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors ml-4"
           aria-expanded={isExpanded}
           aria-label={isExpanded ? 'Collapse route details' : 'Expand route details'}
         >
@@ -80,58 +80,58 @@ function RouteCard({ route, isExpanded, onToggle }: { route: Route; isExpanded: 
       </div>
 
       {isExpanded && (
-        <div className="mt-4 pt-4 border-t border-stone-200 animate-slide-down">
+        <div className="mt-4 pt-4 border-t border-stone-200 dark:border-[#334155] animate-slide-down">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div className="bg-stone-50 rounded-xl p-4 border border-stone-200">
-              <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Distance</p>
-              <p className="font-mono text-lg font-bold text-charcoal-500">{route.distanceKm || '—'} km</p>
+            <div className="bg-stone-50 dark:bg-[#111827] rounded-xl p-4 border border-stone-200 dark:border-slate-800">
+              <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-1">Distance</p>
+              <p className="font-mono text-lg font-bold text-charcoal-500 dark:text-[#F1F5F9]">{route.distanceKm || '—'} km</p>
             </div>
-            <div className="bg-stone-50 rounded-xl p-4 border border-stone-200">
-              <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Duration</p>
-              <p className="font-mono text-lg font-bold text-charcoal-500">{route.estimatedDurationMinutes || '—'} min</p>
+            <div className="bg-stone-50 dark:bg-[#111827] rounded-xl p-4 border border-stone-200 dark:border-slate-800">
+              <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-1">Duration</p>
+              <p className="font-mono text-lg font-bold text-charcoal-500 dark:text-[#F1F5F9]">{route.estimatedDurationMinutes || '—'} min</p>
             </div>
-            <div className="bg-stone-50 rounded-xl p-4 border border-stone-200">
-              <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Fee</p>
-              <p className="font-mono text-lg font-bold text-terracotta-600">₹{route.feeAmount || 0}</p>
+            <div className="bg-stone-50 dark:bg-[#111827] rounded-xl p-4 border border-stone-200 dark:border-slate-800">
+              <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-1">Fee</p>
+              <p className="font-mono text-lg font-bold text-terracotta-600 dark:text-terracotta-400">₹{route.feeAmount || 0}</p>
             </div>
-            <div className="bg-stone-50 rounded-xl p-4 border border-stone-200">
-              <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Zone</p>
-              <p className="font-medium text-charcoal-500">{route.zone?.name || 'Unknown'}</p>
+            <div className="bg-stone-50 dark:bg-[#111827] rounded-xl p-4 border border-stone-200 dark:border-slate-800">
+              <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-1">Zone</p>
+              <p className="font-medium text-charcoal-500 dark:text-[#F1F5F9]">{route.zone?.name || 'Unknown'}</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div className="bg-stone-50 rounded-xl p-4 border border-stone-200">
-              <p className="text-xs text-stone-500 uppercase tracking-wide mb-2">Starting Point</p>
+            <div className="bg-stone-50 dark:bg-[#111827] rounded-xl p-4 border border-stone-200 dark:border-slate-800">
+              <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-2">Starting Point</p>
               {route.startingPoint && (
                 <>
-                  <p className="font-medium text-charcoal-500">{route.startingPoint}</p>
-                  {route.startingTime && <p className="text-sm text-stone-500 mt-1 font-mono">{route.startingTime}</p>}
+                  <p className="font-medium text-charcoal-500 dark:text-[#F1F5F9]">{route.startingPoint}</p>
+                  {route.startingTime && <p className="text-sm text-stone-500 dark:text-slate-400 mt-1 font-mono">{route.startingTime}</p>}
                 </>
               )}
-              {!route.startingPoint && <p className="text-stone-500">Not specified</p>}
+              {!route.startingPoint && <p className="text-stone-500 dark:text-slate-400">Not specified</p>}
             </div>
-            <div className="bg-stone-50 rounded-xl p-4 border border-stone-200">
-              <p className="text-xs text-stone-500 uppercase tracking-wide mb-2">Destination</p>
+            <div className="bg-stone-50 dark:bg-[#111827] rounded-xl p-4 border border-stone-200 dark:border-slate-800">
+              <p className="text-xs text-stone-500 dark:text-slate-400 uppercase tracking-wide mb-2">Destination</p>
               {route.endingPoint && (
                 <>
-                  <p className="font-medium text-charcoal-500">{route.endingPoint}</p>
-                  {route.endingTime && <p className="text-sm text-stone-500 mt-1 font-mono">{route.endingTime}</p>}
+                  <p className="font-medium text-charcoal-500 dark:text-[#F1F5F9]">{route.endingPoint}</p>
+                  {route.endingTime && <p className="text-sm text-stone-500 dark:text-slate-400 mt-1 font-mono">{route.endingTime}</p>}
                 </>
               )}
-              {!route.endingPoint && <p className="text-stone-500">Not specified</p>}
+              {!route.endingPoint && <p className="text-stone-500 dark:text-slate-400">Not specified</p>}
             </div>
           </div>
 
-          <div className="border-t border-stone-200 pt-4">
-            <h4 className="font-medium text-charcoal-500 mb-3 flex items-center gap-2">
+          <div className="border-t border-stone-200 dark:border-[#334155] pt-4">
+            <h4 className="font-medium text-charcoal-500 dark:text-[#F1F5F9] mb-3 flex items-center gap-2">
               <MapPin className="h-4 w-4 text-terracotta-500" />
               Boarding Points ({route.boardingPoints?.length || 0})
             </h4>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-xs text-stone-500 border-b border-stone-200">
+                  <tr className="text-left text-xs text-stone-500 dark:text-slate-400 border-b border-stone-200 dark:border-slate-700">
                     <th className="pb-2 font-medium w-12">#</th>
                     <th className="pb-2 font-medium">Stop Name</th>
                     <th className="pb-2 font-medium">Time</th>
@@ -140,18 +140,18 @@ function RouteCard({ route, isExpanded, onToggle }: { route: Route; isExpanded: 
                 </thead>
                 <tbody>
                   {route.boardingPoints?.sort((a, b) => a.stopOrder - b.stopOrder).slice(0, 15).map((stop) => (
-                    <tr key={stop.id} className="border-b border-stone-100 last:border-0">
-                      <td className="py-2 text-stone-500">{stop.stopOrder}</td>
-                      <td className="py-2 font-medium text-charcoal-500">{stop.stopName}</td>
-                      <td className="py-2 text-stone-600">
-                        {stop.stopTime ? <span className="font-mono">{stop.stopTime}</span> : <span className="text-stone-400">—</span>}
+                    <tr key={stop.id} className="border-b border-stone-100 dark:border-slate-800 last:border-0">
+                      <td className="py-2 text-stone-500 dark:text-slate-400">{stop.stopOrder}</td>
+                      <td className="py-2 font-medium text-charcoal-500 dark:text-[#F1F5F9]">{stop.stopName}</td>
+                      <td className="py-2 text-stone-600 dark:text-slate-300">
+                        {stop.stopTime ? <span className="font-mono">{stop.stopTime}</span> : <span className="text-stone-400 dark:text-slate-500">—</span>}
                       </td>
-                      <td className="py-2 text-stone-500">{stop.landmark || '—'}</td>
+                      <td className="py-2 text-stone-500 dark:text-slate-400">{stop.landmark || '—'}</td>
                     </tr>
                   ))}
                   {route.boardingPoints && route.boardingPoints.length > 15 && (
                     <tr>
-                      <td colSpan={4} className="py-3 text-center text-stone-500">
+                      <td colSpan={4} className="py-3 text-center text-stone-500 dark:text-slate-400">
                         + {route.boardingPoints.length - 15} more stops
                       </td>
                     </tr>
@@ -161,10 +161,10 @@ function RouteCard({ route, isExpanded, onToggle }: { route: Route; isExpanded: 
             </div>
 
             <div className="mt-4 flex gap-3">
-              <button className="px-4 py-2 border border-stone-300 text-stone-600 rounded-lg hover:bg-stone-100 transition-colors text-sm font-medium flex items-center gap-2">
+              <button className="px-4 py-2 border border-stone-300 dark:border-slate-700 text-stone-600 dark:text-slate-300 rounded-lg hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors text-sm font-medium flex items-center gap-2">
                 <ChevronDown className="h-4 w-4" /> View Details
               </button>
-              <button className="px-4 py-2 border border-stone-300 text-stone-600 rounded-lg hover:bg-stone-100 transition-colors text-sm font-medium flex items-center gap-2">
+              <button className="px-4 py-2 border border-stone-300 dark:border-slate-700 text-stone-600 dark:text-slate-300 rounded-lg hover:bg-stone-100 dark:hover:bg-slate-800 transition-colors text-sm font-medium flex items-center gap-2">
                 <Bus className="h-4 w-4" /> View Bus
               </button>
             </div>
@@ -184,7 +184,7 @@ export function TeacherRoutesPage() {
     queryFn: () => api.getRoutes(),
   });
 
-  const routesData = routes || [];
+  const routesData = Array.isArray(routes) ? routes : [];
 
   const filteredRoutesData = routesData.filter((route: { zone?: { id: string } | null; direction: string }) => {
     if (selectedZone !== 'all' && route.zone?.id !== selectedZone) return false;
@@ -255,7 +255,7 @@ export function TeacherRoutesPage() {
             <select
               value={selectedZone}
               onChange={e => setSelectedZone(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none appearance-none"
+              className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none appearance-none"
             >
               <option value="all">All Zones</option>
               {zones.map(zone => (
@@ -266,7 +266,7 @@ export function TeacherRoutesPage() {
           <select
             value={selectedDirection}
             onChange={e => setSelectedDirection(e.target.value as 'all' | 'MORNING' | 'EVENING')}
-            className="w-full sm:w-64 px-4 py-2.5 rounded-lg border border-stone-300 bg-stone-50 text-sm text-stone-900 focus:border-terracotta-500 focus:ring-2 focus:ring-terracotta-500/20 focus:outline-none"
+            className="w-full sm:w-64 px-4 py-2.5 rounded-lg border border-stone-300 dark:border-slate-700 bg-stone-50 dark:bg-[#111827] text-sm text-stone-900 dark:text-[#F1F5F9] focus:border-terracotta-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-terracotta-500/20 dark:focus:ring-blue-400/20 focus:outline-none"
           >
             <option value="all">All Directions</option>
             <option value="MORNING">Morning (Home → College)</option>

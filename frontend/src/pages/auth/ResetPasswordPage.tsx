@@ -27,6 +27,7 @@ export function ResetPasswordPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const email = searchParams.get('email') || '';
@@ -57,10 +58,10 @@ export function ResetPasswordPage() {
         <div className="text-center">
           <Link to="/" className="inline-flex items-center gap-2 mb-6">
             <Bus className="h-10 w-10 text-terracotta-500" />
-            <span className="font-heading text-2xl font-bold text-charcoal-500">SmartRoute</span>
+            <span className="font-heading text-2xl font-bold text-charcoal-500 dark:text-[#F1F5F9]">SmartRoute</span>
           </Link>
-          <h2 className="font-heading text-3xl font-bold text-charcoal-500">Reset Password</h2>
-          <p className="mt-2 text-stone-600">Enter your new password below.</p>
+          <h2 className="font-heading text-3xl font-bold text-charcoal-500 dark:text-[#F1F5F9]">Reset Password</h2>
+          <p className="mt-2 text-stone-600 dark:text-[#A7B3C7]">Enter your new password below.</p>
         </div>
 
         <Card className="p-8">
@@ -87,7 +88,7 @@ export function ResetPasswordPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="text-stone-400 hover:text-stone-600"
+                    className="pointer-events-auto p-1 text-stone-400 dark:text-slate-400 hover:text-stone-600 dark:hover:text-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta-500 rounded transition-colors"
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -102,18 +103,18 @@ export function ResetPasswordPage() {
             <div className="relative">
               <Input
                 {...register('confirmPassword')}
-                type={showPassword ? 'text' : 'password'}
+                type={showConfirmPassword ? 'text' : 'password'}
                 label="Confirm New Password"
                 placeholder="Re-enter your password"
                 leftIcon={<Lock className="h-5 w-5" />}
                 rightIcon={
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="text-stone-400 hover:text-stone-600"
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="pointer-events-auto p-1 text-stone-400 dark:text-slate-400 hover:text-stone-600 dark:hover:text-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta-500 rounded transition-colors"
+                    aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
                   >
-                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
                 }
                 error={errors.confirmPassword?.message}
@@ -127,10 +128,13 @@ export function ResetPasswordPage() {
             </Button>
           </form>
 
-          <div className="mt-6 text-center">
-            <Link to="/login" className="text-sm font-medium text-terracotta-600 hover:text-terracotta-700">
-              ← Back to Sign In
-            </Link>
+          <div className="mt-6 text-center space-y-2">
+            <p className="text-sm text-stone-600 dark:text-slate-400">
+              Already have an account?{' '}
+              <Link to="/login" className="font-medium text-terracotta-600 dark:text-blue-400 hover:text-terracotta-700 dark:hover:text-blue-300">
+                Sign In
+              </Link>
+            </p>
           </div>
         </Card>
       </div>

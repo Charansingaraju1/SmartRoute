@@ -1,47 +1,52 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/services/api';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import { Bus, MapPin, Clock, User, Settings, Shield } from 'lucide-react';
+import {
+  Bus,
+  MapPin,
+  Clock,
+  User,
+  Shield,
+  QrCode,
+  AlertTriangle,
+  FileText,
+  Navigation,
+  CheckCircle,
+  GraduationCap,
+  Calendar,
+  Layers,
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-interface BusDetail {
-  id: string;
-  registrationNumber: string;
-  busNumber?: string;
-  capacity: number;
-  driverName?: string;
-  driverPhone?: string;
-  conductorName?: string;
-  conductorPhone?: string;
-  route?: {
-    id: string;
-    routeCode: string;
-    routeName?: string;
-    direction: string;
-    startingPoint?: string;
-    startingTime?: string;
-    boardingPoints?: Array<{ id: string; stopName: string; stopTime?: string; stopOrder: number }>;
-  };
-  currentStudentsCount: number;
-  availableCapacity: number;
-  active: boolean;
-}
+import { BusQRCodeModal } from '@/components/bus/BusQRCodeModal';
+import { LeafletMap, StopCoordinate } from '@/components/map/LeafletMap';
+import { formatBusNumber, formatRouteCode } from '@/utils/transport';
+import { canonicalPassNumber } from '@/pages/student/StudentBusPassPage';
 
 export function StudentMyBusPage() {
+  const [showQR, setShowQR] = useState(false);
+
   const { data: assignment, isLoading, error } = useQuery({
     queryKey: ['student-assignment'],
     queryFn: () => api.getStudentAssignment(),
   });
 
+  const { data: busPass } = useQuery({
+    queryKey: ['student-bus-pass'],
+    queryFn: () => api.getStudentBusPass().catch(() => null),
+  });
+
   const bus = assignment?.bus;
+  const route = assignment?.route;
+  const boardingPoint = assignment?.boardingPoint;
 
   if (isLoading) {
     return (
       <div className="container-app py-12">
         <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-stone-200 rounded w-3/4"></div>
-          <div className="h-64 bg-stone-200 rounded-xl"></div>
+          <div className="h-8 bg-stone-200 dark:bg-charcoal-700 rounded w-3/4"></div>
+          <div className="h-64 bg-stone-200 dark:bg-charcoal-700 rounded-xl"></div>
         </div>
       </div>
     );
@@ -51,250 +56,421 @@ export function StudentMyBusPage() {
     return (
       <div className="container-app py-12">
         <Card className="max-w-2xl mx-auto text-center py-12" padding="lg">
-          <svg className="h-16 w-16 text-stone-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-          </svg>
-          <h2 className="font-heading text-xl font-semibold text-charcoal-500 mb-2">No Bus Assigned</h2>
-          <p className="text-stone-500 mb-6">You don't have an active bus assignment yet. Contact transport office or select a bus.</p>
-          <Link to="/student/my-bus" className="inline-flex items-center gap-2 px-4 py-2.5 bg-terracotta-500 text-stone-50 rounded-lg text-sm font-medium hover:bg-terracotta-400 transition-colors">
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-            </svg>
-            Browse Available Buses
-          </Link>
+          <Bus className="h-16 w-16 text-stone-300 dark:text-stone-600 mx-auto mb-4" />
+          <h2 className="font-heading text-2xl font-semibold text-charcoal-500 dark:text-stone-100 mb-2">No Bus Assigned</h2>
+          <p className="text-stone-500 dark:text-stone-400 mb-6 max-w-md mx-auto">
+            You don't currently have an active bus assigned. Upload your official college bus pass for automatic verification or browse university transportation routes.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link
+              to="/student/bus-pass"
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-terracotta-500 text-stone-50 rounded-lg text-sm font-medium hover:bg-terracotta-400 transition-colors shadow-sm"
+            >
+              <FileText className="h-4 w-4" />
+              Upload Bus Pass
+            </Link>
+            <Link
+              to="/routes"
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-stone-100 dark:bg-charcoal-700 text-stone-700 dark:text-stone-200 hover:bg-stone-200 dark:hover:bg-charcoal-600 rounded-lg text-sm font-medium transition-colors border border-stone-200 dark:border-charcoal-600"
+            >
+              <Navigation className="h-4 w-4 text-terracotta-500" />
+              Browse University Routes
+            </Link>
+          </div>
         </Card>
       </div>
     );
   }
 
+  // Format bus and route display identifiers
+  const displayBusName = formatBusNumber(bus);
+  const displayRouteTitle = formatRouteCode(route);
+
+  // Prepare map stops along actual road route
+  const mapStops: StopCoordinate[] = (route?.boardingPoints || [])
+    .filter((bp: any) => bp.latitude && bp.longitude)
+    .sort((a: any, b: any) => (a.stopOrder || 0) - (b.stopOrder || 0))
+    .map((bp: any) => ({
+      id: bp.id,
+      name: bp.stopName,
+      description: bp.stopDescription,
+      order: bp.stopOrder,
+      time: bp.stopTime,
+      lat: parseFloat(bp.latitude),
+      lng: parseFloat(bp.longitude),
+      landmark: bp.landmark,
+      isCollege: bp.stopName?.toLowerCase().includes('campus') || bp.stopName?.toLowerCase().includes('university'),
+    }));
+
+  const destinationCollege = route?.endingPoint || 'Anurag University Campus';
+  const startingPoint = route?.startingPoint || (mapStops.length > 0 ? mapStops[0].name : 'Starting Point');
+  const userBoardingStopName = boardingPoint?.stopName || (mapStops.length > 0 ? mapStops[0].name : undefined);
+  const userBoardingTime = boardingPoint?.stopTime || 'Scheduled Pickup';
+
   return (
     <div className="container-app py-8">
-      <div className="mb-8">
-        <h1 className="font-heading text-3xl font-bold text-charcoal-500">My Bus</h1>
-        <p className="text-stone-600 mt-1">View your assigned bus details and route information.</p>
+      {/* Header and Alert Actions */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+        <div>
+          <div className="flex items-center gap-3">
+            <h1 className="font-heading text-3xl font-bold text-charcoal-500 dark:text-stone-100">{displayBusName}</h1>
+            <Badge variant={bus.active ? 'success' : 'danger'}>{bus.active ? 'Active Fleet' : 'Inactive'}</Badge>
+            <span className="text-xs px-2.5 py-1 font-mono rounded bg-stone-100 dark:bg-charcoal-700 text-stone-600 dark:text-stone-300 border border-stone-200 dark:border-charcoal-600">
+              Vehicle {bus.registrationNumber}
+            </span>
+          </div>
+          <p className="text-stone-600 dark:text-stone-400 mt-1 flex items-center gap-2">
+            <span>{displayRouteTitle}</span>
+            <span>•</span>
+            <span className="text-terracotta-600 dark:text-terracotta-400 font-medium">Destination: {destinationCollege}</span>
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <Link
+            to="/student/missed-bus"
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-stone-900 font-semibold rounded-lg text-sm transition-colors shadow-sm"
+            id="btn-missed-bus"
+          >
+            <AlertTriangle className="w-4 h-4 text-stone-900" />
+            I Missed My Bus
+          </Link>
+          <button
+            onClick={() => setShowQR(true)}
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-stone-100 hover:bg-terracotta-50 dark:bg-charcoal-700 dark:hover:bg-charcoal-600 text-stone-700 dark:text-stone-200 border border-stone-200 dark:border-charcoal-600 transition-colors"
+          >
+            <QrCode className="w-3.5 h-3.5 text-terracotta-500" /> Show Bus QR
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Bus Details */}
+        {/* Main Details and Map */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Real Interactive Street Road Map */}
+          <Card padding="none" className="overflow-hidden border border-stone-200 dark:border-charcoal-700 shadow-sm">
+            <div className="p-4 bg-stone-50 dark:bg-charcoal-800/80 border-b border-stone-200 dark:border-charcoal-700 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <Navigation className="w-4 h-4 text-terracotta-500" />
+                <h3 className="font-heading text-sm font-semibold text-charcoal-500 dark:text-stone-100">
+                  Actual Road Navigation Route
+                </h3>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-stone-500 dark:text-stone-400">
+                <span className="inline-flex items-center gap-1">
+                  <span className="w-2.5 h-2.5 rounded-full bg-blue-600"></span> Boarding Stop: {userBoardingStopName}
+                </span>
+                <span>•</span>
+                <span className="inline-flex items-center gap-1">
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-700"></span> {destinationCollege}
+                </span>
+              </div>
+            </div>
+
+            <div className="h-[420px] w-full relative">
+              <LeafletMap
+                stops={mapStops}
+                busNumber={displayBusName}
+                routeName={displayRouteTitle}
+                selectedBoardingStopName={userBoardingStopName}
+                collegeDestination={{
+                  name: destinationCollege,
+                  lat: 17.4206,
+                  lng: 78.6565,
+                }}
+                height="420px"
+              />
+            </div>
+            <div className="p-3 bg-stone-50 dark:bg-charcoal-800 text-xs text-stone-500 dark:text-stone-400 flex items-center justify-between border-t border-stone-200 dark:border-charcoal-700">
+              <span>Street route connected via live OSRM navigation following real road curves and junctions.</span>
+              <span className="font-medium text-stone-700 dark:text-stone-300">Total Stops: {mapStops.length}</span>
+            </div>
+          </Card>
+
+          {/* Assigned Boarding Point & Journey Card */}
           <Card padding="lg">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-xl bg-terracotta-100 flex items-center justify-center">
-                  <svg className="h-8 w-8 text-terracotta-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                  </svg>
-                </div>
-                <div>
-                  <h2 className="font-heading text-2xl font-bold text-charcoal-500">Bus {bus.registrationNumber}</h2>
-                  {bus.busNumber && <p className="text-stone-500">Internal Number: {bus.busNumber}</p>}
-                </div>
-              </div>
-              <Badge variant={bus.active ? 'success' : 'danger'}>{bus.active ? 'Active' : 'Inactive'}</Badge>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <div>
-                <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Capacity</p>
-                <p className="font-heading text-2xl font-bold text-charcoal-500">{bus.currentStudentsCount} / {bus.capacity}</p>
-                <p className="text-sm text-stone-500">{bus.availableCapacity} seats available</p>
-              </div>
-              <div>
-                <p className="text-xs text-stone-500 uppercase tracking-wide mb-1">Status</p>
-                <p className="font-heading text-xl font-bold text-charcoal-500 capitalize">{bus.active ? 'Active' : 'Inactive'}</p>
-              </div>
-            </div>
-
-            <div className="border-t border-stone-200 pt-6 mb-6">
-              <h3 className="font-heading text-lg font-semibold text-charcoal-500 mb-4 flex items-center gap-2">
-                <svg className="h-5 w-5 text-terracotta-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                Driver & Conductor
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-heading text-lg font-semibold text-charcoal-500 dark:text-stone-100 flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-terracotta-500" />
+                Your Assigned Boarding Details
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {bus.driverName && (
-                  <div className="bg-stone-50 rounded-lg p-4 border border-stone-200">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-terracotta-100 flex items-center justify-center">
-                        <User className="h-5 w-5 text-terracotta-600" />
-                      </div>
-                      <div>
-                        <p className="text-sm text-stone-500">Driver</p>
-                        <p className="font-medium text-charcoal-500">{bus.driverName}</p>
-                        {bus.driverPhone && <p className="text-sm text-stone-500">{bus.driverPhone}</p>}
-                      </div>
-                    </div>
-                  </div>
+              {boardingPoint && (
+                <Badge variant="info">Stop #{boardingPoint.stopOrder}</Badge>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-stone-50 dark:bg-charcoal-700/50 p-4 rounded-xl border border-stone-200 dark:border-charcoal-600">
+                <p className="text-xs text-stone-500 dark:text-stone-400 uppercase tracking-wide mb-1">Boarding Stop</p>
+                <p className="font-heading text-lg font-bold text-charcoal-500 dark:text-stone-100">
+                  {userBoardingStopName || 'Not Assigned'}
+                </p>
+                {boardingPoint?.landmark && (
+                  <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">Landmark: {boardingPoint.landmark}</p>
                 )}
-                {bus.conductorName && (
-                  <div className="bg-stone-50 rounded-lg p-4 border border-stone-200">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                        <User className="h-5 w-5 text-blue-600" />
-                      </div>
-                      <div>
-                        <p className="text-sm text-stone-500">Conductor</p>
-                        <p className="font-medium text-charcoal-500">{bus.conductorName}</p>
-                        {bus.conductorPhone && <p className="text-sm text-stone-500">{bus.conductorPhone}</p>}
-                      </div>
-                    </div>
-                  </div>
-                )}
+              </div>
+
+              <div className="bg-stone-50 dark:bg-charcoal-700/50 p-4 rounded-xl border border-stone-200 dark:border-charcoal-600">
+                <p className="text-xs text-stone-500 dark:text-stone-400 uppercase tracking-wide mb-1">Scheduled Pickup</p>
+                <p className="font-mono text-lg font-bold text-terracotta-600 dark:text-terracotta-400">
+                  {userBoardingTime}
+                </p>
+                <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">Departure: {route?.startingTime || '07:15 AM'}</p>
+              </div>
+
+              <div className="bg-stone-50 dark:bg-charcoal-700/50 p-4 rounded-xl border border-stone-200 dark:border-charcoal-600">
+                <p className="text-xs text-stone-500 dark:text-stone-400 uppercase tracking-wide mb-1">Destination Campus</p>
+                <p className="font-heading text-lg font-bold text-charcoal-500 dark:text-stone-100 flex items-center gap-1.5">
+                  <GraduationCap className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                  {destinationCollege}
+                </p>
+                <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">Arrival: {route?.endingTime || '08:45 AM'}</p>
               </div>
             </div>
           </Card>
 
-          {bus.route && (
+          {/* Full Sequenced Stops Table */}
+          {route?.boardingPoints && route.boardingPoints.length > 0 && (
             <Card padding="lg">
-              <h3 className="font-heading text-lg font-semibold text-charcoal-500 mb-4 flex items-center gap-2">
-                <svg className="h-5 w-5 text-terracotta-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19l-7-7 7-7m8 14l-7-7 7-7" />
-                </svg>
-                Route: {bus.route.routeCode} - {bus.route.routeName || 'Unnamed Route'}
-              </h3>
-              <Badge variant={bus.route.direction === 'MORNING' ? 'info' : 'warning'} size="sm">
-                {bus.route.direction === 'MORNING' ? 'Morning (Home → College)' : 'Evening (College → Home)'}
-              </Badge>
-              
-              <div className="mt-4 space-y-3">
-                {bus.route.startingPoint && (
-                  <div className="flex items-center gap-3 p-3 bg-stone-50 rounded-lg">
-                    <svg className="h-5 w-5 text-terracotta-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    <div>
-                      <p className="text-xs text-stone-500">Starting Point</p>
-                      <p className="font-medium text-charcoal-500">{bus.route.startingPoint}</p>
-                    </div>
-                  </div>
-                )}
-                {bus.route.startingTime && (
-                  <div className="flex items-center gap-3 p-3 bg-stone-50 rounded-lg">
-                    <svg className="h-5 w-5 text-terracotta-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <div>
-                      <p className="text-xs text-stone-500">Departure Time</p>
-                      <p className="font-mono font-medium text-charcoal-500">{bus.route.startingTime}</p>
-                    </div>
-                  </div>
-                )}
-                {bus.route.endingPoint && (
-                  <div className="flex items-center gap-3 p-3 bg-stone-50 rounded-lg">
-                    <svg className="h-5 w-5 text-terracotta-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    <div>
-                      <p className="text-xs text-stone-500">Destination</p>
-                      <p className="font-medium text-charcoal-500">{bus.route.endingPoint}</p>
-                    </div>
-                  </div>
-                )}
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-heading text-lg font-semibold text-charcoal-500 dark:text-stone-100 flex items-center gap-2">
+                  <Layers className="h-5 w-5 text-terracotta-500" />
+                  Complete Route Stop Sequence ({route.boardingPoints.length} stops)
+                </h3>
               </div>
 
-              {bus.route.boardingPoints && bus.route.boardingPoints.length > 0 && (
-                <div className="mt-6">
-                  <h4 className="font-medium text-charcoal-500 mb-3">Boarding Points</h4>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="text-left text-xs text-stone-500 border-b border-stone-200">
-                          <th className="pb-2 font-medium">#</th>
-                          <th className="pb-2 font-medium">Stop Name</th>
-                          <th className="pb-2 font-medium">Time</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {bus.route.boardingPoints
-                          .sort((a: { stopOrder: number }, b: { stopOrder: number }) => a.stopOrder - b.stopOrder)
-                          .slice(0, 10)
-                          .map((stop: { id: string; stopOrder: number; stopName: string; stopTime?: string }) => (
-                            <tr key={stop.id} className="border-b border-stone-100 last:border-0">
-                              <td className="py-2 text-stone-500">{stop.stopOrder}</td>
-                              <td className="py-2 font-medium text-charcoal-500">{stop.stopName}</td>
-                              <td className="py-2 text-stone-600">
-                                {stop.stopTime ? <span className="font-mono">{stop.stopTime}</span> : <span className="text-stone-400">—</span>}
-                              </td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </table>
-                    {bus.route.boardingPoints.length > 10 && (
-                      <p className="mt-2 text-sm text-stone-500 text-center">+ {bus.route.boardingPoints.length - 10} more stops</p>
-                    )}
-                  </div>
-                </div>
-              )}
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="text-left text-xs text-stone-500 dark:text-stone-400 border-b border-stone-200 dark:border-charcoal-700">
+                      <th className="pb-3 font-medium w-12">#</th>
+                      <th className="pb-3 font-medium">Stop Name</th>
+                      <th className="pb-3 font-medium">Scheduled Time</th>
+                      <th className="pb-3 font-medium">Status / Tag</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {route.boardingPoints
+                      .sort((a: any, b: any) => (a.stopOrder || 0) - (b.stopOrder || 0))
+                      .map((stop: any) => {
+                        const isUserStop = stop.id === boardingPoint?.id || stop.stopName === userBoardingStopName;
+                        const isDestination = stop.stopName?.toLowerCase().includes('campus') || stop.stopName?.toLowerCase().includes('university');
+
+                        return (
+                          <tr
+                            key={stop.id}
+                            className={`border-b border-stone-100 dark:border-charcoal-700/60 transition-colors ${
+                              isUserStop
+                                ? 'bg-blue-50/80 dark:bg-blue-950/30'
+                                : isDestination
+                                ? 'bg-amber-50/60 dark:bg-amber-950/20'
+                                : 'hover:bg-stone-50/60 dark:hover:bg-charcoal-700/30'
+                            }`}
+                          >
+                            <td className="py-3 text-stone-500 dark:text-stone-400 font-mono">{stop.stopOrder}</td>
+                            <td className="py-3 font-medium text-charcoal-500 dark:text-stone-200">
+                              {stop.stopName}
+                              {stop.landmark && (
+                                <span className="block text-xs text-stone-400 dark:text-stone-500 font-normal">
+                                  {stop.landmark}
+                                </span>
+                              )}
+                            </td>
+                            <td className="py-3 text-stone-600 dark:text-stone-400 font-mono">
+                              {stop.stopTime || '—'}
+                            </td>
+                            <td className="py-3">
+                              {isUserStop && (
+                                <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300">
+                                  <CheckCircle className="w-3 h-3" /> Your Boarding Stop
+                                </span>
+                              )}
+                              {isDestination && (
+                                <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300">
+                                  <GraduationCap className="w-3 h-3" /> Destination College
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </table>
+              </div>
             </Card>
           )}
+
+          {/* Vehicle & Crew Card */}
+          <Card padding="lg">
+            <h3 className="font-heading text-lg font-semibold text-charcoal-500 dark:text-stone-100 mb-4 flex items-center gap-2">
+              <Shield className="h-5 w-5 text-terracotta-500" />
+              Assigned Vehicle & Crew
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {bus.driverName ? (
+                <div className="bg-stone-50 dark:bg-charcoal-700/50 rounded-lg p-4 border border-stone-200 dark:border-charcoal-600">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-terracotta-100 dark:bg-terracotta-900/50 flex items-center justify-center">
+                      <User className="h-5 w-5 text-terracotta-600 dark:text-terracotta-400" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-stone-500 dark:text-stone-400">Driver</p>
+                      <p className="font-medium text-charcoal-500 dark:text-stone-200">{bus.driverName}</p>
+                      {bus.driverPhone && (
+                        <a href={`tel:${bus.driverPhone}`} className="text-xs text-terracotta-600 dark:text-terracotta-400 hover:underline">
+                          {bus.driverPhone}
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+
+              {bus.conductorName ? (
+                <div className="bg-stone-50 dark:bg-charcoal-700/50 rounded-lg p-4 border border-stone-200 dark:border-charcoal-600">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
+                      <User className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-stone-500 dark:text-stone-400">Conductor</p>
+                      <p className="font-medium text-charcoal-500 dark:text-stone-200">{bus.conductorName}</p>
+                      {bus.conductorPhone && (
+                        <a href={`tel:${bus.conductorPhone}`} className="text-xs text-blue-600 dark:text-blue-400 hover:underline">
+                          {bus.conductorPhone}
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-6 border-t border-stone-200 dark:border-charcoal-700">
+              <div>
+                <p className="text-xs text-stone-500 dark:text-stone-400 uppercase tracking-wide">Capacity</p>
+                <p className="font-heading text-lg font-bold text-charcoal-500 dark:text-stone-200">
+                  {bus.currentStudentsCount} / {bus.capacity}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-stone-500 dark:text-stone-400 uppercase tracking-wide">Seats Left</p>
+                <p className="font-heading text-lg font-bold text-terracotta-600 dark:text-terracotta-400">
+                  {bus.availableCapacity} seats
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-stone-500 dark:text-stone-400 uppercase tracking-wide">Direction</p>
+                <p className="text-sm font-medium text-charcoal-500 dark:text-stone-200">
+                  {route?.direction === 'MORNING' ? 'To College' : 'Return Home'}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-stone-500 dark:text-stone-400 uppercase tracking-wide">Est. Duration</p>
+                <p className="text-sm font-medium text-charcoal-500 dark:text-stone-200">
+                  {route?.estimatedDurationMinutes || 85} mins
+                </p>
+              </div>
+            </div>
+          </Card>
         </div>
 
-        {/* Sidebar Actions */}
-        <div className="space-y-4">
-          <Card padding="lg" className="text-center">
-            <h3 className="font-heading text-lg font-semibold text-charcoal-500 mb-4">Quick Actions</h3>
+        {/* Sidebar Info & Pass Status */}
+        <div className="space-y-6">
+          {/* Bus Pass Validity Card */}
+          <Card padding="lg">
+            <h3 className="font-heading text-lg font-semibold text-charcoal-500 dark:text-stone-100 mb-3 flex items-center gap-2">
+              <FileText className="h-5 w-5 text-terracotta-500" />
+              Bus Pass Status
+            </h3>
+
+            {busPass ? (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-stone-500 dark:text-stone-400">Pass Number:</span>
+                  <span className="font-mono text-xs font-semibold text-charcoal-500 dark:text-stone-200">
+                    {canonicalPassNumber(busPass.passNumber) || 'PASS-ACTIVE'}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-stone-500 dark:text-stone-400">Status:</span>
+                  <Badge variant={busPass.status === 'ACTIVE' ? 'success' : busPass.status === 'PENDING_VERIFICATION' ? 'warning' : 'danger'}>
+                    {busPass.status === 'PENDING_VERIFICATION' ? 'PENDING VERIFICATION' : busPass.status}
+                  </Badge>
+                </div>
+                {busPass.validUntil && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-stone-500 dark:text-stone-400">Valid Until:</span>
+                    <span className="text-xs font-medium text-charcoal-500 dark:text-stone-300">
+                      {busPass.validUntil}
+                    </span>
+                  </div>
+                )}
+                <div className="pt-2">
+                  <Link
+                    to="/student/bus-pass"
+                    className="block text-center py-2 px-3 bg-stone-100 hover:bg-stone-200 dark:bg-charcoal-700 dark:hover:bg-charcoal-600 rounded-lg text-xs font-semibold text-stone-700 dark:text-stone-200 transition-colors"
+                  >
+                    View Bus Pass Card
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-4">
+                <p className="text-xs text-stone-500 dark:text-stone-400 mb-3">No verified pass document linked.</p>
+                <Link
+                  to="/student/bus-pass"
+                  className="inline-block py-2 px-3 bg-terracotta-500 text-stone-50 rounded-lg text-xs font-semibold hover:bg-terracotta-400 transition-colors"
+                >
+                  Upload Bus Pass
+                </Link>
+              </div>
+            )}
+          </Card>
+
+          {/* Quick Actions */}
+          <Card padding="lg">
+            <h3 className="font-heading text-lg font-semibold text-charcoal-500 dark:text-stone-100 mb-4">
+              Student Navigation
+            </h3>
             <div className="space-y-3">
+              <Link to="/student/missed-bus" className="block">
+                <button className="w-full text-left p-3.5 rounded-lg border border-amber-200 dark:border-amber-900/60 hover:bg-amber-50 dark:hover:bg-amber-950/30 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center flex-shrink-0">
+                      <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-charcoal-500 dark:text-stone-200 text-sm">I Missed My Bus</p>
+                      <p className="text-xs text-stone-500 dark:text-stone-400">Request backup or alternative bus</p>
+                    </div>
+                  </div>
+                </button>
+              </Link>
+
               <Link to="/student/my-route" className="block">
-                <button className="w-full text-left p-4 rounded-lg border border-stone-200 hover:border-terracotta-300 hover:bg-terracotta-50 transition-colors">
+                <button className="w-full text-left p-3.5 rounded-lg border border-stone-200 dark:border-charcoal-600 hover:border-terracotta-300 dark:hover:border-terracotta-600 hover:bg-terracotta-50/50 dark:hover:bg-charcoal-700/50 transition-colors">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                      <svg className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19l-7-7 7-7m8 14l-7-7 7-7" />
-                      </svg>
+                    <div className="w-9 h-9 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center flex-shrink-0">
+                      <Navigation className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div>
-                      <p className="font-medium text-charcoal-500">View Full Route</p>
-                      <p className="text-sm text-stone-500">See all stops & timings</p>
+                      <p className="font-semibold text-charcoal-500 dark:text-stone-200 text-sm">Full Route & Stops</p>
+                      <p className="text-xs text-stone-500 dark:text-stone-400">View timetable and intermediate stops</p>
                     </div>
                   </div>
                 </button>
               </Link>
+
               <Link to="/student/boarding-point" className="block">
-                <button className="w-full text-left p-4 rounded-lg border border-stone-200 hover:border-terracotta-300 hover:bg-terracotta-50 transition-colors">
+                <button className="w-full text-left p-3.5 rounded-lg border border-stone-200 dark:border-charcoal-600 hover:border-terracotta-300 dark:hover:border-terracotta-600 hover:bg-terracotta-50/50 dark:hover:bg-charcoal-700/50 transition-colors">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                      <svg className="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
+                    <div className="w-9 h-9 rounded-lg bg-green-100 dark:bg-green-900/50 flex items-center justify-center flex-shrink-0">
+                      <MapPin className="h-5 w-5 text-green-600 dark:text-green-400" />
                     </div>
                     <div>
-                      <p className="font-medium text-charcoal-500">My Boarding Point</p>
-                      <p className="text-sm text-stone-500">Pickup location & time</p>
-                    </div>
-                  </div>
-                </button>
-              </Link>
-              <Link to="/student/bus-pass" className="block">
-                <button className="w-full text-left p-4 rounded-lg border border-stone-200 hover:border-terracotta-300 hover:bg-terracotta-50 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
-                      <svg className="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="font-medium text-charcoal-500">My Bus Pass</p>
-                      <p className="text-sm text-stone-500">View & manage pass</p>
-                    </div>
-                  </div>
-                </button>
-              </Link>
-              <Link to="/student/gps" className="block">
-                <button className="w-full text-left p-4 rounded-lg border border-stone-200 hover:border-terracotta-300 hover:bg-terracotta-50 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center">
-                      <svg className="h-5 w-5 text-cyan-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 10a5 5 0 1110 0 5 5 0 01-10 0z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="font-medium text-charcoal-500">Live Location</p>
-                      <p className="text-sm text-stone-500">Track bus in real-time</p>
+                      <p className="font-semibold text-charcoal-500 dark:text-stone-200 text-sm">My Boarding Point</p>
+                      <p className="text-xs text-stone-500 dark:text-stone-400">Change stop or check pickup time</p>
                     </div>
                   </div>
                 </button>
@@ -303,6 +479,10 @@ export function StudentMyBusPage() {
           </Card>
         </div>
       </div>
+
+      {showQR && bus && (
+        <BusQRCodeModal bus={bus} onClose={() => setShowQR(false)} />
+      )}
     </div>
   );
 }

@@ -21,35 +21,61 @@ public class AuditService {
     private final AuditLogRepository auditLogRepository;
 
     @Async
-    public void log(UUID userId, UUID correlationId, AuditAction action, 
+    public void log(UUID userId, UUID correlationId, AuditAction action,
             String entityType, String entityId, String entityIdentifier,
             Map<String, Object> oldValues, Map<String, Object> newValues) {
+        AuditLog audit = AuditLog.create(userId, correlationId, action,
+            entityType, entityId, entityIdentifier,
+            oldValues != null ? toJson(oldValues) : null,
+            newValues != null ? toJson(newValues) : null,
+            true, null);
+        saveAuditSafely(audit);
+    }
+
+    @Async
+    public void logWithStrings(UUID userId, UUID correlationId, AuditAction action,
+            String entityType, String entityId, String entityIdentifier,
+            String oldValues, String newValues) {
+        AuditLog audit = AuditLog.create(userId, correlationId, action,
+            entityType, entityId, entityIdentifier,
+            ensureJson(oldValues), ensureJson(newValues),
+            true, null);
+        saveAuditSafely(audit);
+    }
+
+    private void saveAuditSafely(AuditLog audit) {
         try {
-            AuditLog audit = AuditLog.create(userId, correlationId, action, 
-                entityType, entityId, entityIdentifier,
-                oldValues != null ? toJson(oldValues) : null,
-                newValues != null ? toJson(newValues) : null,
-                true, null);
-            
             auditLogRepository.save(audit);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            try {
+                Thread.sleep(150);
+                auditLogRepository.save(audit);
+            } catch (Exception retryEx) {
+                try {
+                    audit.setUser(null);
+                    auditLogRepository.save(audit);
+                } catch (Exception fallbackEx) {
+                    log.error("Failed to persist audit log fallback", fallbackEx);
+                }
+            }
         } catch (Exception e) {
             log.error("Failed to save audit log", e);
         }
     }
 
-    @Async
-    public void logWithStrings(UUID userId, UUID correlationId, AuditAction action, 
-            String entityType, String entityId, String entityIdentifier,
-            String oldValues, String newValues) {
+    private String ensureJson(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        String trimmed = value.trim();
+        if ((trimmed.startsWith("{") && trimmed.endsWith("}")) ||
+            (trimmed.startsWith("[") && trimmed.endsWith("]"))) {
+            return trimmed;
+        }
         try {
-            AuditLog audit = AuditLog.create(userId, correlationId, action, 
-                entityType, entityId, entityIdentifier,
-                oldValues, newValues,
-                true, null);
-            
-            auditLogRepository.save(audit);
+            return new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(Map.of("message", trimmed));
         } catch (Exception e) {
-            log.error("Failed to save audit log", e);
+            return "{\"message\":\"" + trimmed.replace("\"", "\\\"") + "\"}";
         }
     }
 
@@ -57,11 +83,11 @@ public class AuditService {
     public void logFailure(UUID userId, UUID correlationId, AuditAction action,
             String entityType, String entityId, String errorMessage) {
         try {
-            AuditLog audit = AuditLog.create(userId, correlationId, action, 
+            AuditLog audit = AuditLog.create(userId, correlationId, action,
                 entityType, entityId, entityId,
                 null, null,
                 false, errorMessage);
-            
+
             auditLogRepository.save(audit);
         } catch (Exception e) {
             log.error("Failed to save audit log", e);

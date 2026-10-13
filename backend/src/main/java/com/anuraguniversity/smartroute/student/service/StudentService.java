@@ -26,6 +26,13 @@ import com.anuraguniversity.smartroute.transport.repository.BoardingPointReposit
 import com.anuraguniversity.smartroute.transport.repository.RouteRepository;
 import com.anuraguniversity.smartroute.transport.repository.StudentBusAssignmentRepository;
 import com.anuraguniversity.smartroute.transport.entity.StudentBusAssignment;
+import com.anuraguniversity.smartroute.buspass.entity.BusPassRecord;
+import com.anuraguniversity.smartroute.buspass.repository.BusPassRecordRepository;
+import org.springframework.web.multipart.MultipartFile;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -42,6 +49,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.anuraguniversity.smartroute.teacher.repository.TeacherBusAssignmentRepository;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -57,6 +66,9 @@ public class StudentService {
     private final StudentBusAssignmentRepository studentBusAssignmentRepository;
     private final SOSRequestRepository sosRequestRepository;
     private final LocationRecordRepository locationRecordRepository;
+    private final BusPassRecordRepository busPassRecordRepository;
+    private final TeacherBusAssignmentRepository teacherBusAssignmentRepository;
+    private final com.anuraguniversity.smartroute.buspass.service.BusPassRecognitionService busPassRecognitionService;
 
     public StudentDTO getStudentProfile(UUID userId) {
         Student student = studentRepository.findByUserId(userId)
@@ -64,6 +76,7 @@ public class StudentService {
         return StudentDTO.from(student);
     }
 
+    @Transactional(readOnly = true)
     public StudentDTO.StudentAssignmentDTO getStudentAssignment(UUID userId) {
         Student student = studentRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Student profile not found"));
@@ -130,6 +143,12 @@ public class StudentService {
             Bus bus = busRepository.findById(request.getOriginalBusId())
                     .orElseThrow(() -> new ResourceNotFoundException("Bus not found"));
             requestEntity.setOriginalBus(bus);
+        } else if (student.getBus() != null) {
+            requestEntity.setOriginalBus(student.getBus());
+        } else {
+            studentBusAssignmentRepository.findActiveAssignmentForStudentOnDate(student.getId(), LocalDate.now())
+                    .map(StudentBusAssignment::getBus)
+                    .ifPresent(requestEntity::setOriginalBus);
         }
 
         requestEntity = missedBusRequestRepository.save(requestEntity);
@@ -188,7 +207,89 @@ public class StudentService {
         Student student = studentRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Student profile not found"));
 
-        return StudentDTO.BusPassDTO.from(student);
+        List<BusPassRecord> records = busPassRecordRepository.findByStudentIdOrderByCreatedAtDesc(student.getId());
+        BusPassRecord latest = records.isEmpty() ? null : records.get(0);
+        return StudentDTO.BusPassDTO.from(student, latest);
+    }
+
+    @Transactional
+    public StudentDTO.BusPassDTO uploadBusPass(UUID userId, MultipartFile image) {
+        Student student = studentRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Student profile not found"));
+
+        if (image == null || image.isEmpty()) {
+            throw new IllegalArgumentException("Bus pass image file cannot be empty");
+        }
+
+        String contentType = image.getContentType();
+        if (contentType == null || (!contentType.startsWith("image/") && !contentType.equalsIgnoreCase("application/pdf"))) {
+            throw new IllegalArgumentException("Uploaded file must be a valid image");
+        }
+
+        if (image.getSize() > 10 * 1024 * 1024) {
+            throw new IllegalArgumentException("File size must not exceed 10MB");
+        }
+
+        try {
+            Path uploadDir = Paths.get("uploads", "bus-passes").toAbsolutePath().normalize();
+            Files.createDirectories(uploadDir);
+
+            String originalName = image.getOriginalFilename();
+            String ext = ".jpg";
+            if (originalName != null && originalName.contains(".")) {
+                String potentialExt = originalName.substring(originalName.lastIndexOf(".")).toLowerCase();
+                if (potentialExt.matches("\\.(jpg|jpeg|png|webp|gif|pdf)")) {
+                    ext = potentialExt;
+                }
+            }
+            String fileName = UUID.randomUUID() + ext;
+            Path targetPath = uploadDir.resolve(fileName);
+            Files.copy(image.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+
+            String imageUrl = "/api/student/bus-pass/image/" + fileName;
+
+            List<BusPassRecord> records = busPassRecordRepository.findByStudentIdOrderByCreatedAtDesc(student.getId());
+            BusPassRecord record;
+            if (records.isEmpty()) {
+                record = new BusPassRecord();
+                record.setStudent(student);
+                record.setBus(null);
+                record.setRoute(null);
+                record.setValidFrom(LocalDate.now());
+                record.setValidUntil(LocalDate.now().plusMonths(6));
+                String initialPassNo = "PASS-" + (student.getStudentId() != null ? student.getStudentId() : UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+                record.setPassNumber(com.anuraguniversity.smartroute.buspass.service.BusPassRecognitionService.canonicalizePassNumber(initialPassNo));
+                record.setAcademicYear(student.getAcademicYear() != null ? student.getAcademicYear() : "2026-27");
+                record.setFeePaid(false);
+                record.setFeeAmount(java.math.BigDecimal.ZERO);
+            } else {
+                record = records.get(0);
+                record.setPassNumber(com.anuraguniversity.smartroute.buspass.service.BusPassRecognitionService.canonicalizePassNumber(record.getPassNumber()));
+            }
+
+            record.setImageUrl(imageUrl);
+            record.setStatus(BusPassRecord.Status.PENDING_VERIFICATION.name());
+            record.setVerifiedAt(null);
+            record.setVerifiedBy(null);
+            record.setRejectionReason(null);
+            record.setVerificationNotes("Submitted by student for verification");
+            record = busPassRecordRepository.save(record);
+
+            student.setBusPassImageUrl(imageUrl);
+            studentRepository.save(student);
+
+            // Execute automated recognition, route/stop validation, and assignment
+            busPassRecognitionService.recognizeAndProcess(student, record, targetPath, originalName != null ? originalName : fileName);
+
+            // Reload records
+            student = studentRepository.findById(student.getId()).orElse(student);
+            record = busPassRecordRepository.findById(record.getId()).orElse(record);
+
+            return StudentDTO.BusPassDTO.from(student, record);
+        } catch (java.io.IOException e) {
+            log.error("Failed to store uploaded bus pass image", e);
+            throw new RuntimeException("Failed to store uploaded file", e);
+        }
     }
 
     @Transactional
@@ -196,18 +297,30 @@ public class StudentService {
         Student student = studentRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Student profile not found"));
 
+        List<BusPassRecord> records = busPassRecordRepository.findByStudentIdOrderByCreatedAtDesc(student.getId());
+        BusPassRecord record = records.isEmpty() ? null : records.get(0);
+
         if (request.getBusPassImageUrl() != null) {
             student.setBusPassImageUrl(request.getBusPassImageUrl());
+            if (record != null) {
+                record.setImageUrl(request.getBusPassImageUrl());
+            }
         }
         if (request.getQrCode() != null) {
             student.setQrCode(request.getQrCode());
+            if (record != null) {
+                record.setQrCodeData(request.getQrCode());
+            }
         }
-        if (request.getOcrExtractedData() != null) {
-            // Store OCR data if needed
+        if (request.getOcrExtractedData() != null && record != null) {
+            record.setOcrExtractedData(request.getOcrExtractedData());
         }
 
         student = studentRepository.save(student);
-        return StudentDTO.BusPassDTO.from(student);
+        if (record != null) {
+            record = busPassRecordRepository.save(record);
+        }
+        return StudentDTO.BusPassDTO.from(student, record);
     }
 
     public StudentDTO.GPSDTO getStudentGPS(UUID userId) {
@@ -272,7 +385,15 @@ public class StudentService {
     }
 
     private void notifyTeachersForBus(UUID busId, String title, String message) {
-        // Find teachers assigned to this bus and create notifications
-        // This is a simplified implementation
+        // Find all teachers assigned to this bus and send each an in-app notification
+        List<com.anuraguniversity.smartroute.teacher.entity.TeacherBusAssignment> assignments =
+                teacherBusAssignmentRepository.findByBusId(busId);
+        for (com.anuraguniversity.smartroute.teacher.entity.TeacherBusAssignment assignment : assignments) {
+            UUID teacherUserId = assignment.getTeacher().getUser().getId();
+            createNotification(teacherUserId, title, message, NotificationType.MISSED_BUS, busId);
+        }
+        if (!assignments.isEmpty()) {
+            log.debug("Notified {} teacher(s) for bus {}", assignments.size(), busId);
+        }
     }
 }

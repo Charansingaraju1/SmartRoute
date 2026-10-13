@@ -14,6 +14,10 @@ public interface BusRepository extends JpaRepository<Bus, java.util.UUID> {
 
     Optional<Bus> findByRegistrationNumber(String registrationNumber);
 
+    Optional<Bus> findByRegistrationNumberIgnoreCase(String registrationNumber);
+
+    Optional<Bus> findByBusNumberIgnoreCase(String busNumber);
+
     List<Bus> findByActiveTrue();
 
     List<Bus> findByActiveTrueAndCapacityGreaterThan(int minCapacity);

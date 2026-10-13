@@ -18,6 +18,17 @@ public class SmartRouteProperties {
     private Ocr ocr = new Ocr();
     private Llm llm = new Llm();
     private Mail mail = new Mail();
+    private OAuth oauth = new OAuth();
+
+    @Data
+    public static class OAuth {
+        private Google google = new Google();
+
+        @Data
+        public static class Google {
+            private String clientId;
+        }
+    }
 
     @Data
     public static class Jwt {
@@ -28,11 +39,20 @@ public class SmartRouteProperties {
 
     @Data
     public static class Otp {
+        private boolean requireEmailVerification = true;
         private int length = 6;
         private int expirationMinutes = 10;
         private int maxAttempts = 3;
         private int resendCooldownSeconds = 60;
         private int rateLimitPerHour = 5;
+
+        public boolean isRequireEmailVerification() {
+            return requireEmailVerification;
+        }
+
+        public void setRequireEmailVerification(boolean requireEmailVerification) {
+            this.requireEmailVerification = requireEmailVerification;
+        }
     }
 
     @Data

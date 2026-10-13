@@ -1,4 +1,4 @@
-﻿import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, CheckCircle, AlertCircle, AlertTriangle, Info } from 'lucide-react';
 
@@ -41,17 +41,19 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
       {children}
-      <ToastContainer toasts={toasts} onRemove={removeToast} />
     </ToastContext.Provider>
   );
 }
 
+const defaultContext: ToastContextType = {
+  toasts: [],
+  addToast: () => '',
+  removeToast: () => {},
+};
+
 export function useToast() {
   const context = React.useContext(ToastContext);
-  if (!context) {
-    throw new Error('useToast must be used within a ToastProvider');
-  }
-  return context;
+  return context || defaultContext;
 }
 
 function ToastContainer({ toasts, onRemove }: { toasts: Toast[]; onRemove: (id: string) => void }) {
@@ -76,10 +78,10 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
   };
 
   const bgClasses = {
-    success: 'bg-green-50 border-green-200',
-    error: 'bg-red-50 border-red-200',
-    warning: 'bg-yellow-50 border-yellow-200',
-    info: 'bg-blue-50 border-blue-200',
+    success: 'bg-green-50 border-green-200 dark:bg-emerald-950/80 dark:border-emerald-800',
+    error: 'bg-red-50 border-red-200 dark:bg-rose-950/80 dark:border-rose-800',
+    warning: 'bg-yellow-50 border-yellow-200 dark:bg-amber-950/80 dark:border-amber-800',
+    info: 'bg-blue-50 border-blue-200 dark:bg-blue-950/80 dark:border-blue-800',
   };
 
   useEffect(() => {
@@ -91,14 +93,14 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
     <div className={`flex items-start gap-3 p-4 rounded-lg border shadow-lg animate-slide-up ${bgClasses[toast.type]}`}>
       <div className="flex-shrink-0 mt-0.5">{icons[toast.type]}</div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-stone-900">{toast.title}</p>
+        <p className="text-sm font-medium text-stone-900 dark:text-[#F1F5F9]">{toast.title}</p>
         {toast.message && (
-          <p className="mt-1 text-sm text-stone-600">{toast.message}</p>
+          <p className="mt-1 text-sm text-stone-600 dark:text-[#A7B3C7]">{toast.message}</p>
         )}
         {toast.action && (
           <button
             onClick={() => { toast.action!.onClick(); onRemove(toast.id); }}
-            className="mt-2 text-sm font-medium text-terracotta-600 hover:text-terracotta-700 underline"
+            className="mt-2 text-sm font-medium text-terracotta-600 hover:text-terracotta-700 underline dark:text-blue-400 dark:hover:text-blue-300"
           >
             {toast.action.label}
           </button>
@@ -106,7 +108,7 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
       </div>
       <button
         onClick={() => onRemove(toast.id)}
-        className="flex-shrink-0 text-stone-400 hover:text-stone-600 transition-colors"
+        className="flex-shrink-0 text-stone-400 hover:text-stone-600 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
         aria-label="Dismiss"
       >
         <X className="h-5 w-5" />
