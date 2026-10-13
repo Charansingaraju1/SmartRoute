@@ -120,4 +120,20 @@ class TransportEntityTest {
         assertEquals("Landmark", bp.getLandmark());
         assertTrue(bp.getActive());
     }
+
+    @Test
+    void bus_ShouldSupportPhoneNumbersUpTo50Chars() {
+        Bus bus = Bus.create("TS08UG5275", "MR. M SRISAILAM", "Conductor");
+        String dualDriverPhone = "9398187515 / 9603040944";
+        String dualConductorPhone = "9989344083 / 7095086561";
+
+        bus.setDriverPhone(dualDriverPhone);
+        bus.setConductorPhone(dualConductorPhone);
+
+        assertEquals(dualDriverPhone, bus.getDriverPhone());
+        assertEquals(dualConductorPhone, bus.getConductorPhone());
+        assertTrue(bus.getDriverPhone().length() > 20);
+        assertTrue(bus.getDriverPhone().length() <= 50);
+        assertTrue(bus.getConductorPhone().length() <= 50);
+    }
 }

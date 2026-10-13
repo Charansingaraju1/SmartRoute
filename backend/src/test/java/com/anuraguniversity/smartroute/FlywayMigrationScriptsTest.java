@@ -60,5 +60,12 @@ class FlywayMigrationScriptsTest {
             assertTrue(v5Content.contains("transport_disruptions MODIFY COLUMN start_date DATE NOT NULL"), "V5 must align start_date to DATE NOT NULL");
             assertTrue(v5Content.contains("transport_disruptions MODIFY COLUMN end_date DATE NULL"), "V5 must align end_date to DATE NULL");
         }
+
+        try (InputStream v6Stream = getClass().getResourceAsStream("/db/migration/V6__widen_bus_phone_columns.sql")) {
+            assertNotNull(v6Stream, "V6__widen_bus_phone_columns.sql must exist on classpath");
+            String v6Content = new String(v6Stream.readAllBytes(), StandardCharsets.UTF_8);
+            assertTrue(v6Content.contains("buses MODIFY COLUMN driver_phone VARCHAR(50) NULL"), "V6 must widen driver_phone to VARCHAR(50)");
+            assertTrue(v6Content.contains("buses MODIFY COLUMN conductor_phone VARCHAR(50) NULL"), "V6 must widen conductor_phone to VARCHAR(50)");
+        }
     }
 }

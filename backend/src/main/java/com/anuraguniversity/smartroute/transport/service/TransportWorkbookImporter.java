@@ -52,7 +52,6 @@ public class TransportWorkbookImporter {
         "Uppal Zone", "Secunderabad Zone", "ECIL Zone", "Bhongir Zone"
     );
 
-    @Transactional
     public ImportResult importWorkbook() {
         ImportResult result = new ImportResult();
 
@@ -138,29 +137,35 @@ public class TransportWorkbookImporter {
                     int capacity = bNode.path("capacity").asInt(50);
                     String model = bNode.path("model").asText("Anurag University Transport");
                     String fuel = bNode.path("fuelType").asText("Diesel");
-                    String driver = bNode.hasNonNull("driverName") ? bNode.get("driverName").asText() : null;
-                    String phone = bNode.hasNonNull("driverPhone") ? bNode.get("driverPhone").asText() : null;
+                    String driver = bNode.hasNonNull("driverName") ? bNode.get("driverName").asText().trim() : null;
+                    String phone = bNode.hasNonNull("driverPhone") ? bNode.get("driverPhone").asText().trim() : null;
 
-                    Bus bus = busRepository.findByRegistrationNumber(reg).orElse(null);
-                    if (bus == null) {
-                        bus = new Bus();
-                        bus.setRegistrationNumber(reg);
-                        bus.setBusNumber(busNum);
-                        bus.setCapacity(capacity);
-                        bus.setModel(model);
-                        bus.setFuelType(fuel);
-                        bus.setDriverName(driver);
-                        bus.setDriverPhone(phone);
-                        bus.setActive(true);
-                        bus.setCurrentStudentsCount(0);
-                        busRepository.save(bus);
-                        result.incrementUniqueBusCount();
-                    } else {
-                        bus.setBusNumber(busNum);
-                        if (driver != null) bus.setDriverName(driver);
-                        if (phone != null) bus.setDriverPhone(phone);
-                        bus.setActive(true);
-                        busRepository.save(bus);
+                    try {
+                        Bus bus = busRepository.findByRegistrationNumber(reg).orElse(null);
+                        if (bus == null) {
+                            bus = new Bus();
+                            bus.setRegistrationNumber(reg);
+                            bus.setBusNumber(busNum);
+                            bus.setCapacity(capacity);
+                            bus.setModel(model);
+                            bus.setFuelType(fuel);
+                            bus.setDriverName(driver);
+                            bus.setDriverPhone(phone);
+                            bus.setActive(true);
+                            bus.setCurrentStudentsCount(0);
+                            busRepository.save(bus);
+                            result.incrementUniqueBusCount();
+                        } else {
+                            bus.setBusNumber(busNum);
+                            if (driver != null) bus.setDriverName(driver);
+                            if (phone != null) bus.setDriverPhone(phone);
+                            bus.setActive(true);
+                            busRepository.save(bus);
+                        }
+                    } catch (Exception e) {
+                        log.error("Failed to import bus {} (driver={}, phone={}): {}", reg, driver, phone, e.getMessage());
+                        result.addError("Bus " + reg + " import failed: " + e.getMessage());
+                        result.incrementRejected();
                     }
                 }
             }

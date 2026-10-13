@@ -62,8 +62,8 @@ public class Bus extends BaseEntity {
     @Column(name = "conductor_name", length = 100)
     private String conductorName;
 
-    @Size(max = 20)
-    @Column(name = "conductor_phone", length = 20)
+    @Size(max = 50)
+    @Column(name = "conductor_phone", length = 50)
     private String conductorPhone;
 
     @Column(name = "active", nullable = false)
