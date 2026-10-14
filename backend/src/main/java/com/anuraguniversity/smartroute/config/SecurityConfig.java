@@ -34,7 +34,7 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
-    @org.springframework.beans.factory.annotation.Value("${smartroute.cors.allowed-origins:http://localhost:5173,http://127.0.0.1:5173}")
+    @org.springframework.beans.factory.annotation.Value("${smartroute.cors.allowed-origins:http://localhost:5173,http://localhost:5174,http://localhost:3000,http://127.0.0.1:5173,http://127.0.0.1:5174,https://smart-route-jet.vercel.app}")
     private String allowedOrigins;
 
     @Bean

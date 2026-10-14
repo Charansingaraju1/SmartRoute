@@ -48,10 +48,21 @@ export function LoginPage() {
     }, { replace: true });
   };
 
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: '', password: '' },
   });
+
+  const fillDemoCredentials = (role: UserRoleType) => {
+    handleRoleChange(role);
+    if (role === 'student') {
+      setValue('email', 'student@anurag.edu', { shouldValidate: true });
+      setValue('password', 'Password123!', { shouldValidate: true });
+    } else {
+      setValue('email', 'teacher@anurag.edu', { shouldValidate: true });
+      setValue('password', 'Password123!', { shouldValidate: true });
+    }
+  };
 
   const onSubmit = async (data: LoginForm) => {
     setLoading(true);
@@ -76,7 +87,15 @@ export function LoginPage() {
 
       navigate(destination, { replace: true });
     } catch (err: any) {
-      const message = err.response?.data?.message || err.message || 'Invalid email or password';
+      const status = err.response?.status;
+      let message = err.response?.data?.message;
+      if (!message) {
+        if (status === 502 || status === 504 || err.code === 'ECONNABORTED' || err.message?.includes('Network Error') || err.message?.includes('timeout')) {
+          message = 'Backend server is temporarily unavailable or waking up (Render free tier can take ~60s). Please wait a moment and try again.';
+        } else {
+          message = err.message || 'Invalid email or password';
+        }
+      }
       addToast({ type: 'error', title: 'Sign in failed', message });
     } finally {
       setLoading(false);
@@ -161,8 +180,31 @@ export function LoginPage() {
           <RoleSelector
             value={selectedRole}
             onChange={handleRoleChange}
-            className="mb-6"
+            className="mb-4"
           />
+
+          <div className="mb-6 p-3 bg-stone-100/80 dark:bg-slate-800/60 rounded-xl border border-stone-200 dark:border-slate-700/80 text-xs">
+            <div className="font-semibold text-stone-700 dark:text-slate-300 mb-2 flex items-center justify-between">
+              <span>Quick Demo Accounts:</span>
+              <span className="text-[10px] text-stone-500 dark:text-slate-400">Click to autofill credentials</span>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => fillDemoCredentials('student')}
+                className="py-1.5 px-2 text-center rounded-lg bg-white dark:bg-slate-700 hover:bg-stone-50 dark:hover:bg-slate-600 border border-stone-200 dark:border-slate-600 text-stone-800 dark:text-slate-200 font-medium transition-colors shadow-sm"
+              >
+                🎓 Student Demo
+              </button>
+              <button
+                type="button"
+                onClick={() => fillDemoCredentials('teacher')}
+                className="py-1.5 px-2 text-center rounded-lg bg-white dark:bg-slate-700 hover:bg-stone-50 dark:hover:bg-slate-600 border border-stone-200 dark:border-slate-600 text-stone-800 dark:text-slate-200 font-medium transition-colors shadow-sm"
+              >
+                👨‍🏫 Teacher Demo
+              </button>
+            </div>
+          </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
             <Input

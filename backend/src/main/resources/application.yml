@@ -7,7 +7,7 @@
 # 1. General Server Configuration
 # ==============================================================================
 server:
-  port: ${PORT:8080}
+  port: ${PORT:8085}
   servlet:
     context-path: /api
   error:
@@ -61,7 +61,7 @@ spring:
   # 5. Database Migrations
   # ----------------------------------------------------------------------------
   flyway:
-    enabled: true
+    enabled: ${FLYWAY_ENABLED:false}
     locations:
       - classpath:db/migration
     baseline-on-migrate: true
@@ -155,7 +155,7 @@ springdoc:
 # ==============================================================================
 smartroute:
   cors:
-    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173,https://smart-route-jet.vercel.app}
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:5174,http://localhost:3000,http://127.0.0.1:5173,http://127.0.0.1:5174,https://smart-route-jet.vercel.app}
 
   jwt:
     secret: ${JWT_SECRET:}
@@ -281,6 +281,6 @@ spring:
   jpa:
     show-sql: false
     hibernate:
-      ddl-auto: validate
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
   flyway:
-    enabled: true
+    enabled: ${SPRING_FLYWAY_ENABLED:false}
